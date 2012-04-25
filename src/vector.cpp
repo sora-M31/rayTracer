@@ -7,25 +7,26 @@ namespace rayTracer
 //------------------------------------------------------------------------------
 Vector::Vector ()
 {
-    memset ( m_data, '0', 3 );
+    memset ( m_data, '0', 4);
 }
 //------------------------------------------------------------------------------
 Vector::~Vector ()
 {
-    delete [] m_data;
 }
 //------------------------------------------------------------------------------
-Vector::Vector ( float i_x, float i_y, float i_z )
+Vector::Vector ( float i_x, float i_y, float i_z, float i_w)
 :m_x ( i_x ),
  m_y ( i_y ),
- m_z ( i_z )
+ m_z ( i_z ),
+ m_w ( i_w )
 {
 }
 //------------------------------------------------------------------------------
 Vector::Vector ( const Vector& i_other )
 : m_x ( i_other.m_x ),
   m_y ( i_other.m_y ),
-  m_z ( i_other.m_z )
+  m_z ( i_other.m_z ),
+  m_w ( i_other.m_w )
 {
 }
 //------------------------------------------------------------------------------
@@ -33,7 +34,7 @@ Vector Vector::Normalise () const
 {
     float length = Length ();
     assert ( length != 0 );
-    return Vector ( m_x / length, m_y / length, m_z / length );
+    return Vector ( m_x / length, m_y / length, m_z / length, m_w/ length );
 }
 //------------------------------------------------------------------------------
 inline float Vector::Dot ( const Vector& i_other ) const
@@ -45,9 +46,9 @@ inline Vector Vector::Cross ( const Vector& i_other ) const
 {
     return Vector ( m_y * i_other.m_z - m_z * i_other.m_y,
                     m_z * i_other.m_x - m_x * i_other.m_z,
-                    m_x * i_other.m_y - m_y * i_other.m_x );
+                    m_x * i_other.m_y - m_y * i_other.m_x,
+                    0.0f );
 }
-
 //------------------------------------------------------------------------------
 float Vector::Length () const
 {
@@ -58,28 +59,28 @@ float Vector::Length () const
 //------------------------------------------------------------------------------
 inline Vector Vector::operator +  ( const Vector& i_other ) const
 {
-    return Vector ( m_x + i_other.m_x, m_y + i_other.m_y, m_z + i_other.m_z );
+    return Vector ( m_x + i_other.m_x, m_y + i_other.m_y, m_z + i_other.m_z, m_w + i_other.m_w );
 }
 //------------------------------------------------------------------------------
 inline Vector Vector::operator *  ( const float i_other ) const
 {
-    return Vector ( m_x *  i_other, m_y *  i_other, m_z *  i_other );
+    return Vector ( m_x *  i_other, m_y *  i_other, m_z *  i_other, m_w * i_other );
 }
 //------------------------------------------------------------------------------
 inline Vector Vector::operator /  ( const float i_other ) const
 {
     assert ( i_other!=0 );
-    return Vector ( m_x / i_other, m_y / i_other, m_z / i_other );
+    return Vector ( m_x / i_other, m_y / i_other, m_z / i_other, m_z / i_other );
 }
 //------------------------------------------------------------------------------
 inline Vector Vector::operator -  ( const Vector& i_other ) const
 {
-    return Vector ( ( m_x - i_other.m_x ), ( m_y - i_other.m_y ), ( m_z - i_other.m_z ) );
+    return Vector ( m_x - i_other.m_x, m_y - i_other.m_y, m_z - i_other.m_z, m_w - i_other.m_w );
 }
 //------------------------------------------------------------------------------
 inline Vector Vector::operator -  () const
 {
-    return Vector ( - m_x, -m_y, -m_z );
+    return Vector ( - m_x, -m_y, -m_z, m_w );
 }
 //------------------------------------------------------------------------------
 Vector& Vector::operator =  ( const Vector& i_other )
@@ -87,6 +88,7 @@ Vector& Vector::operator =  ( const Vector& i_other )
     m_x = i_other.m_x;
     m_y = i_other.m_y;
     m_z = i_other.m_z;
+    m_w = i_other.m_w;
     return *this;
 }
 ///------------------------------------------------------------------------------
@@ -95,6 +97,7 @@ Vector& Vector::operator +=  ( const Vector& i_other )
     m_x += i_other.m_x;
     m_y += i_other.m_y;
     m_z += i_other.m_z;
+    m_w += i_other.m_w;
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -103,6 +106,7 @@ Vector& Vector::operator -=  ( const Vector& i_other )
     m_x -= i_other.m_x;
     m_y -= i_other.m_y;
     m_z -= i_other.m_z;
+    m_w -= i_other.m_w;
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -112,6 +116,7 @@ Vector& Vector::operator /=  ( const float i_other )
     m_x /= i_other;
     m_y /= i_other;
     m_z /= i_other;
+    m_w /= i_other;
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -119,7 +124,8 @@ bool Vector::operator ==  ( const Vector& i_other ) const
 {
     if  ( RealEqual ( m_x, i_other.m_x )
          && RealEqual ( m_y, i_other.m_y )
-         && RealEqual ( m_z, i_other.m_z ) )
+         && RealEqual ( m_z, i_other.m_z )
+         && RealEqual ( m_w, i_other.m_w ) )
         return true;
     else return false;
 }
@@ -139,6 +145,11 @@ inline float Vector::GetZ () const
     return m_z;
 }
 //------------------------------------------------------------------------------
+inline float Vector::GetW () const
+{
+    return m_w;
+}
+//------------------------------------------------------------------------------
 inline void Vector::SetX ( float i_x )
 {
     m_x = i_x;
@@ -154,25 +165,25 @@ void Vector::SetZ ( float i_z )
     m_z = i_z;
 }
 //------------------------------------------------------------------------------
-float Vector::GetValue ( uint32_t i_index )
+float Vector::GetValue ( uint32_t i_index ) const
 {
-    assert( i_index >= 0 && i_index < 3 );
+    assert( i_index >= 0 && i_index < 4 );
     return m_data[ i_index ];
 }
 //------------------------------------------------------------------------------
 void Vector::SetValue ( uint32_t i_index, float i_value )
 {
-    assert( i_index >= 0 && i_index < 3 );
+    assert( i_index >= 0 && i_index < 4 );
     m_data[ i_index ] = i_value;
 }
 //------------------------------------------------------------------------------
-inline Vector operator * ( float leftHand, const Vector& rightHand )
+inline Vector operator * ( float i_leftHand, const Vector& i_rightHand )
 {
-    return rightHand * leftHand;
+    return i_rightHand * i_leftHand;
 }
 //------------------------------------------------------------------------------
 std::ostream& operator <<  ( std::ostream & i_output, const Vector&  i_VecToPrint )
 {
-    return i_output << " vector [ "<< i_VecToPrint.m_x<< " , "<< i_VecToPrint.m_y<<" , "<< i_VecToPrint.m_z<<" ] ";
+    return i_output << " vector [ "<< i_VecToPrint.m_x<< " , "<< i_VecToPrint.m_y<<" , "<< i_VecToPrint.m_z<<" , "<< i_VecToPrint.m_w<<" ] ";
 }
 }//end of namespace

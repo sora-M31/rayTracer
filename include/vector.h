@@ -20,7 +20,7 @@ public:
     /// \param _x x component
     /// \param _y y component
     /// \param _z z component
-    Vector(float _x, float _y, float _z);
+    Vector(float i_x, float i_y, float i_z, float i_w);
     // --------------------------------------------------------------------------
     /// \brief Copy constructor
     /// \param _other Vector to copy from
@@ -92,49 +92,24 @@ public:
     /// \param _other othereter vector
     /// \return Real if equal, false if not.
     bool operator == (const Vector& _other) const;
-    // --------------------------------------------------------------------------
-    /// \brief Accestor, get x component value
-    /// \return Value of m_x
     float GetX() const;
-    // --------------------------------------------------------------------------
-    /// \brief Accestor, get y component value
-    /// \return Value of m_y
     float GetY() const;
-    // --------------------------------------------------------------------------
-    /// \brief Accestor, get z component value
-    /// \return Value of m_z
     float GetZ() const;
-    // --------------------------------------------------------------------------
-    /// \brief Set value of x to passed in value
-    /// \param _x Value to be set
+    float GetW() const;
     void SetX(float _x);
-    // --------------------------------------------------------------------------
-    /// \brief Set value of y to passed in value
-    /// \param _y Value to be set
     void SetY(float _y);
-    // --------------------------------------------------------------------------
-    /// \brief Set value of z to passed in value
-    /// \param _z Value to be set
     void SetZ(float _z);
-    // --------------------------------------------------------------------------
-    /// \brief Get the value of the name with the index given
-    /// \param 
-    /// \param i_value
-    /// \return 
-    float GetValue ( uint32_t i_index );
-    // --------------------------------------------------------------------------
-    /// \brief set the no index to value given
-    /// \param i_index
-    /// \param i_value
+    float GetValue ( uint32_t i_index ) const;
     void SetValue ( uint32_t i_index, float i_value );
 private:
     union
     {
-        float m_data[3];
+        float m_data[4];
         struct{
                 float m_x;
                 float m_y;
                 float m_z;
+                float m_w;
               };
     };
 };//end of class
