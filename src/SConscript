@@ -5,6 +5,6 @@ env = global_env.Clone()
 env.AppendUnique( CPPPATH = ['#include'] )
 env.Append ( CCFLAGS = '-g -Wall' )
 
-src_files = Split( 'util.cpp vector.cpp matrix.cpp main.cpp')
+src_files = Split( 'util.cpp vector.cpp matrix.cpp color.cpp main.cpp')
 
 env.Program( '#bin/rayTracer', src_files )
