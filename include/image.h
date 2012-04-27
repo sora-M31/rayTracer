@@ -12,10 +12,10 @@ public:
     Image ( uint32_t i_width, uint32_t i_height);
     ~Image ();
     bool WriteTga ( char* i_fileName );
-    //set
-    Color& operator () ( uint32_t i_x, uint32_t i_y);
     ///access
-    const Color& operator () ( uint32_t i_x, uint32_t i_y) const;
+    const Color& Get ( uint32_t i_x, uint32_t i_y) const;
+    //set
+    void Set ( uint32_t i_x, uint32_t i_y, const Color& i_value);
 private:
     Image();
     uint32_t m_width;

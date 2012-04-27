@@ -50,13 +50,13 @@ bool Image::WriteTga ( char* _fileName )
     return true;
 }
 //------------------------------------------------------------------------------
-Color& Image::operator () ( uint32_t i_x, uint32_t i_y)
+const Color& Image::Get ( uint32_t i_x, uint32_t i_y) const
 {
     return m_pixels [ m_width * i_y + i_x ];
 }
 //------------------------------------------------------------------------------
-const Color& Image::operator () ( uint32_t i_x, uint32_t i_y) const
+void Image::Set ( uint32_t i_x, uint32_t i_y, const Color& i_value)
 {
-    return m_pixels [ m_width * i_y + i_x ];
+    m_pixels [ m_width * i_y + i_x ] = i_value;
 }
 }//end of namespace
