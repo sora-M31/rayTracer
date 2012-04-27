@@ -17,6 +17,10 @@ public:
     Color& operator +=  ( const Color& i_other );
     Color& operator *=  ( float i_other );
     Color& operator /=  ( float i_other );
+    float r() const;
+    float g() const;
+    float b() const;
+    float a() const;
     void PrintColor();
 private:
     union

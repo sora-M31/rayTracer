@@ -118,16 +118,17 @@ Matrix Matrix::operator * ( const Matrix& i_other ) const
     return mat;
 }
 //------------------------------------------------------------------------------
-inline float Matrix::operator [] ( uint32_t i_id ) const
+inline float Matrix::operator () ( uint32_t i_x, uint32_t i_y ) const
 {
-    assert ( i_id < 16 );
-    return m_mat[ i_id ];
+    assert ( i_x < 4 && i_y < 4 );
+    //(x+1)*4 +y -1
+    return m_mat[ 4 * i_x + i_y + 3 ];
 }
 //------------------------------------------------------------------------------
-inline void Matrix::Set ( uint32_t i_id, float i_value )
+inline float& Matrix::operator () ( uint32_t i_x, uint32_t i_y )
 {
-    assert ( i_id < 16 );
-    m_mat[ i_id ] = i_value;
+    assert ( i_x < 4 && i_y < 4 );
+    return m_mat[ 4 * i_x + i_y + 3 ];
 }
 //------------------------------------------------------------------------------
 void Matrix::PrintMatrix ()

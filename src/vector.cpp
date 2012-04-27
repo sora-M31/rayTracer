@@ -167,13 +167,13 @@ void Vector::SetZ ( float i_z )
 //------------------------------------------------------------------------------
 float Vector::GetValue ( uint32_t i_index ) const
 {
-    assert( i_index >= 0 && i_index < 4 );
+    assert ( i_index < 4 );
     return m_data[ i_index ];
 }
 //------------------------------------------------------------------------------
 void Vector::SetValue ( uint32_t i_index, float i_value )
 {
-    assert( i_index >= 0 && i_index < 4 );
+    assert ( i_index < 4 );
     m_data[ i_index ] = i_value;
 }
 //------------------------------------------------------------------------------

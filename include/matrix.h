@@ -40,8 +40,8 @@ public:
     /// \other i_other
     /// \return 
     Matrix& operator = ( const Matrix& i_other );
-    float operator[] ( uint32_t i_id) const;
-    void Set(uint32_t i_id, float i_value);
+    float operator () ( uint32_t i_x, uint32_t i_y ) const;
+    float& operator () ( uint32_t i_x, uint32_t i_y );
     void PrintMatrix();
 private:
     // --------------------------------------------------------------------------
