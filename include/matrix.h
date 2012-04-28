@@ -1,7 +1,7 @@
 #ifndef _MATRIX_H_
 #define _MATRIX_H_
 #include <string.h>
-#include <vector.h>
+#include "vector.h"
 
 namespace rayTracer
 {
@@ -10,26 +10,24 @@ class Matrix
 public:
     // --------------------------------------------------------------------------
     /// \brief Constructor
-    Matrix();
+    Matrix ();
     // --------------------------------------------------------------------------
-    Matrix( float i_00, float i_10, float i_20, float i_30,
-            float i_01, float i_11, float i_21, float i_31,
-            float i_02, float i_12, float i_22, float i_32,
-            float i_03, float i_13, float i_23, float i_33);
+    Matrix ( Vector i_row1, Vector i_row2, Vector i_row3, Vector i_row4 );
     // --------------------------------------------------------------------------
     /// \brief Destructor
-    ~Matrix();
+    ~Matrix ();
     // --------------------------------------------------------------------------
     /// \brief Set matrix to identity matrix
-    void AsIdentity();
-    float Determinant() const;
-    Matrix Transpose() const;
-    Matrix Inverse() const;
+    void AsIdentity ();
+    float Determinant () const;
+    Matrix Transpose () const;
+    Matrix Inverse () const;
     // --------------------------------------------------------------------------
     /// \brief operator * overload, get cross product of two matrix
     /// \other i_other othereter matrix
     /// \return result matrixc
     Matrix operator * ( const Matrix& i_other ) const;
+    Matrix operator * ( float i_other ) const;
     // --------------------------------------------------------------------------
     /// \brief Operator * overload, get product of a matrix and a vector
     /// \other i_other othereter vector
@@ -40,12 +38,12 @@ public:
     /// \other i_other
     /// \return 
     Matrix& operator = ( const Matrix& i_other );
-    float operator () ( uint32_t i_x, uint32_t i_y ) const;
-    float& operator () ( uint32_t i_x, uint32_t i_y );
+    Vector operator [] ( uint32_t i_index ) const;
+    Vector& operator []  ( uint32_t i_index );
     void PrintMatrix();
 private:
     // --------------------------------------------------------------------------
-    /// \4*4 matrix members, array share same space with 16 floats for easy access
+    #if 0
     union
     {
         struct
@@ -55,8 +53,22 @@ private:
                    m02,m12,m22,m32,// m20,m21,m22,m23
                    m03,m13,m23,m33;// m30,m31,m32,m33
         };
-        float m_mat[16];
+        Vector m_mat[3];
     };
+#endif
+    Vector m_mat[3];
 };//end of class
+//------------------------------------------------------------------------------
+inline Vector Matrix::operator [] ( uint32_t i_index ) const
+{
+    assert ( i_index );
+    return m_mat[i_index];
+}
+//------------------------------------------------------------------------------
+inline Vector& Matrix::operator []  ( uint32_t i_index )
+{
+    assert ( i_index );
+    return m_mat[i_index];
+}
 }//end of namespace
 #endif //end of define

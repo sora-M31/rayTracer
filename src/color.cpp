@@ -87,25 +87,6 @@ Color& Color::operator /= ( float i_other )
     m_a /= i_other;
     return *this;
 }
-inline float Color::r() const
-{
-    return m_r;
-}
-//------------------------------------------------------------------------------
-inline float Color::g() const
-{
-    return m_g;
-}
-//------------------------------------------------------------------------------
-inline float Color::b() const
-{
-    return m_b;
-}
-//------------------------------------------------------------------------------
-inline float Color::a() const
-{
-    return m_a;
-}
 //------------------------------------------------------------------------------
 void Color::PrintColor()
 {

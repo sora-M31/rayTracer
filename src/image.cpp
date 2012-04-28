@@ -15,7 +15,7 @@ Image::Image ( uint32_t i_width, uint32_t i_height)
 Image::~Image ()
 {}
 //------------------------------------------------------------------------------
-bool Image::WriteTga ( char* _fileName )
+bool Image::WriteTga ( const char* _fileName )
 {
     std::ofstream tgaImage ( _fileName, std::ios_base::binary );
 

@@ -17,10 +17,10 @@ public:
     Color& operator +=  ( const Color& i_other );
     Color& operator *=  ( float i_other );
     Color& operator /=  ( float i_other );
-    float r() const;
-    float g() const;
-    float b() const;
-    float a() const;
+    inline float r() const { return m_r; }
+    inline float g() const { return m_g; }
+    inline float b() const { return m_b; }
+    inline float a() const { return m_a; }
     void PrintColor();
 private:
     union

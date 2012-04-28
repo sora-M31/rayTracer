@@ -11,7 +11,7 @@ class Image
 public:
     Image ( uint32_t i_width, uint32_t i_height);
     ~Image ();
-    bool WriteTga ( char* i_fileName );
+    bool WriteTga ( const char* i_fileName );
     ///access
     const Color& Get ( uint32_t i_x, uint32_t i_y) const;
     //set
