@@ -3,7 +3,7 @@
 #include "matrix.h"
 #include "color.h"
 #include "image.h"
-//#include "ray.h"
+#include "ray.h"
 
 int main()
 {
