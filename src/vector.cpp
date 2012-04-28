@@ -87,6 +87,11 @@ Vector operator * ( float _leftHand, const Vector& _rightHand )
     return _rightHand * _leftHand;
 }
 //------------------------------------------------------------------------------
+void Normalise ( Vector& io_vector )
+{
+    io_vector = io_vector.Normalise();
+}
+//------------------------------------------------------------------------------
 std::ostream& operator <<  ( std::ostream & _output, const Vector&  _VecToPrint )
 {
     return _output << _VecToPrint.m_data[0]<< " "<< _VecToPrint.m_data[1]<<" "<< _VecToPrint.m_data[2]<<" "<< _VecToPrint.m_data[3];

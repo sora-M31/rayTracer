@@ -11,6 +11,9 @@ namespace rayTracer
 class Vector
 {
 friend std::ostream& operator <<  ( std::ostream & _output, const Vector&  _VecToPrint );
+friend Vector operator * ( float _leftHand, const Vector& _rightHand );
+friend void Normalise ( Vector& io_vector );
+
 public:
     Vector();
     ~Vector();

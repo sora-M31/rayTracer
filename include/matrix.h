@@ -8,9 +8,11 @@ namespace rayTracer
 class Matrix
 {
 public:
-    // --------------------------------------------------------------------------
-    /// \brief Constructor
     Matrix ();
+    Matrix ( float _00, float _01, float _02, float _03,
+             float _10, float _11, float _12, float _13,
+             float _20, float _21, float _22, float _23,
+             float _30, float _31, float _32, float _33 );
     // --------------------------------------------------------------------------
     Matrix ( Vector _row1, Vector _row2, Vector _row3, Vector _row4 );
     // --------------------------------------------------------------------------
@@ -56,18 +58,18 @@ private:
         Vector m_mat[3];
     };
 #endif
-    Vector m_mat[3];
+    Vector m_mat[4];
 };//end of class
 //------------------------------------------------------------------------------
 inline Vector Matrix::operator [] ( uint32_t _index ) const
 {
-    assert ( _index );
+    assert ( _index < 4 );
     return m_mat[_index];
 }
 //------------------------------------------------------------------------------
 inline Vector& Matrix::operator []  ( uint32_t _index )
 {
-    assert ( _index );
+    assert ( _index < 4 );
     return m_mat[_index];
 }
 }//end of namespace
