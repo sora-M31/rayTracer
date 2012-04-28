@@ -12,83 +12,83 @@ Vector::~Vector ()
 {
 }
 //------------------------------------------------------------------------------
-Vector::Vector ( float i_x, float i_y, float i_z, float i_w)
-:m_x ( i_x ),
- m_y ( i_y ),
- m_z ( i_z ),
- m_w ( i_w )
+Vector::Vector ( float _x, float _y, float _z, float _w)
 {
+     m_data[0] = _x;
+     m_data[1] = _y;
+     m_data[2] = _z;
+     m_data[3] = _w;
 }
 //------------------------------------------------------------------------------
-Vector::Vector ( const Vector& i_other )
-: m_x ( i_other.m_x ),
-  m_y ( i_other.m_y ),
-  m_z ( i_other.m_z ),
-  m_w ( i_other.m_w )
+Vector::Vector ( const Vector& _other )
 {
+    m_data[0] = _other.m_data[0];
+    m_data[1] = _other.m_data[1];
+    m_data[2] = _other.m_data[2];
+    m_data[3] = _other.m_data[3];
 }
 //------------------------------------------------------------------------------
 Vector Vector::Normalise () const
 {
     float length = Length ();
     assert ( length != 0 );
-    return Vector ( m_x / length, m_y / length, m_z / length, m_w/ length );
+    return Vector ( m_data[0] / length, m_data[1] / length, m_data[2] / length, m_data[3] / length );
 }
 //------------------------------------------------------------------------------
-Vector& Vector::operator =  ( const Vector& i_other )
+Vector& Vector::operator =  ( const Vector& _other )
 {
-    m_x = i_other.m_x;
-    m_y = i_other.m_y;
-    m_z = i_other.m_z;
-    m_w = i_other.m_w;
+    m_data[0] = _other.m_data[0];
+    m_data[1] = _other.m_data[1];
+    m_data[2] = _other.m_data[2];
+    m_data[3] = _other.m_data[3];
     return *this;
 }
 ///------------------------------------------------------------------------------
-Vector& Vector::operator +=  ( const Vector& i_other )
+Vector& Vector::operator +=  ( const Vector& _other )
 {
-    m_x += i_other.m_x;
-    m_y += i_other.m_y;
-    m_z += i_other.m_z;
-    m_w += i_other.m_w;
+    m_data[0] += _other.m_data[0];
+    m_data[1] += _other.m_data[1];
+    m_data[2] += _other.m_data[2];
+    m_data[3] += _other.m_data[3];
     return *this;
 }
 //------------------------------------------------------------------------------
-Vector& Vector::operator -=  ( const Vector& i_other )
+Vector& Vector::operator -=  ( const Vector& _other )
 {
-    m_x -= i_other.m_x;
-    m_y -= i_other.m_y;
-    m_z -= i_other.m_z;
-    m_w -= i_other.m_w;
+    m_data[0] -= _other.m_data[0];
+    m_data[1] -= _other.m_data[1];
+    m_data[2] -= _other.m_data[2];
+    m_data[3] -= _other.m_data[3];
     return *this;
 }
 //------------------------------------------------------------------------------
-Vector& Vector::operator /=  ( float i_other )
+Vector& Vector::operator /=  ( float _other )
 {
-    assert ( i_other != 0 );
-    m_x /= i_other;
-    m_y /= i_other;
-    m_z /= i_other;
-    m_w /= i_other;
+    assert ( _other != 0 );
+    m_data[0] /= _other;
+    m_data[1] /= _other;
+    m_data[2] /= _other;
+    m_data[3] /= _other;
     return *this;
 }
 //------------------------------------------------------------------------------
-bool Vector::operator ==  ( const Vector& i_other ) const
+bool Vector::operator ==  ( const Vector& _other ) const
 {
-    if  ( RealEqual ( m_x, i_other.m_x )
-         && RealEqual ( m_y, i_other.m_y )
-         && RealEqual ( m_z, i_other.m_z )
-         && RealEqual ( m_w, i_other.m_w ) )
+    if  ( RealEqual ( m_data[0], _other.m_data[0] )
+         && RealEqual ( m_data[1], _other.m_data[1] )
+         && RealEqual ( m_data[2], _other.m_data[2] )
+         && RealEqual ( m_data[3], _other.m_data[3] ) )
         return true;
     else return false;
 }
 //------------------------------------------------------------------------------
-Vector operator * ( float i_leftHand, const Vector& i_rightHand )
+Vector operator * ( float _leftHand, const Vector& _rightHand )
 {
-    return i_rightHand * i_leftHand;
+    return _rightHand * _leftHand;
 }
 //------------------------------------------------------------------------------
-std::ostream& operator <<  ( std::ostream & i_output, const Vector&  i_VecToPrint )
+std::ostream& operator <<  ( std::ostream & _output, const Vector&  _VecToPrint )
 {
-    return i_output << i_VecToPrint.m_x<< " "<< i_VecToPrint.m_y<<" "<< i_VecToPrint.m_z<<" "<< i_VecToPrint.m_w;
+    return _output << _VecToPrint.m_data[0]<< " "<< _VecToPrint.m_data[1]<<" "<< _VecToPrint.m_data[2]<<" "<< _VecToPrint.m_data[3];
 }
 }//end of namespace

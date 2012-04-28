@@ -12,7 +12,7 @@ public:
     /// \brief Constructor
     Matrix ();
     // --------------------------------------------------------------------------
-    Matrix ( Vector i_row1, Vector i_row2, Vector i_row3, Vector i_row4 );
+    Matrix ( Vector _row1, Vector _row2, Vector _row3, Vector _row4 );
     // --------------------------------------------------------------------------
     /// \brief Destructor
     ~Matrix ();
@@ -24,22 +24,22 @@ public:
     Matrix Inverse () const;
     // --------------------------------------------------------------------------
     /// \brief operator * overload, get cross product of two matrix
-    /// \other i_other othereter matrix
+    /// \other _other othereter matrix
     /// \return result matrixc
-    Matrix operator * ( const Matrix& i_other ) const;
-    Matrix operator * ( float i_other ) const;
+    Matrix operator * ( const Matrix& _other ) const;
+    Matrix operator * ( float _other ) const;
     // --------------------------------------------------------------------------
     /// \brief Operator * overload, get product of a matrix and a vector
-    /// \other i_other othereter vector
+    /// \other _other othereter vector
     /// \return result vector
-    Vector operator * ( const Vector& i_other ) const;
+    Vector operator * ( const Vector& _other ) const;
     // --------------------------------------------------------------------------
     /// \brief Operator = overload, set othereter matrix value to this matrix
-    /// \other i_other
+    /// \other _other
     /// \return 
-    Matrix& operator = ( const Matrix& i_other );
-    Vector operator [] ( uint32_t i_index ) const;
-    Vector& operator []  ( uint32_t i_index );
+    Matrix& operator = ( const Matrix& _other );
+    Vector operator [] ( uint32_t _index ) const;
+    Vector& operator []  ( uint32_t _index );
     void PrintMatrix();
 private:
     // --------------------------------------------------------------------------
@@ -59,16 +59,16 @@ private:
     Vector m_mat[3];
 };//end of class
 //------------------------------------------------------------------------------
-inline Vector Matrix::operator [] ( uint32_t i_index ) const
+inline Vector Matrix::operator [] ( uint32_t _index ) const
 {
-    assert ( i_index );
-    return m_mat[i_index];
+    assert ( _index );
+    return m_mat[_index];
 }
 //------------------------------------------------------------------------------
-inline Vector& Matrix::operator []  ( uint32_t i_index )
+inline Vector& Matrix::operator []  ( uint32_t _index )
 {
-    assert ( i_index );
-    return m_mat[i_index];
+    assert ( _index );
+    return m_mat[_index];
 }
 }//end of namespace
 #endif //end of define

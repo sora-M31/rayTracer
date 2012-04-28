@@ -8,32 +8,27 @@ class Color
 public:
     Color ();
     ~Color ();
-    Color ( float i_r, float i_g, float i_b, float i_a );
-    Color ( const Color& i_other );
-    Color operator +  ( const Color& i_other );
-    Color operator *  ( float i_other );
-    Color operator /  ( float i_other );
-    Color& operator =  ( const Color& i_other );
-    Color& operator +=  ( const Color& i_other );
-    Color& operator *=  ( float i_other );
-    Color& operator /=  ( float i_other );
-    inline float r() const { return m_r; }
-    inline float g() const { return m_g; }
-    inline float b() const { return m_b; }
-    inline float a() const { return m_a; }
+    Color ( float _r, float _g, float _b, float _a );
+    Color ( const Color& _other );
+    Color operator +  ( const Color& _other );
+    Color operator *  ( float _other );
+    Color operator /  ( float _other );
+    Color& operator =  ( const Color& _other );
+    Color& operator +=  ( const Color& _other );
+    Color& operator *=  ( float _other );
+    Color& operator /=  ( float _other );
+    inline const float& r() const { return m_data[0]; }
+    inline float& r() { return m_data[0]; }
+    inline const float& g() const { return m_data[1]; }
+    inline float& g() { return m_data[1]; }
+    inline const float& b() const { return m_data[2]; }
+    inline float& b() { return m_data[2]; }
+    inline const float& a() const { return m_data[3]; }
+    inline float& a() { return m_data[3]; }
     void PrintColor();
+
 private:
-    union
-    {
-        struct
-        {
-            float m_r;
-            float m_g;
-            float m_b;
-            float m_a;
-        };
-        float m_data[ 4 ];
-    };
+    float m_data[ 4 ];
 };//end of class
 }//end of namespace
 #endif //end of define

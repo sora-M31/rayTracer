@@ -6,10 +6,10 @@ namespace rayTracer
 Image::Image ()
 {}
 //------------------------------------------------------------------------------
-Image::Image ( uint32_t i_width, uint32_t i_height)
-: m_width ( i_width ),
-  m_height( i_height),
-  m_pixels( i_width * i_height )
+Image::Image ( uint32_t _width, uint32_t _height)
+: m_width ( _width ),
+  m_height( _height),
+  m_pixels( _width * _height )
 {}
 //------------------------------------------------------------------------------
 Image::~Image ()
@@ -41,22 +41,22 @@ bool Image::WriteTga ( const char* _fileName )
     uint32_t pixelSize = m_pixels.size();
     for( uint32_t i = 0; i< pixelSize; ++i)
     {
-        tgaImage.put ( (unsigned char) ( m_pixels[i].m_b * 255.0) );
-        tgaImage.put ( (unsigned char) ( m_pixels[i].m_g * 255.0) );
-        tgaImage.put ( (unsigned char) ( m_pixels[i].m_r * 255.0) );
-        tgaImage.put ( (unsigned char) ( m_pixels[i].m_a * 255.0) );
+        tgaImage.put ( (unsigned char) ( m_pixels[i].b() * 255.0) );
+        tgaImage.put ( (unsigned char) ( m_pixels[i].g() * 255.0) );
+        tgaImage.put ( (unsigned char) ( m_pixels[i].r() * 255.0) );
+        tgaImage.put ( (unsigned char) ( m_pixels[i].a() * 255.0) );
     }
     tgaImage.close();
     return true;
 }
 //------------------------------------------------------------------------------
-const Color& Image::Get ( uint32_t i_x, uint32_t i_y) const
+const Color& Image::Get ( uint32_t _x, uint32_t _y) const
 {
-    return m_pixels [ m_width * i_y + i_x ];
+    return m_pixels [ m_width * _y + _x ];
 }
 //------------------------------------------------------------------------------
-void Image::Set ( uint32_t i_x, uint32_t i_y, const Color& i_value)
+void Image::Set ( uint32_t _x, uint32_t _y, const Color& _value)
 {
-    m_pixels [ m_width * i_y + i_x ] = i_value;
+    m_pixels [ m_width * _y + _x ] = _value;
 }
 }//end of namespace

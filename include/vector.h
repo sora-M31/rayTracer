@@ -10,126 +10,67 @@ namespace rayTracer
 {
 class Vector
 {
-friend std::ostream& operator <<  ( std::ostream & i_output, const Vector&  i_VecToPrint );
+friend std::ostream& operator <<  ( std::ostream & _output, const Vector&  _VecToPrint );
 public:
-    // --------------------------------------------------------------------------
-    /// \brief Default constructor
     Vector();
-    // --------------------------------------------------------------------------
-    /// \brief Default destructor
     ~Vector();
-    // --------------------------------------------------------------------------
-    /// \brief Constuctor
-    /// \param _x x component
-    /// \param _y y component
-    /// \param _z z component
-    Vector(float i_x, float i_y, float i_z, float i_w);
-    // --------------------------------------------------------------------------
-    /// \brief Copy constructor
-    /// \param i_other Vector to copy from
-    Vector(const Vector& i_other);
+    Vector(float _x, float _y, float _z, float _w);
+    Vector(const Vector& _other);
     // --------------------------------------------------------------------------
     /// \brief Get a new normalised vector
     /// \return Normalised vector
     Vector Normalise() const;
+    float Dot(const Vector& _other) const;
     // --------------------------------------------------------------------------
-    /// \brief Get dot product
-    /// \param i_other The othereter vector
-    /// \return Dot product
-    float Dot(const Vector& i_other) const;
-    // --------------------------------------------------------------------------
-    /// \brief For matrix
-    /// \param i_other
+    /// \brief 4D dot product
+    /// \param _other
     /// \return 
-    float Dot4(const Vector& i_other) const;
-    // --------------------------------------------------------------------------
-    /// \brief Get cross product
-    /// \param i_other
-    /// \return Cross product
-    Vector Cross(const Vector& i_other) const;
-    // --------------------------------------------------------------------------
-    /// \brief Length of this vector
-    /// \return The length
+    float Dot4(const Vector& _other) const;
+    Vector Cross(const Vector& _other) const;
     float Length() const;
-    // --------------------------------------------------------------------------
-    /// \brief Operator + overload
-    /// \param i_other Parameter Vector
-    /// \return Result vector
-    Vector operator + (const Vector& i_other) const;
-    // --------------------------------------------------------------------------
-    /// \brief Operator - overload
-    /// \param i_other othereter vector
-    /// \return Result vector
-    Vector operator - (const Vector& i_other) const;
-    // --------------------------------------------------------------------------
-    /// \brief - overload, get negative value of this vector
-    /// \return 
+    Vector operator + (const Vector& _other) const;
+    Vector operator - (const Vector& _other) const;
     Vector operator - () const;
-    // --------------------------------------------------------------------------
-    /// \brief Operator * overload, product of the vector and a float number
-    /// \param i_other othereter vector
-    /// \return Product
-    Vector operator * ( float i_other) const;
-    // --------------------------------------------------------------------------
-    /// \brief Operator / overload, divide vector by a float number
-    /// \param i_other othereter number
-    /// \return Result vector
-    Vector operator / ( float i_other) const;
-    // --------------------------------------------------------------------------
-    /// \brief Operator = overload
-    /// \param i_other Parameter vector
-    /// \return This vector 
-    Vector& operator = (const Vector& i_other);
-    // --------------------------------------------------------------------------
-    /// \brief Operator += overload, assign the value of the sum of the othereter vector and this vector to this vector
-    /// \param i_other othereter vector
-    /// \return This vector
-    Vector& operator += (const Vector& i_other);
-    // --------------------------------------------------------------------------
-    /// \brief Operator -= overload, assign cha of othereter vector and this vector to this vector
-    /// \param i_other othereter vector
-    /// \return this vector
-    Vector& operator -= (const Vector& i_other);
-    // --------------------------------------------------------------------------
-    /// \brief Operator /= overload, assign divison of othereter by this vector to this vector 
-    /// \param i_other othereter 
-    /// \return this vector
-    Vector& operator /= ( float i_other);
+    Vector operator * ( float _other) const;
+    Vector operator / ( float _other) const;
+    Vector& operator = (const Vector& _other);
+    Vector& operator += (const Vector& _other);
+    Vector& operator -= (const Vector& _other);
+    Vector& operator /= ( float _other);
     // --------------------------------------------------------------------------
     /// \brief Operator == overload to get rid of floating point unprecisioness, Compare whether two vector are equal
-    /// \param i_other othereter vector
+    /// \param _other othereter vector
     /// \return Real if equal, false if not.
-    bool operator == (const Vector& i_other) const;
-    float& operator [] ( uint32_t i_index);
-    const float& operator [] ( uint32_t i_index) const;
+    bool operator == (const Vector& _other) const;
+    float& operator [] ( uint32_t _index);
+    const float& operator [] ( uint32_t _index) const;
+    inline float& x() { return m_data[0]; }
+    inline float& y() { return m_data[1]; }
+    inline float& z() { return m_data[2]; }
+    inline float& w() { return m_data[3]; }
+    inline const float& x() const { return m_data[0]; }
+    inline const float& y() const { return m_data[1]; }
+    inline const float& z() const { return m_data[2]; }
+    inline const float& w() const { return m_data[3]; }
 private:
-    union
-    {
-        float m_data[4];
-        struct{
-                float m_x;
-                float m_y;
-                float m_z;
-                float m_w;
-              };
-    };
+    float m_data[4];
 };//end of class
 //------------------------------------------------------------------------------
-inline float Vector::Dot ( const Vector& i_other ) const
+inline float Vector::Dot ( const Vector& _other ) const
 {
-    return   ( m_x * i_other.m_x + m_y * i_other.m_y + m_z * i_other.m_z );
+    return   ( m_data[0] * _other.m_data[0] + m_data[1] * _other.m_data[1] + m_data[2] * _other.m_data[2] );
 }
 //------------------------------------------------------------------------------
-inline float Vector::Dot4 ( const Vector& i_other ) const
+inline float Vector::Dot4 ( const Vector& _other ) const
 {
-    return   ( m_x * i_other.m_x + m_y * i_other.m_y + m_z * i_other.m_z + m_w * i_other.m_w );
+    return   ( m_data[0] * _other.m_data[0] + m_data[1] * _other.m_data[1] + m_data[2] * _other.m_data[2] + m_data[3] * _other.m_data[3] );
 }
 //------------------------------------------------------------------------------
-inline Vector Vector::Cross ( const Vector& i_other ) const
+inline Vector Vector::Cross ( const Vector& _other ) const
 {
-    return Vector ( m_y * i_other.m_z - m_z * i_other.m_y,
-                    m_z * i_other.m_x - m_x * i_other.m_z,
-                    m_x * i_other.m_y - m_y * i_other.m_x,
+    return Vector ( m_data[1] * _other.m_data[2] - m_data[2] * _other.m_data[1],
+                    m_data[2] * _other.m_data[0] - m_data[0] * _other.m_data[2],
+                    m_data[0] * _other.m_data[1] - m_data[1] * _other.m_data[0],
                     0.0f );
 }
 //------------------------------------------------------------------------------
@@ -140,42 +81,42 @@ inline float Vector::Length () const
     return sqrt ( lenSqr );
 }
 //------------------------------------------------------------------------------
-inline Vector Vector::operator +  ( const Vector& i_other ) const
+inline Vector Vector::operator +  ( const Vector& _other ) const
 {
-    return Vector ( m_x + i_other.m_x, m_y + i_other.m_y, m_z + i_other.m_z, m_w + i_other.m_w );
+    return Vector ( m_data[0] + _other.m_data[0], m_data[1] + _other.m_data[1], m_data[2] + _other.m_data[2], m_data[3] + _other.m_data[3] );
 }
 //------------------------------------------------------------------------------
-inline Vector Vector::operator *  ( float i_other ) const
+inline Vector Vector::operator *  ( float _other ) const
 {
-    return Vector ( m_x *  i_other, m_y *  i_other, m_z *  i_other, m_w * i_other );
+    return Vector ( m_data[0] *  _other, m_data[1] *  _other, m_data[2] *  _other, m_data[3] * _other );
 }
 //------------------------------------------------------------------------------
-inline Vector Vector::operator /  ( float i_other ) const
+inline Vector Vector::operator /  ( float _other ) const
 {
-    assert ( i_other!=0 );
-    return Vector ( m_x / i_other, m_y / i_other, m_z / i_other, m_z / i_other );
+    assert ( _other!=0 );
+    return Vector ( m_data[0] / _other, m_data[1] / _other, m_data[2] / _other, m_data[2] / _other );
 }
 //------------------------------------------------------------------------------
-inline Vector Vector::operator -  ( const Vector& i_other ) const
+inline Vector Vector::operator -  ( const Vector& _other ) const
 {
-    return Vector ( m_x - i_other.m_x, m_y - i_other.m_y, m_z - i_other.m_z, m_w - i_other.m_w );
+    return Vector ( m_data[0] - _other.m_data[0], m_data[1] - _other.m_data[1], m_data[2] - _other.m_data[2], m_data[3] - _other.m_data[3] );
 }
 //------------------------------------------------------------------------------
 inline Vector Vector::operator -  () const
 {
-    return Vector ( - m_x, -m_y, -m_z, m_w );
+    return Vector ( - m_data[0], -m_data[1], -m_data[2], m_data[3] );
 }
 //------------------------------------------------------------------------------
-inline float& Vector::operator [] ( uint32_t i_index)
+inline float& Vector::operator [] ( uint32_t _index)
 {
-    assert ( i_index < 4 );
-    return m_data[ i_index ];
+    assert ( _index < 4 );
+    return m_data[_index];
 }
 //------------------------------------------------------------------------------
-inline const float& Vector::operator [] ( uint32_t i_index) const
+inline const float& Vector::operator [] ( uint32_t _index) const
 {
-    assert ( i_index < 4 );
-    return m_data[ i_index ];
+    assert ( _index < 4 );
+    return m_data[_index];
 }
 }//end of namespace
 #endif //end of define

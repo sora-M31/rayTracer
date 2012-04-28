@@ -12,84 +12,84 @@ Color::Color ()
 Color::~Color ()
 {}
 //------------------------------------------------------------------------------
-Color::Color ( const Color& i_other )
-:m_r ( i_other.m_r ),
- m_g ( i_other.m_g ),
- m_b ( i_other.m_b ),
- m_a ( i_other.m_a )
+Color::Color ( const Color& _other )
 {
+    m_data[0] = _other.m_data[0];
+    m_data[1] = _other.m_data[1];
+    m_data[2] = _other.m_data[2];
+    m_data[3] = _other.m_data[3];
 }
 //------------------------------------------------------------------------------
-Color::Color ( float i_r,float i_g,float i_b, float i_a )
-:m_r ( i_r ),
- m_g ( i_g ),
- m_b ( i_b ),
- m_a ( i_a )
+Color::Color ( float _r,float _g,float _b, float _a )
 {
+    m_data[0] = _r;
+    m_data[1] = _g;
+    m_data[2] = _b;
+    m_data[3] = _a;
 }
 //------------------------------------------------------------------------------
-Color Color::operator + ( const Color& i_other )
+Color Color::operator + ( const Color& _other )
 {
-    return Color ( m_r + i_other.m_r,
-                   m_g + i_other.m_g,
-                   m_b + i_other.m_b,
-                   m_a + i_other.m_a );
+    return Color ( m_data[0] + _other.m_data[0],
+                   m_data[1] + _other.m_data[1],
+                   m_data[2] + _other.m_data[2],
+                   m_data[3] + _other.m_data[3] );
 }
 //------------------------------------------------------------------------------
-Color Color::operator * ( float i_other )
+Color Color::operator * ( float _other )
 {
-    return Color ( m_r * i_other,
-                   m_g * i_other,
-                   m_b * i_other,
-                   m_a * i_other );
+    return Color ( m_data[0] * _other,
+                   m_data[1] * _other,
+                   m_data[2] * _other,
+                   m_data[3] * _other );
 }
 //------------------------------------------------------------------------------
-Color Color::operator / ( float i_other )
+Color Color::operator / ( float _other )
 {
-    return Color ( m_r / i_other,
-                   m_g / i_other,
-                   m_b / i_other,
-                   m_a / i_other );
+    return Color ( m_data[0] / _other,
+                   m_data[1] / _other,
+                   m_data[2] / _other,
+                   m_data[3] / _other );
 }
 //------------------------------------------------------------------------------
-Color& Color::operator = ( const Color& i_other )
+Color& Color::operator = ( const Color& _other )
 {
-    m_r = i_other.m_r;
-    m_g = i_other.m_g;
-    m_b = i_other.m_b;
-    m_a = i_other.m_a;
+    m_data[0] = _other.m_data[0];
+    m_data[1] = _other.m_data[1];
+    m_data[2] = _other.m_data[2];
+    m_data[3] = _other.m_data[3];
     return *this;
 }
 //------------------------------------------------------------------------------
-Color& Color::operator += ( const Color& i_other )
+Color& Color::operator += ( const Color& _other )
 {
-    m_r += i_other.m_r;
-    m_g += i_other.m_g;
-    m_b += i_other.m_b;
-    m_a += i_other.m_a;
+    m_data[0] += _other.m_data[0];
+    m_data[1] += _other.m_data[1];
+    m_data[2] += _other.m_data[2];
+    m_data[3] += _other.m_data[3];
     return *this;
 }
 //------------------------------------------------------------------------------
-Color& Color::operator *= ( float i_other )
+Color& Color::operator *= ( float _other )
 {
-    m_r *= i_other;
-    m_g *= i_other;
-    m_b *= i_other;
-    m_a *= i_other;
+    m_data[0] *= _other;
+    m_data[1] *= _other;
+    m_data[2] *= _other;
+    m_data[3] *= _other;
     return *this;
 }
 //------------------------------------------------------------------------------
-Color& Color::operator /= ( float i_other )
+Color& Color::operator /= ( float _other )
 {
-    m_r /= i_other;
-    m_g /= i_other;
-    m_b /= i_other;
-    m_a /= i_other;
+    m_data[0] /= _other;
+    m_data[1] /= _other;
+    m_data[2] /= _other;
+    m_data[3] /= _other;
     return *this;
 }
 //------------------------------------------------------------------------------
 void Color::PrintColor()
 {
-    std::cout<< "Color " << m_r << " " << m_g << " " << m_b << " " << m_a << " \n";
+    std::cout<< "Color " << m_data[0] << " " << m_data[1] << " " << m_data[2] << " " << m_data[3] << " \n";
 }
 }//end of namespace

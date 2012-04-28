@@ -9,13 +9,13 @@ namespace rayTracer
 class Image
 {
 public:
-    Image ( uint32_t i_width, uint32_t i_height);
+    Image ( uint32_t _width, uint32_t _height);
     ~Image ();
-    bool WriteTga ( const char* i_fileName );
+    bool WriteTga ( const char* _fileName );
     ///access
-    const Color& Get ( uint32_t i_x, uint32_t i_y) const;
+    const Color& Get ( uint32_t _x, uint32_t _y) const;
     //set
-    void Set ( uint32_t i_x, uint32_t i_y, const Color& i_value);
+    void Set ( uint32_t _x, uint32_t _y, const Color& _value);
 private:
     Image();
     uint32_t m_width;
