@@ -72,16 +72,6 @@ Vector& Vector::operator /=  ( float _other )
     return *this;
 }
 //------------------------------------------------------------------------------
-bool Vector::operator ==  ( const Vector& _other ) const
-{
-    if  ( RealEqual ( m_data[0], _other.m_data[0] )
-         && RealEqual ( m_data[1], _other.m_data[1] )
-         && RealEqual ( m_data[2], _other.m_data[2] )
-         && RealEqual ( m_data[3], _other.m_data[3] ) )
-        return true;
-    else return false;
-}
-//------------------------------------------------------------------------------
 Vector operator * ( float _leftHand, const Vector& _rightHand )
 {
     return _rightHand * _leftHand;

@@ -5,6 +5,9 @@
 #include "image.h"
 #include "ray.h"
 #include "intersection.h"
+#include "light.h"
+#include "pointLight.h"
+#include "areaLight.h"
 
 int main()
 {

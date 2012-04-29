@@ -4,7 +4,6 @@
 #include <iostream>
 #include <assert.h>
 #include <math.h>
-#include "util.h"
 
 namespace rayTracer
 {
@@ -40,13 +39,9 @@ public:
     Vector& operator += (const Vector& _other);
     Vector& operator -= (const Vector& _other);
     Vector& operator /= ( float _other);
-    // --------------------------------------------------------------------------
-    /// \brief Operator == overload to get rid of floating point unprecisioness, Compare whether two vector are equal
-    /// \param _other othereter vector
-    /// \return Real if equal, false if not.
-    bool operator == (const Vector& _other) const;
     float& operator [] ( uint32_t _index);
     const float& operator [] ( uint32_t _index) const;
+
     float& x() { return m_data[0]; }
     float& y() { return m_data[1]; }
     float& z() { return m_data[2]; }
