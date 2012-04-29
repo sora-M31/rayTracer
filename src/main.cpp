@@ -8,6 +8,7 @@
 #include "light.h"
 #include "pointLight.h"
 #include "areaLight.h"
+#include "camera.h"
 
 int main()
 {
