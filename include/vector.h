@@ -47,14 +47,14 @@ public:
     bool operator == (const Vector& _other) const;
     float& operator [] ( uint32_t _index);
     const float& operator [] ( uint32_t _index) const;
-    inline float& x() { return m_data[0]; }
-    inline float& y() { return m_data[1]; }
-    inline float& z() { return m_data[2]; }
-    inline float& w() { return m_data[3]; }
-    inline const float& x() const { return m_data[0]; }
-    inline const float& y() const { return m_data[1]; }
-    inline const float& z() const { return m_data[2]; }
-    inline const float& w() const { return m_data[3]; }
+    float& x() { return m_data[0]; }
+    float& y() { return m_data[1]; }
+    float& z() { return m_data[2]; }
+    float& w() { return m_data[3]; }
+    const float& x() const { return m_data[0]; }
+    const float& y() const { return m_data[1]; }
+    const float& z() const { return m_data[2]; }
+    const float& w() const { return m_data[3]; }
 private:
     float m_data[4];
 };//end of class
