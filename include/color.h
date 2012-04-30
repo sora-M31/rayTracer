@@ -17,14 +17,14 @@ public:
     Color& operator +=  ( const Color& _other );
     Color& operator *=  ( float _other );
     Color& operator /=  ( float _other );
-    const float& r() const { return m_data[0]; }
     float& r() { return m_data[0]; }
-    const float& g() const { return m_data[1]; }
     float& g() { return m_data[1]; }
-    const float& b() const { return m_data[2]; }
-    float& b() { return m_data[2]; }
-    const float& a() const { return m_data[3]; }
     float& a() { return m_data[3]; }
+    float& b() { return m_data[2]; }
+    float r() const { return m_data[0]; }
+    float g() const { return m_data[1]; }
+    float b() const { return m_data[2]; }
+    float a() const { return m_data[3]; }
     void PrintColor();
 
 private:
