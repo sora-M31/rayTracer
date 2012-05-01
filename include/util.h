@@ -8,7 +8,6 @@
 namespace rayTracer
 {
 #define EPSILON 0.001
-void Tokenize ( const std::string& _str, std::list<std::string>& o_tokens,const std::string& _delimiters) ;
 // --------------------------------------------------------------------------
 /// \brief Sampling a rectangle
 /// \param centre

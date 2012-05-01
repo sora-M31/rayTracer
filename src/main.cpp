@@ -10,6 +10,8 @@
 #include "areaLight.h"
 #include "camera.h"
 #include "shape.h"
+#include "objLoader.h"
+#include "mesh.h"
 
 int main()
 {

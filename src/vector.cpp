@@ -35,6 +35,19 @@ Vector Vector::Normalise () const
     return Vector ( m_data[0] / length, m_data[1] / length, m_data[2] / length, m_data[3] / length );
 }
 //------------------------------------------------------------------------------
+uint8_t Vector::DominantAxis () const
+{
+    float absX = fabs ( m_data[0] );
+    if ( absX > fabs ( m_data[1] ) )
+        if ( absX > fabs ( m_data[2] ) )
+            return 0;
+        else return 2;
+    else
+        if ( fabs ( m_data[1] ) > fabs ( m_data[2] ) )
+            return 1;
+        else return 2;
+}
+//------------------------------------------------------------------------------
 Vector& Vector::operator =  ( const Vector& _other )
 {
     m_data[0] = _other.m_data[0];

@@ -30,6 +30,7 @@ public:
     float Dot4(const Vector& _other) const;
     Vector Cross(const Vector& _other) const;
     float Length() const;
+    uint8_t DominantAxis () const;
     Vector operator + (const Vector& _other) const;
     Vector operator - (const Vector& _other) const;
     Vector operator - () const;
