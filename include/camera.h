@@ -6,6 +6,7 @@ namespace rayTracer
 class Camera
 {
 public:
+    Camera();
     Camera ( const Matrix& _transform );
     ~Camera();
 

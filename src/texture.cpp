@@ -34,7 +34,7 @@ void Texture::MakeChecker()
 	}
 }
 //------------------------------------------------------------------------------
-const Color& Texture::GetColorBilinear( float _u, float _v)
+const Color& Texture::GetColorBilinear( float _u, float _v) const
 {
 	if( _u<0.0) _u = -_u;
 	if (_v<0.0) _v = -_v;

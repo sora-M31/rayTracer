@@ -10,9 +10,9 @@ public:
     ~Color ();
     Color ( float _r, float _g, float _b, float _a );
     Color ( const Color& _other );
-    Color operator +  ( const Color& _other );
-    Color operator *  ( float _other );
-    Color operator /  ( float _other );
+    Color operator +  ( const Color& _other ) const ;
+    Color operator *  ( float _other ) const ;
+    Color operator /  ( float _other ) const ;
     Color& operator =  ( const Color& _other );
     Color& operator +=  ( const Color& _other );
     Color& operator *=  ( float _other );

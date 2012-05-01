@@ -2,16 +2,20 @@
 #define _MATERIAL_H_
 
 #include "texture.h"
+#include "vector.h"
 
 namespace rayTracer
 {
+class Shape;
 class Material
 {
 public:
 	Material ();
-	Material ( float _reflective, float _refractive, float _index = 0, float _attenuation = 0.1 );
+	Material ( float _reflective, float _refractive, const Shape* _pShape = 0, float _index = 0, float _attenuation = 0.1 );
 	Material ( const Material& _material );
 	Material& operator = ( const Material& _other );
+
+	const Color& GetColor( const Vector& _position ) const;
 
 	float Index () const { return m_index; };
 	float Reflection () const { return m_reflection; }
@@ -25,6 +29,7 @@ private:
 	float m_reflection;
 	///\coefficient for refraction
 	float m_refraction;
+	const Shape* m_pShape;
 	float m_index;
 	///\coefficient for attenuation
 	float m_attenuation;

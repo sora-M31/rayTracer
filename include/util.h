@@ -7,7 +7,10 @@
 
 namespace rayTracer
 {
-#define EPSILON 0.001
+#define EPSILON 0.0001
+#define AIR_INDEX  1.00028f
+#define GLASS_INDEX 2.00f
+
 // --------------------------------------------------------------------------
 /// \brief Sampling a rectangle
 /// \param centre

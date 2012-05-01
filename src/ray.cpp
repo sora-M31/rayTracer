@@ -5,10 +5,10 @@ namespace rayTracer
 //------------------------------------------------------------------------
 Ray::Ray ( const Vector& _origin,
            const Vector& _direction,
-           const Shape* _pShape )
+           const Material* _pMaterial )
 : m_origin ( _origin ),
   m_direction ( _direction ),
-  m_pShape ( _pShape )
+  m_pMaterial ( _pMaterial )
 {
     Normalise ( m_direction );
 }
@@ -16,7 +16,7 @@ Ray::Ray ( const Vector& _origin,
 Ray::Ray ( const Ray& _otherRay )
 : m_origin ( _otherRay.m_origin ),
   m_direction ( _otherRay.m_direction ),
-  m_pShape ( _otherRay.m_pShape )
+  m_pMaterial ( _otherRay.m_pMaterial )
 {}
 //------------------------------------------------------------------------
 Vector Ray::GetPosition ( float _rayParameter ) const

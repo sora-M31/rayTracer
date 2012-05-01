@@ -11,7 +11,7 @@ public:
 	Texture ();
 	Texture ( uint32_t _height, uint32_t _width );
 	void MakeChecker ();
-	const Color& GetColorBilinear ( float _u, float _v );
+	const Color& GetColorBilinear ( float _u, float _v ) const;
 
 private:
 	uint32_t m_height;

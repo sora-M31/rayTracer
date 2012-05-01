@@ -2,6 +2,11 @@
 
 namespace rayTracer
 {
+Camera::Camera ()
+{
+    m_transform.AsIdentity();
+    m_worldToCamera.AsIdentity();
+}
 //------------------------------------------------------------------------------
 Camera::Camera ( const Matrix& _transform )
 : m_transform ( _transform )

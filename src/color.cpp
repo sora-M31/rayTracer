@@ -28,7 +28,7 @@ Color::Color ( float _r,float _g,float _b, float _a )
     m_data[3] = _a;
 }
 //------------------------------------------------------------------------------
-Color Color::operator + ( const Color& _other )
+Color Color::operator + ( const Color& _other ) const
 {
     return Color ( m_data[0] + _other.m_data[0],
                    m_data[1] + _other.m_data[1],
@@ -36,7 +36,7 @@ Color Color::operator + ( const Color& _other )
                    m_data[3] + _other.m_data[3] );
 }
 //------------------------------------------------------------------------------
-Color Color::operator * ( float _other )
+Color Color::operator * ( float _other ) const
 {
     return Color ( m_data[0] * _other,
                    m_data[1] * _other,
@@ -44,7 +44,7 @@ Color Color::operator * ( float _other )
                    m_data[3] * _other );
 }
 //------------------------------------------------------------------------------
-Color Color::operator / ( float _other )
+Color Color::operator / ( float _other ) const 
 {
     return Color ( m_data[0] / _other,
                    m_data[1] / _other,

@@ -100,7 +100,7 @@ bool Mesh::RayTriangle ( const Ray& _ray, const Vector& _v1, const Vector& _v2, 
 	{
 		return false;
 	}
-	o_intersection = Intersection ( intersectionPos, normal, rayParameter, this );
+	o_intersection = Intersection ( intersectionPos, normal, rayParameter, this -> m_pMaterial );
 	o_parameter = rayParameter;
 	return true;
 }

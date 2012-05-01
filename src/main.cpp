@@ -12,6 +12,8 @@
 #include "shape.h"
 #include "objLoader.h"
 #include "mesh.h"
+#include "scene.h"
+#include "rayTracer.h"
 
 int main()
 {
