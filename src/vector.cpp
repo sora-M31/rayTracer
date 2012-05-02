@@ -87,7 +87,7 @@ Vector& Vector::operator /=  ( float _other )
 //------------------------------------------------------------------------------
 Vector operator * ( float _leftHand, const Vector& _rightHand )
 {
-    return _rightHand * _leftHand;
+    return _leftHand * _rightHand;
 }
 //------------------------------------------------------------------------------
 void Normalise ( Vector& io_vector )

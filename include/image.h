@@ -16,6 +16,8 @@ public:
     const Color& Get ( uint32_t _x, uint32_t _y) const;
     //set
     void Set ( uint32_t _x, uint32_t _y, const Color& _value);
+    uint32_t Width() const { return m_width; }
+    uint32_t Height() const { return m_height; }
 private:
     Image();
     uint32_t m_width;

@@ -2,12 +2,14 @@
 #define _RAY_H_
 
 #include "vector.h"
+#include "matrix.h"
 
 namespace rayTracer
 {
 class Material;
 class Ray
 {
+friend Ray operator * ( const Matrix& _transform, const Ray& _ray );
 public:
 	Ray ( const Vector& _origin, const Vector& _direction, const Material* _pMaterial );
 	Ray ( const Ray& ray );

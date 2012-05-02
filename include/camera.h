@@ -12,6 +12,7 @@ public:
 
     Vector ToCameraSpace ( const Vector& _worldPosition );
     const Matrix& Transform() const { return m_transform; }
+    const Matrix& WorldTransform() const { return m_worldToCamera; }
 private:
     Matrix m_transform;
     Matrix m_worldToCamera;

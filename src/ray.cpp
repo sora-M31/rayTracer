@@ -23,5 +23,10 @@ Vector Ray::GetPosition ( float _rayParameter ) const
 {
     return m_origin + m_direction * _rayParameter;
 }
+//------------------------------------------------------------------------
+Ray operator * ( const Matrix& _transform, const Ray& _ray )
+{
+    return Ray ( _transform * _ray.Origin(), _transform * _ray.Direction(), _ray.GetMaterial() );
 }
+}//end of namespace
 

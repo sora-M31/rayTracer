@@ -1,5 +1,9 @@
+#include <fstream>
+#include <sstream>
 #include "rayTracer.h"
 #include "util.h"
+#include "vector.h"
+#include "image.h"
 
 namespace rayTracer
 {
@@ -154,5 +158,44 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 	}
 #endif
 	return c;
+}
+//------------------------------------------------------------------------------
+void RayTracer::CastRay()
+{
+	Image img (1024, 768);
+	uint32_t depth =3;
+	std::ofstream debug_mel;
+#if _DEBUG
+	debug_mel.open("output.mel");
+#endif
+
+	const Camera& camera  = m_scene.GetCamera();
+
+	float pixelWidth = 1.0f / (float) img.Width();
+	float pixelHeight = 1.0f / (float) img.Height();
+
+	for (uint32_t y = 0; y < img.Height(); ++y)
+	{
+		for (uint32_t x = 0; x < img.Width(); ++x)
+		{
+			Color color(0,0,0,0);
+
+			float dx = ( x * pixelWidth ) - 0.5f;
+			float dy = ( y * pixelHeight ) - 0.5f;
+
+			Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), & m_air);
+			Ray ray = camera.WorldTransform() * cameraSpaceRay;
+			img.Set( x, y, Trace( ray, depth, debug_mel ) );
+		}
+	}
+	// Format the filename
+	std::stringstream ss;
+	ss << "img.m_";
+	ss.width( 4 );
+	ss.fill( '0' );
+	//ss << ( i+1 ) << ".tga";
+	ss << ".tga";
+	// Write the image to file
+	img.WriteTga( ss.str().c_str() );
 }
 }//end of namespace
