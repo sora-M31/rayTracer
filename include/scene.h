@@ -19,6 +19,8 @@ private:
     Camera m_camera;
     std::vector< Shape* > m_shapes;
     std::vector< Light* > m_lights;
+    std::vector< Material* > m_materials;
+    std::vector< Texture* > m_textures;
 };//end of class
 }//end of namespace
 #endif //end of define

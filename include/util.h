@@ -4,12 +4,14 @@
 #include <list>
 #include <string>
 #include "vector.h"
+#include "material.h"
 
 namespace rayTracer
 {
 #define EPSILON 0.0001
 #define AIR_INDEX  1.00028f
 #define GLASS_INDEX 2.00f
+static const Material* const g_air = new Material( 0, 1, 0,AIR_INDEX );
 
 // --------------------------------------------------------------------------
 /// \brief Sampling a rectangle

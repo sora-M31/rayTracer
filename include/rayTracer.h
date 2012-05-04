@@ -22,7 +22,6 @@ private:
     bool m_depthOfField;
     bool m_softShadow;
     bool m_differentGeo;
-    static Material m_air;
 };//end of class
 }//end of namespace
 #endif //end of define

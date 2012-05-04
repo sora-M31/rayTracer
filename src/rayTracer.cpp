@@ -8,8 +8,6 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-Material RayTracer::m_air = Material( 0, 1, 0,AIR_INDEX );
-//------------------------------------------------------------------------------
 RayTracer::RayTracer()
 :m_antialias ( false ),
  m_depthOfField ( false ),
@@ -46,33 +44,11 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 	if ( _depth < 0 )
 		return c;
 
-#if _DEBUG
-	o_output<<"curve -p "
-		   <<_ray.Origin().x()<<" "
-		   <<_ray.Origin().y()<<" "
-		   <<_ray.Origin().z()<<" "
-		   <<"-p "
-		   <<_ray.Origin().x() + _ray.Direction().x()*10.0<<" "
-		   <<_ray.Origin().y() + _ray.Direction().y()*10.0<<" "
-		   <<_ray.Origin().z() + _ray.Direction().z()*10.0<<" "
-		   <<";\n";
-#endif
-
 	if ( intersection.Intersected() )
 	{
-#if _DEBUG
-		o_output<<"curve -p "
-			   <<_ray.Origin().x()<<" "
-			   <<_ray.Origin().y()<<" "
-			   <<_ray.Origin().z()<<" "
-			   <<"-p "
-			   <<intersection.Position().x()<<" "
-			   <<intersection.Position().y()<<" "
-			   <<intersection.Position().z()<<" "
-			   <<";\n";
-#endif
 		c.a() = 1.0f;
 
+		assert( intersection.GetMaterial() !=0 );
 		//if trace light directly reflected from light source
 		if ( intersection.GetMaterial()->Reflection() < EPSILON &&
 			 intersection.GetMaterial()->Refraction() < EPSILON )
@@ -92,9 +68,9 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 				{
 					if( !Intersect ( *iter ).Intersected() )
 					{
-						shade +=  intersection.GetMaterial()->GetColor(intersection.Position() )
-								* std::max(0.0f, intersection.Normal().Dot( (*iter).Direction()))
-								* attenuation ;
+						shade += ( intersection.GetMaterial()->GetColor(intersection.Position() )
+								* std::max( 0.0f, intersection.Normal().Dot( (*iter).Direction() ) )
+						) ;
 					}
 					++iter;
 				}
@@ -102,13 +78,14 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 				c+= shade;
 			}
 		}
+#if 0
 
 		//else if trace reflected light
 		if(intersection.GetMaterial()->Reflection() > EPSILON)
 		{
 			//reflected ray's direction
 			Vector reflectDir = _ray.Direction()- 2.0 * _ray.Direction().Dot( intersection.Normal() ) * intersection.Normal();
-			Ray reflectRay ( intersection.Position() + intersection.Normal() * EPSILON, reflectDir, &m_air);
+			Ray reflectRay ( intersection.Position() + intersection.Normal() * EPSILON, reflectDir, g_air);
 			//color from reflected ray
 			Color shade = Trace( reflectRay, --_depth, o_output);
 			c += shade * intersection.GetMaterial()->Reflection();
@@ -142,27 +119,14 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 #endif
 			}
 		}
-	}
-#if _DEBUG
-	else
-	{
-		o_output<<"curve -p "
-			   <<_ray.Origin().x()<<" "
-			   <<_ray.Origin().y()<<" "
-			   <<_ray.Origin().z()<<" "
-			   <<"-p "
-			   <<_ray.Origin().x() + _ray.Direction().x()*100<<" "
-			   <<_ray.Origin().y() + _ray.Direction().y()*100<<" "
-			   <<_ray.Origin().z() + _ray.Direction().z()*100<<" "
-			   <<";\n";
-	}
 #endif
+	}
 	return c;
 }
 //------------------------------------------------------------------------------
 void RayTracer::CastRay()
 {
-	Image img (1024, 768);
+	Image img (800, 600);
 	uint32_t depth =3;
 	std::ofstream debug_mel;
 #if _DEBUG
@@ -178,23 +142,24 @@ void RayTracer::CastRay()
 	{
 		for (uint32_t x = 0; x < img.Width(); ++x)
 		{
-			Color color(0,0,0,0);
+			Color color(0,0,0,1);
 
 			float dx = ( x * pixelWidth ) - 0.5f;
 			float dy = ( y * pixelHeight ) - 0.5f;
 
-			Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), & m_air);
+			Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), g_air );
 			Ray ray = camera.WorldTransform() * cameraSpaceRay;
-			img.Set( x, y, Trace( ray, depth, debug_mel ) );
+			color += Trace( ray, depth, debug_mel);
+			img.Set( x, y, color );
 		}
 	}
 	// Format the filename
 	std::stringstream ss;
-	ss << "img.m_";
+	ss << "img";
 	ss.width( 4 );
 	ss.fill( '0' );
 	//ss << ( i+1 ) << ".tga";
-	ss << ".tga";
+	ss << 0 << ".tga";
 	// Write the image to file
 	img.WriteTga( ss.str().c_str() );
 }

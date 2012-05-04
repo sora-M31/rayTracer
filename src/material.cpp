@@ -41,11 +41,15 @@ Material& Material::operator = ( const Material& _other )
     return *this;
 }
 //---------------------------------------------------------------------------------------
-const Color& Material::GetColor( const Vector& _position ) const
+Color Material::GetColor( const Vector& _position ) const
 {
     float u(0);
     float v(0);
+    assert ( m_pShape != 0 );
     m_pShape->ToUVSpace ( _position, u, v );
-    return m_pTexture->GetColorBilinear( u, v );
+    Color color ( 1,1,1,1 );
+    if ( m_pTexture != 0 )
+        color = m_pTexture->GetColorBilinear( u, v );
+    return color;
 }
 }//end of namespace

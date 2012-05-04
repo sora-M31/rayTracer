@@ -4,4 +4,5 @@ bin/*
 test
 include/template.h
 src/template.cpp
+*.tga
 

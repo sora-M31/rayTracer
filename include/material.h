@@ -15,7 +15,7 @@ public:
 	Material ( const Material& _material );
 	Material& operator = ( const Material& _other );
 
-	const Color& GetColor( const Vector& _position ) const;
+	Color GetColor( const Vector& _position ) const;
 
 	float Index () const { return m_index; };
 	float Reflection () const { return m_reflection; }

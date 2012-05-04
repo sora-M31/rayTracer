@@ -36,12 +36,18 @@ void Texture::MakeChecker()
 //------------------------------------------------------------------------------
 const Color& Texture::GetColorBilinear( float _u, float _v) const
 {
-	if( _u<0.0) _u = -_u;
-	if (_v<0.0) _v = -_v;
+	if ( _u < 0.0) _u = -_u;
+	if ( _v < 0.0) _v = -_v;
 
-	if(_u>1.0f) _u = 1.000;
-	if(_v>1.0f) _v = 1.000;
+	if( _u> 1.0f) _u = 1.000;
+	if( _v> 1.0f) _v = 1.000;
 
-	return m_colors [ floor ( m_height * _v + _u ) ];
+	uint32_t index = floor ( m_height * _v + _u );
+
+	if ( index >= m_colors.size() )
+		index = m_colors.size() -1;
+	else if ( index < 0 )
+		index = 0;
+	return m_colors [ index ];
 }
 }//end of namespace

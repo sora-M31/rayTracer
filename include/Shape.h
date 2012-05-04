@@ -4,7 +4,6 @@
 #include "vector.h"
 #include "ray.h"
 #include "intersection.h"
-//#include "material.h"
 
 namespace rayTracer
 {
@@ -15,13 +14,13 @@ public:
     Shape()
     : m_pMaterial (0)
     {}
-    ~Shape();
-    
+    ~Shape(){};
+
     const Vector& Position () const { return m_position; }
     void SetMaterial ( const Material* _material) { m_pMaterial = _material; }
     const Material* GetMaterial () const { return m_pMaterial; }
     virtual bool Intersect ( const Ray& _ray, Intersection& o_intersection ) const = 0;
-    virtual bool ToUVSpace( const Vector& _vector, float& _u, float& _v ) const = 0;
+    virtual void ToUVSpace( const Vector& _vector, float& _u, float& _v ) const = 0;
 
 protected:
     Vector m_position;

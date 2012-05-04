@@ -1,5 +1,4 @@
 #include "pointLight.h"
-#include "util.h"
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
@@ -19,6 +18,6 @@ void PointLight::GetShadowRay ( const Intersection& _intersection, RayList& o_sh
 	o_attenuation = m_intensity / ( dis * dis );
 	Normalise( lightDir );
 
-	o_shadowRays.push_back ( Ray ( _intersection.Position() + _intersection.Normal() * EPSILON, lightDir, 0 ) );
+	o_shadowRays.push_back ( Ray ( _intersection.Position() + _intersection.Normal() * EPSILON, lightDir, g_air ) );
 }
 }//end of namespace
