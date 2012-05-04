@@ -7,14 +7,14 @@ namespace rayTracer
 //------------------------------------------------------------------------------
 Scene::Scene()
 {
-    Shape* sphere = new Sphere( Vector( 1, 1, 20, 1), 1.0 );
+    Shape* sphere = new Sphere( Vector( 1, 0.5, 10, 1), 1.0 );
     Material* diffuse = new Material ( 0, 0, sphere );
     sphere->SetMaterial( diffuse );
 
     Shape* plane = new Plane( Vector(0,1,0,0), -1, diffuse );
 
-    m_shapes.push_back( sphere );
     m_shapes.push_back( plane );
+    m_shapes.push_back( sphere );
     m_materials.push_back( diffuse );
 
 

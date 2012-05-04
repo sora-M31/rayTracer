@@ -75,7 +75,7 @@ Color& Color::operator *= ( float _other )
     m_data[0] *= _other;
     m_data[1] *= _other;
     m_data[2] *= _other;
-    m_data[3] *= _other;
+    m_data[3] = 1.0f;
     return *this;
 }
 //------------------------------------------------------------------------------

@@ -8,7 +8,7 @@ class Color
 public:
     Color ();
     ~Color ();
-    Color ( float _r, float _g, float _b, float _a );
+    Color ( float _r, float _g, float _b, float _a = 1.0f );
     Color ( const Color& _other );
     Color operator +  ( const Color& _other ) const ;
     Color operator *  ( float _other ) const ;

@@ -63,7 +63,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 			    light->GetShadowRay(intersection, shadowRays, attenuation);
 				std::list<Ray>::iterator iter = shadowRays.begin();
 				//calculate shade from each light
-				Color shade(0,0,0,0);
+				Color shade(0,0,0,1);
 				while( iter != shadowRays.end() )
 				{
 					if( !Intersect ( *iter ).Intersected() )
@@ -142,7 +142,7 @@ void RayTracer::CastRay()
 	{
 		for (uint32_t x = 0; x < img.Width(); ++x)
 		{
-			Color color(0,0,0,1);
+			Color color(0,0,0,0);
 
 			float dx = ( x * pixelWidth ) - 0.5f;
 			float dy = ( y * pixelHeight ) - 0.5f;
