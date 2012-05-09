@@ -90,49 +90,48 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 				c+= shade;
 			}
 		}
-#if 0
-
-		//else if trace reflected light
-		if(intersection.GetMaterial()->Reflection() > EPSILON)
+		else
 		{
-			//reflected ray's direction
-			Vector reflectDir = _ray.Direction()- 2.0 * _ray.Direction().Dot( intersection.Normal() ) * intersection.Normal();
-			Ray reflectRay ( intersection.Position() + intersection.Normal() * EPSILON, reflectDir, g_air);
-			//color from reflected ray
-			Color shade = Trace( reflectRay, --_depth, o_output);
-			c += shade * intersection.GetMaterial()->Reflection();
-		}
-
-		//else if refractive
-		if ( intersection.GetMaterial()->Refraction() > EPSILON)
-		{
-			//refraction
-			Vector reverseNormal = -intersection.Normal();
-			float cosIn = reverseNormal.Dot( _ray.Direction()) ;
-			//cosSquared+sinSquared = 1
-			//cosIn/cosOut = outIndex/inIndex
-			float ratio = _ray.GetMaterial()->Index() / intersection.GetMaterial()->Index();
-			float sinOutSquared = ( 1.0f- cosIn * cosIn ) * ratio * ratio;
-			if ( sinOutSquared < 1.0)
+			//else if trace reflected light
+			if(intersection.GetMaterial()->Reflection() > EPSILON)
 			{
-				Vector outRayDir = _ray.Direction() * ratio - ( cosIn * ratio + sqrtf( 1.0 - sinOutSquared) ) * intersection.Normal();
-				Ray refractRay ( intersection.Position() + outRayDir * EPSILON,
-								 outRayDir,
-								 intersection.GetMaterial() );
-
-				//float distance = intersection.RayParameter();
-				//float attenuation =  expf( -distance * _ray->GetMaterial().Attenuation()); 
-				c+=Trace ( refractRay, --_depth, o_output ) * intersection.GetMaterial()->Refraction();
+				//reflected ray's direction
+				Vector reflectDir = _ray.Direction()- 2.0 * _ray.Direction().Dot( intersection.Normal() ) * intersection.Normal();
+				Ray reflectRay ( intersection.Position() + intersection.Normal() * EPSILON, reflectDir, g_air);
+				//color from reflected ray
+				Color shade = Trace( reflectRay, --_depth, o_output);
+				c += shade * intersection.GetMaterial()->Reflection();
 			}
-			else
+			//else if refractive
+			if ( intersection.GetMaterial()->Refraction() > EPSILON)
 			{
+				//refraction
+				Vector reverseNormal = -intersection.Normal();
+				float cosIn = reverseNormal.Dot( _ray.Direction()) ;
+				//cosSquared+sinSquared = 1
+				//cosIn/cosOut = outIndex/inIndex
+				float ratio = _ray.GetMaterial()->Index() / intersection.GetMaterial()->Index();
+				float sinOutSquared = ( 1.0f- cosIn * cosIn ) * ratio * ratio;
+				if ( sinOutSquared < 1.0)
+				{
+					Vector outRayDir = _ray.Direction() * ratio - ( cosIn * ratio + sqrtf( 1.0 - sinOutSquared) ) * intersection.Normal();
+					Ray refractRay ( intersection.Position() + outRayDir * EPSILON,
+									 outRayDir,
+									 intersection.GetMaterial() );
+
+					//float distance = intersection.RayParameter();
+					//float attenuation =  expf( -distance * _ray->GetMaterial().Attenuation()); 
+					c+=Trace ( refractRay, --_depth, o_output ) * intersection.GetMaterial()->Refraction();
+				}
+				else
+				{
 #if  _DEBUG
-				std::cout<<" total refelction\n";
+					std::cout<<" total refelction\n";
 #endif
+				}
 			}
-		}
-#endif
-	}
+		}//reflect & refract
+	}//intersected
 #if TEST
 	else
 	{
