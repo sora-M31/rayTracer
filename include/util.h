@@ -24,5 +24,6 @@ static const Material* const g_air = new Material( 0, 1, 0,AIR_INDEX );
 /// \param v unit vector (axis)
 /// \param samples
 void Sampling ( const Vector& _centre, float _width, float _height, float _gridNumberU, float _gridNumberV, const Vector& _u, const Vector& _v, std::list<Vector>& o_samples);
+void Clamp( float& io_value, float _min, float _max );
 }
 #endif

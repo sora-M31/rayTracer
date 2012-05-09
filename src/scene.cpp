@@ -7,7 +7,7 @@ namespace rayTracer
 //------------------------------------------------------------------------------
 Scene::Scene()
 {
-    Shape* sphere = new Sphere( Vector( 1, 0.5, 10, 1), 1.0 );
+    Shape* sphere = new Sphere( Vector( 1, 0, 10, 1), 1.0 );
     Material* diffuse = new Material ( 0, 0, sphere );
     sphere->SetMaterial( diffuse );
 
@@ -19,7 +19,7 @@ Scene::Scene()
 
 
 
-    Light* light = new PointLight ( Vector (0,11,1,1),3 );
+    Light* light = new PointLight ( Vector (0,1,1,1), 10 );
     m_lights.push_back ( light);
 }
 //------------------------------------------------------------------------------

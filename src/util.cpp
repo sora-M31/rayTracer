@@ -20,4 +20,12 @@ void Sampling ( const Vector& _centre, float _width, float _height, float _gridN
 								 + _v * unitV * ( column + random()%50/50.0f - 0.5 ) ) ;
 		}
 }
+//------------------------------------------------------------------------------
+void Clamp( float& io_value, float _min, float _max )
+{
+	if( io_value > _max )
+		io_value = _max;
+	else if( io_value < _min )
+		io_value = _min;
+}
 }//end of namespace

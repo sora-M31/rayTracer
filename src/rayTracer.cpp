@@ -5,6 +5,7 @@
 #include "vector.h"
 #include "image.h"
 
+
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
@@ -46,6 +47,17 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 
 	if ( intersection.Intersected() )
 	{
+#if TEST
+		o_output<<"curve -p "
+			   <<_ray.Origin().x()<<" "
+			   <<_ray.Origin().y()<<" "
+			   <<_ray.Origin().z()<<" "
+			   <<"-p "
+			   <<intersection.Position().x()<<" "
+			   <<intersection.Position().y()<<" "
+			   <<intersection.Position().z()<<" "
+			   <<";\n";
+#endif
 		c.a() = 1.0f;
 
 		assert( intersection.GetMaterial() !=0 );
@@ -69,8 +81,8 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 					if( !Intersect ( *iter ).Intersected() )
 					{
 						shade += ( intersection.GetMaterial()->GetColor(intersection.Position() )
-								* std::max( 0.0f, intersection.Normal().Dot( (*iter).Direction() ) )
-						) ;
+								* std::max( 0.0f, intersection.Normal().Dot( (*iter).Direction() ) ) //);
+								* attenuation );
 					}
 					++iter;
 				}
@@ -121,6 +133,21 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 		}
 #endif
 	}
+#if TEST
+	else
+	{
+		//not intersected
+		o_output<<"curve -p "
+			   <<_ray.Origin().x()<<" "
+			   <<_ray.Origin().y()<<" "
+			   <<_ray.Origin().z()<<" "
+			   <<"-p "
+			   <<_ray.Origin().x() + _ray.Direction().x()*100<<" "
+			   <<_ray.Origin().y() + _ray.Direction().y()*100<<" "
+			   <<_ray.Origin().z() + _ray.Direction().z()*100<<" "
+			   <<";\n";
+	}
+#endif
 	return c;
 }
 //------------------------------------------------------------------------------
@@ -129,7 +156,7 @@ void RayTracer::CastRay()
 	Image img (800, 600);
 	uint32_t depth =3;
 	std::ofstream debug_mel;
-#if _DEBUG
+#if TEST
 	debug_mel.open("output.mel");
 #endif
 
@@ -153,6 +180,9 @@ void RayTracer::CastRay()
 			img.Set( x, y, color );
 		}
 	}
+#if TEST
+	debug_mel.close();
+#endif
 	// Format the filename
 	std::stringstream ss;
 	ss << "img";
