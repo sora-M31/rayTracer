@@ -7,7 +7,7 @@ AreaLight::AreaLight(const Vector& _position, float _intensity, Vector _normal, 
   m_width ( _width ),
   m_height ( _height )
 {
-	Normalise ( _normal );
+	Normalise ( m_normal );
     m_position = _position;
     m_intensity = _intensity;
 
@@ -25,10 +25,12 @@ void AreaLight::GetShadowRay ( const Intersection& _intersection, RayList& o_sha
 	{
 		Vector lightDir = *iter - _intersection.Position();
 		float dis = lightDir.Length ();
-		o_attenuation = m_intensity / ( dis * dis );
+		float attenuation = m_intensity / ( dis * dis );
+		Clamp(attenuation, 0, 1);
+		o_attenuation = attenuation;
 		Normalise( lightDir );
 
-		o_shadowRays.push_back ( Ray ( _intersection.Position () + _intersection.Normal () * EPSILON, lightDir, 0 ) );
+		o_shadowRays.push_back ( Ray ( _intersection.Position () + _intersection.Normal () * EPSILON, lightDir, g_air ) );
 		++iter;
 	}
 }

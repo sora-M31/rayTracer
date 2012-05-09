@@ -16,8 +16,7 @@ void PointLight::GetShadowRay ( const Intersection& _intersection, RayList& o_sh
 {
 	Vector lightDir = m_position - _intersection.Position();
 	float dis = lightDir.Length();
-	//std::cout<<dis<< " dis\n";
-	float attenuation = m_intensity/(dis*dis);
+	float attenuation = m_intensity / ( dis*dis );
 	Clamp( attenuation, 0, 1);
 	o_attenuation = attenuation;
 	Normalise( lightDir );

@@ -92,4 +92,15 @@ void Color::PrintColor()
 {
     std::cout<< "Color " << m_data[0] << " " << m_data[1] << " " << m_data[2] << " " << m_data[3] << " \n";
 }
+//------------------------------------------------------------------------------
+void Color::Clamp()
+{
+    for( uint32_t i = 0; i< 4; ++i )
+    {
+        if( m_data[i] > 1 )
+            m_data[i] = 1;
+        else if ( m_data[i] < 0 )
+            m_data[i] = 0;
+    }
+}
 }//end of namespace

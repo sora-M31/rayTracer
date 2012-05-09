@@ -26,6 +26,7 @@ public:
     float b() const { return m_data[2]; }
     float a() const { return m_data[3]; }
     void PrintColor();
+    void Clamp();
 
 private:
     float m_data[ 4 ];
