@@ -10,7 +10,7 @@ namespace rayTracer
 {
 //------------------------------------------------------------------------------
 RayTracer::RayTracer()
-:m_antialias ( false ),
+:m_antialias ( true ),
  m_depthOfField ( false ),
  m_softShadow ( false ),
  m_differentGeo ( false )
@@ -173,9 +173,28 @@ void RayTracer::CastRay()
 			float dx = ( x * pixelWidth ) - 0.5f;
 			float dy = ( y * pixelHeight ) - 0.5f;
 
-			Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), g_air );
-			Ray ray = camera.WorldTransform() * cameraSpaceRay;
-			color += Trace( ray, depth, debug_mel);
+			if( !m_antialias )
+			{
+				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), g_air );
+				Ray ray = camera.WorldTransform() * cameraSpaceRay;
+				color += Trace( ray, depth, debug_mel);
+			}
+			else
+			{
+				//get samples
+				std::list< Vector > pixSamples(0);
+				Sampling ( Vector( dx, dy, 1.0f, 0.0f ), pixelWidth, pixelHeight, 4, 4, Vector ( 1,0,0,0), Vector ( 0,1,0,0), pixSamples );
+				//get color from samples and average them
+				std::list<Vector>::iterator iter = pixSamples.begin();
+				while( iter!= pixSamples.end() )
+				{
+					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), (*iter), g_air );
+					Ray ray = camera.WorldTransform() * cameraSpaceRay;
+					color += Trace( ray, depth, debug_mel);
+					++iter;
+				}
+				color/=pixSamples.size();
+			}
 			img.Set( x, y, color );
 		}
 	}

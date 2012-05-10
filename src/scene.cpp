@@ -25,10 +25,10 @@ Scene::Scene()
     m_shapes.push_back( sphere2 );
     m_materials.push_back( diffuse );
 
-    //Light* light1 = new PointLight ( Vector (2,3,9,1), 20 );
-    Light* light2 = new AreaLight ( Vector (2,3,9,1),3,Vector(0,-1,0,0), 4, 4 );
+    Light* light1 = new PointLight ( Vector (2,3,9,1), 20 );
+    //Light* light2 = new AreaLight ( Vector (2,3,9,1),3,Vector(0,-1,0,0), 4, 4 );
 
-    m_lights.push_back ( light2);
+    m_lights.push_back ( light1);
 }
 //------------------------------------------------------------------------------
 Scene::~Scene()
