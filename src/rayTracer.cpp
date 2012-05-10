@@ -10,11 +10,27 @@ namespace rayTracer
 {
 //------------------------------------------------------------------------------
 RayTracer::RayTracer()
-:m_antialias ( true ),
- m_depthOfField ( false ),
+:m_antialias ( false ),
+ m_depthOfField ( true ),
  m_softShadow ( false ),
  m_differentGeo ( false )
-{}
+{
+	if(m_depthOfField)
+	{
+		//sampling camera
+		//set aperture and focal depth
+		float aperture = 1;
+		//sample lens
+		float unitNumber = 8;
+		
+		Vector unitX = Vector(1,0,0,0);
+		Vector unitY = Vector(0,1,0,0);
+		Vector centre = Vector(0,0,0,1);
+
+		Sampling( centre, aperture, aperture, unitNumber, unitNumber, unitX, unitY, lenSample );
+	}
+	
+}
 //------------------------------------------------------------------------------
 RayTracer::~RayTracer()
 {}
@@ -173,13 +189,7 @@ void RayTracer::CastRay()
 			float dx = ( x * pixelWidth ) - 0.5f;
 			float dy = ( y * pixelHeight ) - 0.5f;
 
-			if( !m_antialias )
-			{
-				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), g_air );
-				Ray ray = camera.WorldTransform() * cameraSpaceRay;
-				color += Trace( ray, depth, debug_mel);
-			}
-			else
+			if( m_antialias )
 			{
 				//get samples
 				std::list< Vector > pixSamples(0);
@@ -195,6 +205,31 @@ void RayTracer::CastRay()
 				}
 				color/=pixSamples.size();
 			}
+			//depth of field
+			else if( m_depthOfField )
+			{
+				//point on ray = origin + dir * param
+				float focalLength = 10;
+				Vector focalPoint = Vector(0, 0, 0, 1.0f) + Vector(dx, dy, 1.0f, 0) * focalLength;
+				//calculate color using rays formed from sample points on lens and fp on focal plane,
+				std::list<Vector>::iterator iter = lenSample.begin();
+				while( iter!= lenSample.end() )
+				{
+					Vector dir = (focalPoint - (*iter) ).Normalise();
+					Ray cameraSpaceRay = Ray( (*iter), dir, g_air);
+					Ray ray = camera.Transform() * cameraSpaceRay;
+					color += Trace( ray, depth, debug_mel);
+					++iter;
+				}
+				color/= lenSample.size();
+			}
+			else
+			{
+				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), g_air );
+				Ray ray = camera.WorldTransform() * cameraSpaceRay;
+				color += Trace( ray, depth, debug_mel);
+			}
+
 			img.Set( x, y, color );
 		}
 	}

@@ -9,7 +9,7 @@ namespace rayTracer
 Scene::Scene()
 {
     Shape* sphere1 = new Sphere( Vector( 1, 0, 10, 1), 1.0 );
-    Shape* sphere2 = new Sphere( Vector( -1, 0, 10, 1), 1.0 );
+    Shape* sphere2 = new Sphere( Vector( -1, 0, 13, 1), 1.0 );
 
     Material* diffuse = new Material ( 0, 0, sphere1 );
     Material* glass = new Material ( 0.1, 0.9, sphere2, GLASS_INDEX );

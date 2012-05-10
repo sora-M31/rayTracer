@@ -22,6 +22,7 @@ private:
     bool m_depthOfField;
     bool m_softShadow;
     bool m_differentGeo;
+	std::list<Vector> lenSample;
 };//end of class
 }//end of namespace
 #endif //end of define
