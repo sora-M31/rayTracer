@@ -4,6 +4,7 @@
 #include "util.h"
 #include "vector.h"
 #include "image.h"
+//#define TEST
 
 
 namespace rayTracer
@@ -63,7 +64,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 
 	if ( intersection.Intersected() )
 	{
-#if TEST
+#ifdef TEST1
 		o_output<<"curve -p "
 			   <<_ray.Origin().x()<<" "
 			   <<_ray.Origin().y()<<" "
@@ -89,6 +90,23 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 				std::list<Ray> shadowRays;
 				float attenuation=1.0;
 			    light->GetShadowRay(intersection, shadowRays, attenuation);
+
+#ifdef TEST
+		RayList::iterator test = shadowRays.begin();
+		while( test != shadowRays.end() )
+		{
+			o_output<<"curve -p "
+			   <<(*test).Origin().x()<<" "
+			   <<(*test).Origin().y()<<" "
+			   <<(*test).Origin().z()<<" "
+			   <<"-p "
+			   <<(*test).Origin().x() + (*test).Direction().x()*100<<" "
+			   <<(*test).Origin().y() + (*test).Direction().y()*100<<" "
+			   <<(*test).Origin().z() + (*test).Direction().z()*100<<" "
+			   <<";\n";
+			++test;
+		}
+#endif
 				std::list<Ray>::iterator iter = shadowRays.begin();
 				//calculate shade from each light
 				Color shade(0,0,0,1);
@@ -99,6 +117,9 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 						shade += ( intersection.GetMaterial()->GetColor(intersection.Position() )
 								* std::max( 0.0f, intersection.Normal().Dot( (*iter).Direction() ) ) );
 								//* attenuation );
+					}
+					else
+					{
 					}
 					++iter;
 				}
@@ -148,7 +169,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 			}
 		}//reflect & refract
 	}//intersected
-#if TEST
+#ifdef TEST1
 	else
 	{
 		//not intersected
@@ -157,9 +178,9 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 			   <<_ray.Origin().y()<<" "
 			   <<_ray.Origin().z()<<" "
 			   <<"-p "
-			   <<_ray.Origin().x() + _ray.Direction().x()*100<<" "
-			   <<_ray.Origin().y() + _ray.Direction().y()*100<<" "
-			   <<_ray.Origin().z() + _ray.Direction().z()*100<<" "
+			   <<_ray.Origin().x() + _ray.Direction().x()*50<<" "
+			   <<_ray.Origin().y() + _ray.Direction().y()*50<<" "
+			   <<_ray.Origin().z() + _ray.Direction().z()*50
 			   <<";\n";
 	}
 #endif
@@ -171,7 +192,7 @@ void RayTracer::CastRay()
 	Image img (800, 600);
 	uint32_t depth =3;
 	std::ofstream debug_mel;
-#if TEST
+#ifdef TEST
 	debug_mel.open("output.mel");
 #endif
 
@@ -233,7 +254,7 @@ void RayTracer::CastRay()
 			img.Set( x, y, color );
 		}
 	}
-#if TEST
+#ifdef TEST
 	debug_mel.close();
 #endif
 	// Format the filename

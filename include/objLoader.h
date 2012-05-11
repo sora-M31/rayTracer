@@ -21,11 +21,6 @@ public:
     bool ParseFile ( const char* _fileName );
     void PrintLoadedInfo ();
     void ClearData ();
-    void TokenToArray ( const StringList& tokens, std::vector<float>& array );
-    void Tokenize ( const std::string& _str,
-                    const std::string& _delimiters,
-                    StringList& o_tokens );
-    void Serialize();
 
     const std::vector<Vector>& GetVertexArray() const
     {
@@ -41,6 +36,12 @@ public:
     }
 
 private:
+    void TokenToArray ( const StringList& tokens, std::vector<float>& array );
+    void Tokenize ( const std::string& _str,
+                    const std::string& _delimiters,
+                    StringList& o_tokens );
+    void Serialize();
+
     std::vector<float> m_vertexBuffer;
     std::vector<float> m_normalBuffer;
     std::vector<float> m_textureBuffer;

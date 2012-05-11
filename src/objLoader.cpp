@@ -87,7 +87,7 @@ void ObjLoader::PrintLoadedInfo ()
         if (i%9==8)
             std::cout<<m_faceBuffer[i]<<"\n";
         else if (i%9 ==0)
-            std::cout<<"f "<<m_normalBuffer[i]<<" ";
+            std::cout<<"f "<<m_faceBuffer[i]<<"/";
         else if ( i%3 ==2)
             std::cout<<m_faceBuffer[i]<<" ";
         else

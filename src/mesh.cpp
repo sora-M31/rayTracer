@@ -4,6 +4,18 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
+Mesh::Mesh ()
+{}
+//------------------------------------------------------------------------------
+Mesh::~Mesh ()
+{}
+//------------------------------------------------------------------------------
+Mesh::Mesh ( const Vector& _pos, const Material* _pMaterial)
+{
+	m_position = _pos;
+	m_pMaterial = _pMaterial;
+}
+//------------------------------------------------------------------------------
 bool Mesh::LoadMesh ( const ObjLoader& _obj )
 {
 	m_pointArray = _obj.GetVertexArray ( );
@@ -54,6 +66,7 @@ bool Mesh::RayTriangle ( const Ray& _ray, const Vector& _v1, const Vector& _v2, 
 	Vector b = _v2 - _v1;
 	Vector c = _v3 - _v1;
 	Vector normal = b.Cross (c);
+	Normalise(normal);
 
 	float rayParameter = normal.Dot ( _v1 - _ray.Origin () ) / normal.Dot ( _ray.Direction () );
 	//no intersection on the plane ( pointing away or parallel )
@@ -100,8 +113,11 @@ bool Mesh::RayTriangle ( const Ray& _ray, const Vector& _v1, const Vector& _v2, 
 	{
 		return false;
 	}
-	o_intersection = Intersection ( intersectionPos, normal, rayParameter, this -> m_pMaterial );
+	o_intersection = Intersection ( intersectionPos, normal, rayParameter, m_pMaterial );
 	o_parameter = rayParameter;
 	return true;
 }
+//------------------------------------------------------------------------------
+void Mesh::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const
+{}
 }//end of namespace
