@@ -20,7 +20,7 @@ public:
     void SetMaterial ( const Material* _material) { m_pMaterial = _material; }
     const Material* GetMaterial () const { return m_pMaterial; }
     virtual bool Intersect ( const Ray& _ray, Intersection& o_intersection ) const = 0;
-    virtual void ToUVSpace( const Vector& _vector, float& _u, float& _v ) const = 0;
+    virtual void ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const = 0;
 
 protected:
     Vector m_position;

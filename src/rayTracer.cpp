@@ -11,7 +11,7 @@ namespace rayTracer
 //------------------------------------------------------------------------------
 RayTracer::RayTracer()
 :m_antialias ( false ),
- m_depthOfField ( true ),
+ m_depthOfField ( false ),
  m_softShadow ( false ),
  m_differentGeo ( false )
 {

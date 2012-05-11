@@ -80,16 +80,17 @@ bool Sphere::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	return true;
 }
 //------------------------------------------------------------------------------
-void Sphere::ToUVSpace( const Vector& _vector, float& _u, float& _v ) const
+void Sphere::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const
 {}
 //------------------------------------------------------------------------------
 Plane::Plane( const Vector& _normal,
 			  float _distance,
-			  Material* _material ) 
+			  Material* _material )
 : m_normal( _normal ),
   m_distance( _distance )
 {
 	m_pMaterial = _material;
+	m_normal.ProjectAxis( m_u, m_v);
 }
 //------------------------------------------------------------------------------
 Plane::Plane()
@@ -111,7 +112,10 @@ bool Plane::Intersect( const Ray& _ray, Intersection& o_intersection) const
 	return true;
 }
 //------------------------------------------------------------------------------
-void Plane::ToUVSpace( const Vector& _vector, float& _u, float& _v ) const
-{}
+void Plane::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const
+{
+		o_u = _pos.Dot( m_u )/30 ;
+		o_v = _pos.Dot( m_v )/30 ;
+}
 //------------------------------------------------------------------------------
 }//end of namespace

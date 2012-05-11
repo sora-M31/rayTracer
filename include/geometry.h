@@ -21,7 +21,7 @@ public:
 	float RadiusSquared() const { return m_radiusSquared; }
 
 	bool Intersect( const Ray& _ray, Intersection& o_intersection ) const;
-    void ToUVSpace( const Vector& _vector, float& _u, float& _v ) const;
+    void ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const;
 private:
 	float  m_radius;
 	float  m_radiusSquared;
@@ -33,7 +33,7 @@ class Plane:public Shape
 public:
 	Plane( const Vector& _normal,
 		   float _distance,
-		   Material* _material);
+		   Material* _material=0 );
 	Plane();
 	~Plane();
 
@@ -41,7 +41,7 @@ public:
 	float Distance() const { return m_distance; }
 
 	bool Intersect(const Ray& _ray, Intersection& o_intersection) const;
-    void ToUVSpace( const Vector& _vector, float& _u, float& _v ) const;
+    void ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const;
 private:
 	Vector m_normal;
 	float m_distance;

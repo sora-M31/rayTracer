@@ -48,6 +48,17 @@ uint8_t Vector::DominantAxis () const
         else return 2;
 }
 //------------------------------------------------------------------------------
+void Vector::ProjectAxis( Vector& o_u, Vector& o_v )
+{
+    uint8_t axis = DominantAxis();
+    Vector u(0, 0, 0, 0 );
+    Vector v(0, 0, 0, 0 );
+    u [ (axis + 1)%3 ] = 1;
+    v [ (axis + 2)%3 ] = 1;
+    o_u = u;
+    o_v = v;
+}
+//------------------------------------------------------------------------------
 Vector& Vector::operator =  ( const Vector& _other )
 {
     m_data[0] = _other.m_data[0];
@@ -99,4 +110,4 @@ std::ostream& operator <<  ( std::ostream & _output, const Vector&  _VecToPrint 
 {
     return _output << _VecToPrint.m_data[0]<< " "<< _VecToPrint.m_data[1]<<" "<< _VecToPrint.m_data[2]<<" "<< _VecToPrint.m_data[3];
 }
-}//end of namespace
+}
