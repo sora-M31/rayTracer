@@ -11,7 +11,7 @@ namespace rayTracer
 Scene::Scene()
 {
     Shape* sphere1 = new Sphere( Vector( 1, 0, 10, 1), 1.0 );
-    Shape* sphere2 = new Sphere( Vector( -1, 0, 13, 1), 1.0 );
+    Shape* sphere2 = new Sphere( Vector( -1, 0, 7, 1), 1.0 );
     Shape* plane = new Plane( Vector(0,1,0,0), -1 );
     Shape* torus = new Mesh( Vector ( 0,0,0, 1));
 
@@ -21,7 +21,7 @@ Scene::Scene()
 
     Material* diffuse = new Material ( 0, 0, sphere1 );
     Material* test = new Material ( 0, 0 , torus);
-    Material* glass = new Material ( 0.2, 0.8, sphere2, GLASS_INDEX );
+    Material* glass = new Material ( 0, 1, sphere2, GLASS_INDEX );
     Material* floor = new Material ( 0, 0, plane );
 
     Texture* checker = new Texture(160, 160);
@@ -42,7 +42,7 @@ Scene::Scene()
     m_materials.push_back( test );
     m_textures.push_back ( checker );
 
-    Light* light1 = new PointLight ( Vector (1,2,1,1), 20 );
+    Light* light1 = new PointLight ( Vector (1,2,1,1), 30 );
     //Light* light2 = new AreaLight ( Vector (2,3,9,1),3,Vector(0,-1,0,0), 4, 4 );
 
     m_lights.push_back ( light1);

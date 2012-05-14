@@ -92,39 +92,36 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 			    light->GetShadowRay(intersection, shadowRays, attenuation);
 
 #ifdef TEST
-		RayList::iterator test = shadowRays.begin();
-		while( test != shadowRays.end() )
-		{
-			o_output<<"curve -p "
-			   <<(*test).Origin().x()<<" "
-			   <<(*test).Origin().y()<<" "
-			   <<(*test).Origin().z()<<" "
-			   <<"-p "
-			   <<(*test).Origin().x() + (*test).Direction().x()*100<<" "
-			   <<(*test).Origin().y() + (*test).Direction().y()*100<<" "
-			   <<(*test).Origin().z() + (*test).Direction().z()*100<<" "
-			   <<";\n";
-			++test;
-		}
+				RayList::iterator test = shadowRays.begin();
+				while( test != shadowRays.end() )
+				{
+					o_output<<"curve -p "
+					   <<(*test).Origin().x()<<" "
+					   <<(*test).Origin().y()<<" "
+					   <<(*test).Origin().z()<<" "
+					   <<"-p "
+					   <<(*test).Origin().x() + (*test).Direction().x()*100<<" "
+					   <<(*test).Origin().y() + (*test).Direction().y()*100<<" "
+					   <<(*test).Origin().z() + (*test).Direction().z()*100<<" "
+					   <<";\n";
+					++test;
+				}
 #endif
 				std::list<Ray>::iterator iter = shadowRays.begin();
 				//calculate shade from each light
-				Color shade(0,0,0,1);
+				Color shade(0,0,0,0);
 				while( iter != shadowRays.end() )
 				{
 					if( !Intersect ( *iter ).Intersected() )
 					{
 						shade += ( intersection.GetMaterial()->GetColor(intersection.Position() )
-								* std::max( 0.0f, intersection.Normal().Dot( (*iter).Direction() ) ) );
-								//* attenuation );
-					}
-					else
-					{
+								* std::max( 0.0f, intersection.Normal().Dot( (*iter).Direction() ) ) //);
+								* attenuation );
 					}
 					++iter;
 				}
 				shade /= shadowRays.size();
-				c+= shade;
+				c += shade;
 			}
 		}
 		else
@@ -158,7 +155,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 
 					//float distance = intersection.RayParameter();
 					//float attenuation =  expf( -distance * _ray->GetMaterial().Attenuation()); 
-					c+=Trace ( refractRay, --_depth, o_output ) * intersection.GetMaterial()->Refraction();
+					c +=Trace ( refractRay, --_depth, o_output ) * intersection.GetMaterial()->Refraction();
 				}
 				else
 				{
@@ -248,7 +245,7 @@ void RayTracer::CastRay()
 			{
 				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), g_air );
 				Ray ray = camera.WorldTransform() * cameraSpaceRay;
-				color += Trace( ray, depth, debug_mel);
+				color = Trace( ray, depth, debug_mel);
 			}
 
 			img.Set( x, y, color );
