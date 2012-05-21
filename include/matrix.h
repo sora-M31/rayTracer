@@ -7,6 +7,7 @@ namespace rayTracer
 {
 class Matrix
 {
+friend Vector operator * ( const Vector& _left, const Matrix& _right );
 public:
     Matrix ();
     Matrix ( float _00, float _01, float _02, float _03,

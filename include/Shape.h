@@ -27,6 +27,7 @@ protected:
     const Material* m_pMaterial;
     Vector m_u;
     Vector m_v;
+    Matrix m_transform;
 };//end of class
 }//end of namespace
 #endif //end of define

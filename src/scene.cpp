@@ -13,10 +13,10 @@ Scene::Scene()
     Shape* sphere1 = new Sphere( Vector( 1, 0, 10, 1), 1.0 );
     Shape* sphere2 = new Sphere( Vector( -1, 0, 7, 1), 1.0 );
     Shape* plane = new Plane( Vector(0,1,0,0), -1 );
-    Shape* torus = new Mesh( Vector ( 0,0,0, 1));
+    Shape* torus = new Mesh( Vector ( 0.5,0, 8, 1));
 
     ObjLoader obj;
-    obj.ParseFile ("resources/test.obj" );
+    obj.ParseFile ("resources/test2.obj" );
     dynamic_cast<Mesh*>(torus)->LoadMesh( obj );
 
     Material* diffuse = new Material ( 0, 0, sphere1 );

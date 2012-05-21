@@ -126,4 +126,10 @@ void Matrix::PrintMatrix ()
 {
     std::cout<<m_mat[0]<<"\n"<<m_mat[1]<<"\n"<<m_mat[2]<<"\n"<<m_mat[3]<<"\n";
 }
+//------------------------------------------------------------------------------
+Vector operator * ( const Vector& _left, const Matrix& _right )
+{
+    return _right * _left;
+}
+
 }//end of namespace

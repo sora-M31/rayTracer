@@ -14,6 +14,10 @@ Mesh::Mesh ( const Vector& _pos, const Material* _pMaterial)
 {
 	m_position = _pos;
 	m_pMaterial = _pMaterial;
+	m_transform = Matrix ( 1, 0, 0, _pos.x(),
+						   0, 1, 0, _pos.y(),
+						   0, 0, 1, _pos.z(),
+						   0, 0, 0, 1 );
 }
 //------------------------------------------------------------------------------
 bool Mesh::LoadMesh ( const ObjLoader& _obj )
@@ -46,7 +50,7 @@ bool Mesh::Intersect ( const Ray& _ray, Intersection& _intersection ) const
 		float parameter = FLT_MAX;
 		for ( uint32_t i=0; i< m_pointArray.size () ;i+=3 )
 		{
-			RayTriangle ( _ray, m_pointArray[i], m_pointArray[i+1], m_pointArray[i+2], _intersection, parameter );
+			RayTriangle ( _ray, m_transform * m_pointArray[i], m_transform * m_pointArray[i+1], m_transform * m_pointArray[i+2], _intersection, parameter );
 		}
 		return (  _intersection.RayParameter () < FLT_MAX );
 	}
