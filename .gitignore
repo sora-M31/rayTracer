@@ -7,4 +7,5 @@ src/template.cpp
 *.tga
 output.mel
 resources/*.mtl
+resources/workspace.mel
 
