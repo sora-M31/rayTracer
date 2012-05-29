@@ -23,7 +23,7 @@ public:
 	const Material* GetMaterial() { return m_pMaterial;}
 
 	//if not hit the edge, there's intersection
-	bool Intersected() const { return m_rayParameter != FLT_MAX; }
+	bool Intersected() const { return m_rayParameter < FLT_MAX; }
 private:
 	///\ position of the intersection
 	Vector m_position;

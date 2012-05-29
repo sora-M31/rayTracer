@@ -1,4 +1,5 @@
 #include "AABB.h"
+#include <float.h>
 
 namespace rayTracer
 {
@@ -21,16 +22,9 @@ AABB::AABB( const Vector& _min, const Vector& _max )
 {
 }
 //------------------------------------------------------------------------------
-bool AABB::Intersect( const Ray& _ray )
+bool AABB::Intersect( const Ray& _ray, float& o_rayDis )
 {
-    //if ray origin in the box, intersected
-    Vector origin = _ray.Origin();
-    if ( origin.x() > m_min.x() && origin.x() < m_max.x() &&
-         origin.y() > m_min.y() && origin.y() < m_max.y() &&
-         origin.z() > m_min.z() && origin.z() < m_max.z() )
-    {
-        return true;
-    }
+    float rayDis = FLT_MAX;
     //test the min faces
     for( uint8_t i=0; i< 3; ++i )
     {
@@ -44,7 +38,8 @@ bool AABB::Intersect( const Ray& _ray )
             continue;
         if ( ( v2 < m_min[ (i+2)%3 ] ) || ( v2 > m_max[ (i+2)%3 ] ) )
             continue;
-        return true;
+        if( dis < rayDis )
+            rayDis = dis;
     }
     //test max faces
     for( uint8_t i=0; i< 3; ++i )
@@ -59,8 +54,10 @@ bool AABB::Intersect( const Ray& _ray )
             continue;
         if ( ( v2 < m_min[ (i+2)%3 ] ) || ( v2 > m_max[ (i+2)%3 ] ) )
             continue;
-        return true;
+        if( dis < rayDis )
+            rayDis = dis;
     }
-    return false;
+    o_rayDis = rayDis;
+    return rayDis < FLT_MAX;
 }
 }//end of space

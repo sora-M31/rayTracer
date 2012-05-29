@@ -56,9 +56,13 @@ Intersection RayTracer::Intersect ( const Ray& _ray )
 //------------------------------------------------------------------------------
 Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 {
-	AABB test( Vector(-1,1,8,1), Vector(2,3,10,1) );
-	if (test.Intersect( _ray))
-		return Color( 1,0,0,1);
+	AABB test( Vector(-3,1,9,1), Vector(3,3,13,1) );
+	float dis;
+	if (test.Intersect( _ray,dis))
+	{
+		std::cout<<dis<<" ";
+		return Color( 0.5/(dis-9),0,0,1);
+	}
 	else
 		return Color ( 0,0,0,1);
 }

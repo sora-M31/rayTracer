@@ -14,7 +14,7 @@ public:
     AABB( const Vector& _min, const Vector& _max );
     ~AABB();
 
-    bool Intersect( const Ray& _ray );
+    bool Intersect( const Ray& _ray, float& o_rayDis );
 
     void SetMin(uint32_t _index, float _value) { m_min[_index] = _value; }
     void SetMax(uint32_t _index, float _value) { m_max[_index] = _value; }
