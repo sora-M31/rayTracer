@@ -33,7 +33,7 @@ class Plane:public Shape
 public:
 	Plane( const Vector& _normal,
 		   float _distance,
-		   Material* _material=0 );
+		   const Material* _material=0 );
 	Plane();
 	~Plane();
 

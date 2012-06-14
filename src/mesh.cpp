@@ -1,85 +1,33 @@
 #include "mesh.h"
 #include "float.h"
-
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-Mesh::Mesh ()
-{}
-//------------------------------------------------------------------------------
-Mesh::~Mesh ()
-{}
-//------------------------------------------------------------------------------
-Mesh::Mesh ( const Vector& _pos, const Material* _pMaterial)
+Triangle Triangle::operator * ( const Matrix& _matrix ) const
 {
-	m_position = _pos;
-	m_pMaterial = _pMaterial;
-	m_transform = Matrix ( 1, 0, 0, _pos.x(),
-						   0, 1, 0, _pos.y(),
-						   0, 0, 1, _pos.z(),
-						   0, 0, 0, 1 );
-}
-//------------------------------------------------------------------------------
-bool Mesh::LoadMesh ( const ObjLoader& _obj )
-{
-	m_pointArray = _obj.GetVertexArray ( );
-	m_normalArray = _obj.GetNormalArray ( );
-	if (  m_pointArray.size ( ) == 0 || m_normalArray.size ( ) == 0 )
-		return false;
-	else
-		return true;
-}
-//------------------------------------------------------------------------------
-void Mesh::PrintData () const
-{
-	for ( uint32_t i=0;i< m_pointArray.size ( ); ++i )
-	{
-		Vector t = m_pointArray[i];
-	}
-	for ( uint32_t i=0 ;i< m_normalArray.size ( ); ++i )
-	{
-		Vector t = m_normalArray[i];
-	}
-}
-//------------------------------------------------------------------------------
-bool Mesh::Intersect ( const Ray& _ray, Intersection& _intersection ) const
-{
-	if (  m_pointArray.size () != 0 && m_normalArray.size () !=0 )
-	{
-		
-		float parameter = FLT_MAX;
-		for ( uint32_t i=0; i< m_pointArray.size () ;i+=3 )
-		{
-			RayTriangle ( _ray, m_transform * m_pointArray[i], m_transform * m_pointArray[i+1], m_transform * m_pointArray[i+2], _intersection, parameter );
-		}
-		return (  _intersection.RayParameter () < FLT_MAX );
-	}
-	else
-		return false;
+	return Triangle( m_vertex[0] * _matrix, m_vertex[1] * _matrix, m_vertex[2] * _matrix,
+					 m_normal[0] * _matrix, m_normal[1] * _matrix, m_normal[2] * _matrix );
 }
 //------------------------------------------------------------------------------
 //from[http://www.flipcode.com/archives/Raytracing_Topics_Techniques-Part_7_Kd-Trees_and_More_Speed.shtml]
-bool Mesh::RayTriangle ( const Ray& _ray, const Vector& _v1, const Vector& _v2, const Vector& _v3, Intersection& o_intersection, float& o_parameter ) const
+bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 {
-	/*      v1
+	/*      v0
 		/\
 	 b /   \c
-	v2/_____\ v3
+	v1/_____\ v2
 		a
 	*/
-	Vector b = _v2 - _v1;
-	Vector c = _v3 - _v1;
+	Vector b = m_vertex[1] - m_vertex[0];
+	Vector c = m_vertex[2] - m_vertex[0];
 	Vector normal = b.Cross (c);
+	if( RealCompare( normal.Dot(normal), 0.0f, 0.00001 ) )
+		return false;
 	Normalise(normal);
 
-	float rayParameter = normal.Dot ( _v1 - _ray.Origin () ) / normal.Dot ( _ray.Direction () );
+	float rayParameter = normal.Dot ( m_vertex[0] - _ray.Origin () ) / normal.Dot ( _ray.Direction () );
 	//no intersection on the plane ( pointing away or parallel )
-	if ( rayParameter < 0.0f || rayParameter > FLT_MAX )
-	{
-		return false;
-	}
-	// if on the plane but farther than the previous intersection
-	if (  rayParameter > o_parameter )
+	if ( rayParameter < 0.0f )
 	{
 		return false;
 	}
@@ -92,7 +40,7 @@ bool Mesh::RayTriangle ( const Ray& _ray, const Vector& _v1, const Vector& _v2, 
 	// p1+ p2+ p3 =1
 	// p2 (  v2 - v1 ) + p3 (  v3 - v1 ) = intersection - v1
 	Vector intersectionPos = _ray.Origin () + rayParameter * _ray.Direction ();
-	Vector diff = intersectionPos - _v1;
+	Vector diff = intersectionPos - m_vertex[0];
 	float bU, bV, cU, cV, diffU, diffV;
 	uint8_t axisU = ( axis + 1 )%3;
 	uint8_t axisV = ( axis + 2 )%3;
@@ -117,9 +65,102 @@ bool Mesh::RayTriangle ( const Ray& _ray, const Vector& _v1, const Vector& _v2, 
 	{
 		return false;
 	}
-	o_intersection = Intersection ( intersectionPos, normal, rayParameter, m_pMaterial );
-	o_parameter = rayParameter;
+	float p1 = 1.0 - p2 - p3;
+	Vector averageNormal = p1 * m_normal[0] + p2 * m_normal[1] + p3 * m_normal[2];
+	Normalise(averageNormal);
+	//std::cout<<averageNormal<<"\n";
+	
+	o_intersection = Intersection ( intersectionPos, averageNormal, rayParameter,0 );
+	//o_intersection = Intersection ( intersectionPos, normal, rayParameter,0 );
 	return true;
+}
+//------------------------------------------------------------------------------
+Mesh::~Mesh ()
+{}
+//------------------------------------------------------------------------------
+Mesh::Mesh ( const Vector& _pos, const ObjLoader& _obj, Material* _pMaterial )
+: m_tree(5, &m_transform)
+{
+	m_position = _pos;
+	m_pMaterial = _pMaterial;
+	m_transform = Matrix ( 1, 0, 0, _pos.x(),
+						   0, 1, 0, _pos.y(),
+						   0, 0, 1, _pos.z(),
+						   0, 0, 0, 1 );
+#if 1
+	uint32_t size = _obj.GetVertexArray().size();
+	for(uint32_t i=0; i< size; i+=3 )
+	{
+		m_tree.AddData( Triangle( _obj.GetVertexArray()[i], _obj.GetVertexArray()[i+1], _obj.GetVertexArray()[i+2],
+								  _obj.GetNormalArray()[i], _obj.GetNormalArray()[i+1], _obj.GetNormalArray()[i+2] ) );
+		m_tree.m_data[i/3].s_id = i/3;
+#if 0
+		std::cout<<_obj.GetVertexArray()[i]<<" ";
+		std::cout<<_obj.GetVertexArray()[i+1]<<" ";
+		std::cout<<_obj.GetVertexArray()[i+2]<<"\n";
+#endif
+#if 0
+		std::cout<<_obj.GetNormalArray()[i]<<" ";
+		std::cout<<_obj.GetNormalArray()[i+1]<<" ";
+		std::cout<<_obj.GetNormalArray()[i+2]<<"\n";
+#endif
+	}
+	m_tree.Init();
+	#if 0
+	for(uint32_t i=0; i< m_tree.m_data.size(); ++i )
+	{
+		 m_tree.m_data[i].Print();
+	}
+#endif
+	
+	uint32_t depth=0;
+	m_tree.BuildTree( m_tree.m_root, depth );
+#endif
+#if 0
+	m_pointArray = _obj.GetVertexArray ( );
+	m_normalArray = _obj.GetNormalArray ( );
+#endif
+}
+//------------------------------------------------------------------------------
+void Mesh::PrintData () const
+{
+#if 0
+	for ( uint32_t i=0;i< m_pointArray.size ( ); ++i )
+	{
+		Vector t = m_pointArray[i];
+	}
+	for ( uint32_t i=0 ;i< m_normalArray.size ( ); ++i )
+	{
+		Vector t = m_normalArray[i];
+	}
+#endif
+}
+//------------------------------------------------------------------------------
+bool Mesh::Intersect ( const Ray& _ray, Intersection& o_intersection ) const
+{
+	//intersect kd tree
+	bool result = m_tree.Intersect( m_tree.m_root, _ray, o_intersection );
+	if(result )
+	{
+		o_intersection.SetMaterial( m_pMaterial );
+	}
+	
+	//set material
+#if 0
+	if (  m_pointArray.size () != 0 && m_normalArray.size () !=0 )
+	{
+		
+		float parameter = FLT_MAX;
+		for ( uint32_t i=0; i< m_pointArray.size () ;i+=3 )
+		{
+			RayTriangle ( _ray, m_transform * m_pointArray[i], m_transform * m_pointArray[i+1], m_transform * m_pointArray[i+2], _intersection, parameter );
+		}
+		return (  _intersection.RayParameter () < FLT_MAX );
+	}
+	else
+		return false;
+#endif
+		return false;
 }
 //------------------------------------------------------------------------------
 void Mesh::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const

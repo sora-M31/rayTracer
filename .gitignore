@@ -8,4 +8,6 @@ src/template.cpp
 output.mel
 resources/*.mtl
 resources/workspace.mel
+tmp/
+resources/*.ma
 

@@ -21,6 +21,7 @@ public:
 	const Vector& Normal () const { return m_normal; }
 	float RayParameter () const { return m_rayParameter; }
 	const Material* GetMaterial() { return m_pMaterial;}
+	void SetMaterial( const Material* _pMaterial ) { m_pMaterial = _pMaterial; }
 
 	//if not hit the edge, there's intersection
 	bool Intersected() const { return m_rayParameter < FLT_MAX; }

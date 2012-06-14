@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <math.h>
 
+#define EPSILON 0.0001
+
 namespace rayTracer
 {
 class Vector
@@ -41,6 +43,7 @@ public:
     Vector& operator += (const Vector& _other);
     Vector& operator -= (const Vector& _other);
     Vector& operator /= ( float _other);
+    bool operator == ( const Vector& _other) const;
     float& operator [] ( uint32_t _index);
     const float& operator [] ( uint32_t _index) const;
 
@@ -111,6 +114,17 @@ inline float& Vector::operator [] ( uint32_t _index)
 {
     assert ( _index < 4 );
     return m_data[_index];
+}
+//------------------------------------------------------------------------------
+inline bool Vector::operator == ( const Vector& _other) const
+{
+    if ( fabs( m_data[0] - _other.m_data[0] ) < EPSILON
+       && fabs( m_data[1] - _other.m_data[1] ) < EPSILON
+       && fabs( m_data[2] - _other.m_data[2] ) < EPSILON
+       && fabs( m_data[3] - _other.m_data[3] ) < EPSILON
+    )
+    return true;
+    else return false;
 }
 //------------------------------------------------------------------------------
 inline const float& Vector::operator [] ( uint32_t _index) const
