@@ -22,7 +22,25 @@ AABB::AABB( const Vector& _min, const Vector& _max )
 {
 }
 //------------------------------------------------------------------------------
-bool AABB::Intersect( const Ray& _ray, float& o_rayDis )
+AABB::AABB( const AABB& _other )
+: m_min( _other.m_min ),
+  m_max( _other.m_max)
+{
+}
+//------------------------------------------------------------------------------
+AABB& AABB::operator = ( const AABB& _other )
+{
+    m_min = _other.m_min;
+    m_max = _other.m_max;
+    return *this;
+}
+//------------------------------------------------------------------------------
+AABB AABB::operator * ( const Matrix& _matrix ) const
+{
+    return AABB( m_min * _matrix, m_max * _matrix );
+}
+//------------------------------------------------------------------------------
+bool AABB::Intersect( const Ray& _ray, float& o_rayDis ) const
 {
     float rayDis = FLT_MAX;
     //test the min faces

@@ -146,15 +146,20 @@ void ObjLoader::Serialize ()
     }
     else
     {
+        std::cout<<"no texture\n";
         uint32_t size = m_faceBuffer.size ();
         for ( uint32_t i=0; i<size; i+=2)
         {
             //vertex
-            uint32_t vertexIndex =  ( m_faceBuffer[i] -1)*2;
+            uint32_t vertexIndex =  ( m_faceBuffer[i] -1)*3;
+            //std::cout<<m_faceBuffer[i] -1<<" ";
+//            std::cout<<vertexIndex<<" ";
+//            std::cout<<vertexIndex+1<<" ";
+//            std::cout<<vertexIndex+2<<"\n";
             m_vertexArray.push_back ( Vector (m_vertexBuffer[vertexIndex], m_vertexBuffer[vertexIndex+1], m_vertexBuffer[vertexIndex+2], 1.0f));
             //normal
-            uint32_t normalIndex =  (m_faceBuffer[i+1]-1)*2;
-            m_normalArray.push_back ( Vector (m_normalBuffer[normalIndex], m_normalBuffer[normalIndex+1], m_normalBuffer[normalIndex+2], 1.0f));
+            uint32_t normalIndex =  (m_faceBuffer[i+1]-1)*3;
+            m_normalArray.push_back ( Vector (m_normalBuffer[normalIndex], m_normalBuffer[normalIndex+1], m_normalBuffer[normalIndex+2], 0.0f));
         }
     }
 }

@@ -5,7 +5,7 @@
 #include "vector.h"
 #include "image.h"
 #include "AABB.h"
-//#define TEST
+#define TEST
 
 
 namespace rayTracer
@@ -56,6 +56,7 @@ Intersection RayTracer::Intersect ( const Ray& _ray )
 //------------------------------------------------------------------------------
 Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 {
+#if 0
 	AABB test( Vector(-3,1,9,1), Vector(3,3,13,1) );
 	float dis;
 	if (test.Intersect( _ray,dis))
@@ -66,7 +67,8 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 	else
 		return Color ( 0,0,0,1);
 }
-#if 0
+#endif
+#if 1
 	Intersection intersection = Intersect ( _ray );
 
 	Color c(0,0,0,0);

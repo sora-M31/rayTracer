@@ -85,7 +85,7 @@ void Sphere::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const
 //------------------------------------------------------------------------------
 Plane::Plane( const Vector& _normal,
 			  float _distance,
-			  Material* _material )
+			  const Material* _material )
 : m_normal( _normal ),
   m_distance( _distance )
 {

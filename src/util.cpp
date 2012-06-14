@@ -28,4 +28,21 @@ void Clamp( float& io_value, float _min, float _max )
 	else if( io_value < _min )
 		io_value = _min;
 }
+//------------------------------------------------------------------------------
+float min( const float& _a, const float& _b, const float& _c )
+{
+	return ( _a<_b ) ? ( (_a<_c )? _a : _c ) : ( ( _b<_c )? _b : _c );
+}
+//------------------------------------------------------------------------------
+float max( const float& _a, const float& _b, const float& _c )
+{
+	return ( _a>_b ) ? ( (_a>_c )? _a : _c ) : ( ( _b>_c )? _b : _c );
+}
+//------------------------------------------------------------------------------
+bool RealCompare( const float& _a, const float& _b, const float& _epsilon)
+{
+	if ( fabs( _a - _b ) < _epsilon )
+		return true;
+	else return false;
+}
 }//end of namespace
