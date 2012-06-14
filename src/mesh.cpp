@@ -9,6 +9,17 @@ Triangle Triangle::operator * ( const Matrix& _matrix ) const
 					 m_normal[0] * _matrix, m_normal[1] * _matrix, m_normal[2] * _matrix );
 }
 //------------------------------------------------------------------------------
+Triangle& Triangle::operator = ( const Triangle& _other )
+{
+	m_vertex[0] = _other.m_vertex[0];
+	m_vertex[1] = _other.m_vertex[1];
+	m_vertex[2] = _other.m_vertex[2];
+	m_normal[0] = _other.m_normal[0];
+	m_normal[1] = _other.m_normal[1];
+	m_normal[2] = _other.m_normal[2];
+	return *this;
+}
+//------------------------------------------------------------------------------
 //from[http://www.flipcode.com/archives/Raytracing_Topics_Techniques-Part_7_Kd-Trees_and_More_Speed.shtml]
 bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 {
@@ -113,6 +124,7 @@ Mesh::Mesh ( const Vector& _pos, const ObjLoader& _obj, Material* _pMaterial )
 	}
 #endif
 	
+	m_tree.Transform( & m_transform);
 	uint32_t depth=0;
 	m_tree.BuildTree( m_tree.m_root, depth );
 #endif

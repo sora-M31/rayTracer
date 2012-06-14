@@ -46,6 +46,7 @@ public:
             DeleteBranch( _node->m_rightNode );
         delete _node;
     }
+    void Transform( const Matrix* _matrix );
     void BuildTree( Node<T>* _node, uint32_t _depth );
     bool Intersect( const Node<T>* _node, const Ray& _ray, Intersection& o_intersection ) const;
     Node<T>* m_root;
@@ -54,6 +55,8 @@ public:
     uint32_t m_leastObjNum;
     const Matrix* m_transform;
     std::vector<T> m_data;
+    std::vector<T> m_dataTransformed;
+    AABB m_bbox;
 };
 //------------------------------------------------------------------------------
 template <class T>
@@ -91,7 +94,7 @@ void KdTree<T>::Init()
             zmin = ptr->Min().z();
         if( ptr->Max().z() > zmax)
             zmax = ptr->Max().z();
-        m_root->m_list.push_back( ptr );
+        //m_root->m_list.push_back( ptr );
         ++iter;
     }
     xmin = xmin - EPSILON;
@@ -100,7 +103,21 @@ void KdTree<T>::Init()
     xmax = xmax + EPSILON;
     ymax = ymax + EPSILON;
     zmax = zmax + EPSILON;
-    m_root->m_box = AABB( xmin, ymin, zmin, xmax, ymax, zmax) ;
+    //m_root->m_box = AABB( xmin, ymin, zmin, xmax, ymax, zmax) ;
+    m_bbox = AABB( xmin, ymin, zmin, xmax, ymax, zmax);
+    m_root->m_box = m_bbox;
+}
+//------------------------------------------------------------------------------
+template <class T>
+void KdTree<T>::Transform(const Matrix* _matrix)
+{
+    m_dataTransformed.reserve( m_data.size() );
+    for( uint32_t i=0; i< m_data.size(); ++i )
+    {
+        m_dataTransformed.push_back (m_data[i] * ( *_matrix ));
+        m_root->m_list.push_back( &m_dataTransformed[i] );
+    }
+    m_root->m_box = m_root->m_box * (*_matrix );
 }
 //------------------------------------------------------------------------------
 template <class T>
@@ -165,13 +182,13 @@ bool KdTree<T>::Intersect( const Node<T>* _node, const Ray& _ray, Intersection& 
     //if there is any return the closest intersection
     {
         float dis;
-        if ( ( _node->m_box*(*m_transform) ).Intersect ( _ray, dis ) )
+        if ( ( _node->m_box ).Intersect ( _ray, dis ) )
         {
             Intersection intersection;
             for( uint32_t i=0; i< _node->m_list.size(); ++i )
             {
                 Intersection tmp;
-                if ( ( ( *_node->m_list[i] ) * (*m_transform) ). Intersect ( _ray, tmp )
+                if ( ( ( *_node->m_list[i] ) ). Intersect ( _ray, tmp )
                      && ( tmp.RayParameter() < intersection.RayParameter() ) )
                     intersection = tmp;
             }
@@ -189,8 +206,8 @@ bool KdTree<T>::Intersect( const Node<T>* _node, const Ray& _ray, Intersection& 
     {
         float disLeft = FLT_MAX;
         float disRight = FLT_MAX;
-        bool leftIntersected = ( _node->m_leftNode->m_box * (*m_transform) ).Intersect( _ray, disLeft );
-        bool rightIntersected = ( _node->m_rightNode->m_box * (*m_transform) ).Intersect( _ray, disRight );
+        bool leftIntersected = ( _node->m_leftNode->m_box  ).Intersect( _ray, disLeft );
+        bool rightIntersected = ( _node->m_rightNode->m_box ).Intersect( _ray, disRight );
         //both have intersection
         if ( leftIntersected && rightIntersected )
         {

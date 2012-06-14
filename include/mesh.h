@@ -22,6 +22,7 @@ public:
 		m_normal.push_back( _n2 );
 		m_normal.push_back( _n3 );
 	};
+	Triangle& operator = ( const Triangle& _other );
 	~Triangle(){};
 	Vector Position() const{ return (m_vertex[0] + m_vertex[1] + m_vertex[2])/3.0; }
 	bool Intersect( const Ray& _ray, Intersection& o_intersection ) const;

@@ -22,8 +22,8 @@ Scene::Scene()
 
     Material* diffuse = new Material ( 0, 0, sphere1 );
     Material* test2 = new Material ( 0, 0 , test);
-    Material* glass = new Material ( 0, 1, test, GLASS_INDEX );
-    //Material* glass = new Material ( 0, 1, sphere2, GLASS_INDEX );
+    //Material* glass = new Material ( 0, 1, test, GLASS_INDEX );
+    Material* glass = new Material ( 0, 1, sphere2, GLASS_INDEX );
     Material* floor = new Material ( 0, 0, plane );
 
     Texture* checker = new Texture(160, 160);
@@ -31,14 +31,14 @@ Scene::Scene()
     floor->SetTexture( checker );
 
     sphere1->SetMaterial( diffuse );
-    test->SetMaterial( glass );
-    //test->SetMaterial( test2 );
+    //test->SetMaterial( glass );
+    test->SetMaterial( test2 );
     sphere2->SetMaterial( glass );
     plane->SetMaterial( floor );
 
     m_shapes.push_back( plane );
-    //m_shapes.push_back( sphere1 );
-    //m_shapes.push_back( sphere2 );
+    m_shapes.push_back( sphere1 );
+    m_shapes.push_back( sphere2 );
     m_shapes.push_back( test );
     m_materials.push_back( diffuse );
     m_materials.push_back( floor );
