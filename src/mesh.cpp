@@ -79,7 +79,6 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	float p1 = 1.0 - p2 - p3;
 	Vector averageNormal = p1 * m_normal[0] + p2 * m_normal[1] + p3 * m_normal[2];
 	Normalise(averageNormal);
-	//std::cout<<averageNormal<<"\n";
 	
 	o_intersection = Intersection ( intersectionPos, averageNormal, rayParameter,0 );
 	//o_intersection = Intersection ( intersectionPos, normal, rayParameter,0 );
