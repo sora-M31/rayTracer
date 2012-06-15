@@ -6,7 +6,18 @@ namespace rayTracer
 Triangle Triangle::operator * ( const Matrix& _matrix ) const
 {
 	return Triangle( m_vertex[0] * _matrix, m_vertex[1] * _matrix, m_vertex[2] * _matrix,
-					 m_normal[0] * _matrix, m_normal[1] * _matrix, m_normal[2] * _matrix );
+					 m_normal[0] * _matrix, m_normal[1] * _matrix, m_normal[2] * _matrix, s_id );
+}
+//------------------------------------------------------------------------------
+Triangle::Triangle ( const Triangle& _other )
+{
+	m_vertex.push_back(_other.m_vertex[0]);
+	m_vertex.push_back(_other.m_vertex[1]);
+	m_vertex.push_back(_other.m_vertex[2]);
+	m_normal.push_back(_other.m_normal[0]);
+	m_normal.push_back(_other.m_normal[1]);
+	m_normal.push_back(_other.m_normal[2]);
+	s_id = _other.s_id;
 }
 //------------------------------------------------------------------------------
 Triangle& Triangle::operator = ( const Triangle& _other )
@@ -17,6 +28,7 @@ Triangle& Triangle::operator = ( const Triangle& _other )
 	m_normal[0] = _other.m_normal[0];
 	m_normal[1] = _other.m_normal[1];
 	m_normal[2] = _other.m_normal[2];
+	s_id = _other.s_id;
 	return *this;
 }
 //------------------------------------------------------------------------------
@@ -32,7 +44,7 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	Vector b = m_vertex[1] - m_vertex[0];
 	Vector c = m_vertex[2] - m_vertex[0];
 	Vector normal = b.Cross (c);
-	if( RealCompare( normal.Dot(normal), 0.0f, 0.00001 ) )
+	if( RealCompare( normal.Dot(normal), 0.0f, 0.00000000001 ) )
 		return false;
 	Normalise(normal);
 
@@ -99,11 +111,11 @@ Mesh::Mesh ( const Vector& _pos, const ObjLoader& _obj, Material* _pMaterial )
 						   0, 0, 0, 1 );
 #if 1
 	uint32_t size = _obj.GetVertexArray().size();
+	m_tree.m_data.reserve(size);
 	for(uint32_t i=0; i< size; i+=3 )
 	{
-		m_tree.AddData( Triangle( _obj.GetVertexArray()[i], _obj.GetVertexArray()[i+1], _obj.GetVertexArray()[i+2],
-								  _obj.GetNormalArray()[i], _obj.GetNormalArray()[i+1], _obj.GetNormalArray()[i+2] ) );
-		m_tree.m_data[i/3].s_id = i/3;
+		m_tree.m_data.push_back( Triangle( _obj.GetVertexArray()[i], _obj.GetVertexArray()[i+1], _obj.GetVertexArray()[i+2],
+								  _obj.GetNormalArray()[i], _obj.GetNormalArray()[i+1], _obj.GetNormalArray()[i+2] , i/3.0) );
 #if 0
 		std::cout<<_obj.GetVertexArray()[i]<<" ";
 		std::cout<<_obj.GetVertexArray()[i+1]<<" ";

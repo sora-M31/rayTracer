@@ -12,8 +12,9 @@ class Triangle
 {
 public:
 	Triangle(){};
+	Triangle( const Triangle& _other );
 	Triangle( const Vector& _v1, const Vector& _v2, const Vector& _v3,
-			  const Vector& _n1, const Vector& _n2, const Vector& _n3 )
+			  const Vector& _n1, const Vector& _n2, const Vector& _n3, uint32_t _id)
 	{
 		m_vertex.push_back( _v1 );
 		m_vertex.push_back( _v2 );
@@ -21,6 +22,7 @@ public:
 		m_normal.push_back( _n1 );
 		m_normal.push_back( _n2 );
 		m_normal.push_back( _n3 );
+		s_id =_id;
 	};
 	Triangle& operator = ( const Triangle& _other );
 	~Triangle(){};
