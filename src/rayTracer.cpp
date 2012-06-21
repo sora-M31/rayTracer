@@ -11,8 +11,9 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-RayTracer::RayTracer()
-:m_antialias ( false ),
+RayTracer::RayTracer( const Scene* _pScene )
+:m_pScene( _pScene ),
+ m_antialias ( false ),
  m_depthOfField ( false ),
  m_softShadow ( false ),
  m_differentGeo ( false )
@@ -41,9 +42,9 @@ Intersection RayTracer::Intersect ( const Ray& _ray )
 {
 	Intersection intersection;
 
-	for (size_t i = 0; i < m_scene.GetShapes().size(); ++i)
+	for (size_t i = 0; i < m_pScene->GetShapes().size(); ++i)
 	{
-		const Shape* shape = m_scene.GetShapes()[i];
+		const Shape* shape = m_pScene->GetShapes()[i];
 		Intersection tmpIntersection;
 		if ( shape->Intersect ( _ray, intersection )
              && tmpIntersection.RayParameter() < intersection.RayParameter()  )
@@ -97,10 +98,10 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 			 intersection.GetMaterial()->Refraction() < EPSILON )
 		{
 			//direct light
-			uint32_t size = m_scene.GetLights().size();
+			uint32_t size = m_pScene->GetLights().size();
 			for ( uint32_t i= 0; i < size; ++i)
 			{
-				const Light* light = m_scene.GetLights()[i];
+				const Light* light = m_pScene->GetLights()[i];
 				std::list<Ray> shadowRays;
 				float attenuation=1.0;
 			    light->GetShadowRay(intersection, shadowRays, attenuation);
@@ -199,7 +200,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 }
 #endif
 //------------------------------------------------------------------------------
-void RayTracer::CastRay()
+void RayTracer::CastRay( uint32_t _frame)
 {
 	Image img (800, 600);
 	uint32_t depth =3;
@@ -208,7 +209,7 @@ void RayTracer::CastRay()
 	debug_mel.open("output.mel");
 #endif
 
-	const Camera& camera  = m_scene.GetCamera();
+	const Camera& camera  = m_pScene->GetCamera();
 
 	float pixelWidth = 1.0f / (float) img.Width();
 	float pixelHeight = 1.0f / (float) img.Height();
@@ -274,8 +275,7 @@ void RayTracer::CastRay()
 	ss << "img";
 	ss.width( 4 );
 	ss.fill( '0' );
-	//ss << ( i+1 ) << ".tga";
-	ss << 0 << ".tga";
+	ss << _frame +1 << ".tga";
 	// Write the image to file
 	img.WriteTga( ss.str().c_str() );
 }

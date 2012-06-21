@@ -11,7 +11,7 @@ namespace rayTracer
 #define AIR_INDEX  1.00028f
 #define GLASS_INDEX 2.50f
 static Material* const g_air = new Material( 0, 1, 0,AIR_INDEX );
-
+enum Path { DIFFUSE, SPECULAR, ABSORB, TRANSMIT };
 // --------------------------------------------------------------------------
 /// \brief Sampling a rectangle
 /// \param centre

@@ -10,14 +10,16 @@ namespace rayTracer
 class RayTracer
 {
 public:
-    RayTracer();
+    RayTracer( const Scene* _pScene =0 );
     ~RayTracer();
+	void SetScene( const Scene* _pScene ) { m_pScene = _pScene; }
     Intersection Intersect ( const Ray& _ray );
     Color Trace( const Ray& _ray, int _depth, std::ofstream& o_output );
-    void CastRay();
+    void CastRay( uint32_t _frame);
 
 private:
-    Scene m_scene;
+    //Scene m_scene;
+	const Scene* m_pScene;
     bool m_antialias;
     bool m_depthOfField;
     bool m_softShadow;
