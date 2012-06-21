@@ -39,7 +39,7 @@ Scene::Scene()
     m_shapes.push_back( plane );
     m_shapes.push_back( sphere1 );
     m_shapes.push_back( sphere2 );
-    m_shapes.push_back( test );
+    //m_shapes.push_back( test );
     m_materials.push_back( diffuse );
     m_materials.push_back( floor );
     m_materials.push_back( glass );

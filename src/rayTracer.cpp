@@ -11,13 +11,15 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-RayTracer::RayTracer( const Scene* _pScene )
+RayTracer::RayTracer( const Scene* _pScene, const Camera* _pCamera )
 :m_pScene( _pScene ),
+ m_pCamera( _pCamera ),
  m_antialias ( false ),
- m_depthOfField ( false ),
+ m_depthOfField ( true ),
  m_softShadow ( false ),
  m_differentGeo ( false )
 {
+#if 0
 	if(m_depthOfField)
 	{
 		//sampling camera
@@ -32,7 +34,7 @@ RayTracer::RayTracer( const Scene* _pScene )
 
 		Sampling( centre, aperture, aperture, unitNumber, unitNumber, unitX, unitY, lenSample );
 	}
-	
+#endif
 }
 //------------------------------------------------------------------------------
 RayTracer::~RayTracer()
@@ -209,7 +211,7 @@ void RayTracer::CastRay( uint32_t _frame)
 	debug_mel.open("output.mel");
 #endif
 
-	const Camera& camera  = m_pScene->GetCamera();
+	//const Camera& camera  = m_pScene->GetCamera();
 
 	float pixelWidth = 1.0f / (float) img.Width();
 	float pixelHeight = 1.0f / (float) img.Height();
@@ -233,34 +235,51 @@ void RayTracer::CastRay( uint32_t _frame)
 				while( iter!= pixSamples.end() )
 				{
 					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), (*iter), g_air );
-					Ray ray = camera.WorldTransform() * cameraSpaceRay;
+					Ray ray = m_pCamera->WorldTransform() * cameraSpaceRay;
 					color += Trace( ray, depth, debug_mel);
 					++iter;
 				}
 				color/=pixSamples.size();
 			}
 			//depth of field
+#if 0
 			else if( m_depthOfField )
 			{
 				//point on ray = origin + dir * param
 				float focalLength = 10;
 				Vector focalPoint = Vector(0, 0, 0, 1.0f) + Vector(dx, dy, 1.0f, 0) * focalLength;
 				//calculate color using rays formed from sample points on lens and fp on focal plane,
-				std::list<Vector>::iterator iter = lenSample.begin();
-				while( iter!= lenSample.end() )
+				std::list<Vector>::const_iterator iter = m_pCamera->LensSample().begin();
+				while( iter!= m_pCamera->LensSample().end() )
 				{
 					Vector dir = (focalPoint - (*iter) ).Normalise();
 					Ray cameraSpaceRay = Ray( (*iter), dir, g_air);
-					Ray ray = camera.Transform() * cameraSpaceRay;
+					Ray ray = m_pCamera->Transform() * cameraSpaceRay;
 					color += Trace( ray, depth, debug_mel);
 					++iter;
 				}
-				color/= lenSample.size();
+				color/= m_pCamera->LensSample().size();
 			}
+#endif
+#if 1
+			else if( m_depthOfField )
+			{
+				std::list<Vector>::const_iterator iter = m_pCamera->LensSample().begin();
+				while( iter!= m_pCamera->LensSample().end() )
+				{
+					Vector dir = m_pCamera->RayDirection( dx, dy, *iter );
+					Ray cameraSpaceRay = Ray( (*iter), dir, g_air);
+					Ray ray = m_pCamera->Transform() * cameraSpaceRay;
+					color += Trace( ray, depth, debug_mel);
+					++iter;
+				}
+				color/= m_pCamera->LensSample().size();
+			}
+#endif
 			else
 			{
 				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), g_air );
-				Ray ray = camera.WorldTransform() * cameraSpaceRay;
+				Ray ray = m_pCamera->WorldTransform() * cameraSpaceRay;
 				color = Trace( ray, depth, debug_mel);
 			}
 

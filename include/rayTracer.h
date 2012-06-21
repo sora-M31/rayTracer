@@ -10,7 +10,7 @@ namespace rayTracer
 class RayTracer
 {
 public:
-    RayTracer( const Scene* _pScene =0 );
+    RayTracer( const Scene* _pScene =0, const Camera* _pCamera=0 );
     ~RayTracer();
 	void SetScene( const Scene* _pScene ) { m_pScene = _pScene; }
     Intersection Intersect ( const Ray& _ray );
@@ -20,11 +20,12 @@ public:
 private:
     //Scene m_scene;
 	const Scene* m_pScene;
+	const Camera* m_pCamera;
     bool m_antialias;
     bool m_depthOfField;
     bool m_softShadow;
     bool m_differentGeo;
-	std::list<Vector> lenSample;
+	//std::list<Vector> lenSample;
 };//end of class
 }//end of namespace
 #endif //end of define
