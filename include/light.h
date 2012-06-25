@@ -4,27 +4,29 @@
 #include "ray.h"
 #include "util.h"
 #include "intersection.h"
+#include "shape.h"
 
 namespace rayTracer
 {
 typedef std::list<Ray> RayList;
-class Light
+class Light : public Shape
 {
 public:
 	Light ( const Vector& _position, float _intensity )
-	: m_position ( _position ),
-	  m_intensity ( _intensity )
-	{}
+	: m_intensity ( _intensity )
+	{
+		m_translation = _position;
+	}
 	Light() {}
 	~Light() {}
 
-	const Vector& Position () const { return m_position; }
 	const float& Intensity () const { return m_intensity; }
-
 	virtual void GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, float& o_attenuation ) const = 0;
 
+	bool Intersect(const Ray& _ray, Intersection& o_intersection ) const { return false; }
+    void ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const {}
+
 protected:
-	Vector m_position;
 	float m_intensity;
 };
 }//end of namespace

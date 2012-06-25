@@ -1,29 +1,20 @@
 #include "camera.h"
+#include "quaternion.h"
 
 namespace rayTracer
 {
+//------------------------------------------------------------------------------
 Camera::Camera ( float _aperture, float _focalLength, float _viewDistance )
 : m_aperture( _aperture ),
   m_focalLength( _focalLength ),
   m_viewDistance( _viewDistance )
 {
-    m_transform.AsIdentity();
-    m_worldToCamera.AsIdentity();
-}
-//------------------------------------------------------------------------------
-Camera::Camera ( const Matrix& _transform )
-: m_transform ( _transform )
-{
-    m_worldToCamera = m_transform.Inverse ();
+	m_translation = Vector( 0,0,0,1 );
+	m_rotation = Quaternion( 1,0,0,0 );
 }
 //------------------------------------------------------------------------------
 Camera::~Camera()
 {}
-//------------------------------------------------------------------------------
-Vector Camera::ToCameraSpace ( const Vector& _worldPosition )
-{
-    return m_worldToCamera * _worldPosition;
-}
 //------------------------------------------------------------------------------
 void Camera::SampleLens( float _unitNumber )
 {

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <assert.h>
 #include <math.h>
+#include "util.h"
 
 #define EPSILON 0.0001
 
@@ -80,7 +81,10 @@ inline Vector Vector::Cross ( const Vector& _other ) const
 inline float Vector::Length () const
 {
     float lenSqr = this->Dot ( *this ) ;
-    assert ( lenSqr != 0 );
+    if( RealCompare( lenSqr, 0, 0.00000000000001) )
+    {
+        return 0;
+    }
     return sqrt ( lenSqr );
 }
 //------------------------------------------------------------------------------

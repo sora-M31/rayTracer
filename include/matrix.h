@@ -21,7 +21,7 @@ public:
     ~Matrix ();
     // --------------------------------------------------------------------------
     /// \brief Set matrix to identity matrix
-    void AsIdentity ();
+    Matrix AsIdentity ();
     float Determinant () const;
     Matrix Transpose () const;
     Matrix Inverse () const;
@@ -43,7 +43,8 @@ public:
     Matrix& operator = ( const Matrix& _other );
     Vector operator [] ( uint32_t _index ) const;
     Vector& operator []  ( uint32_t _index );
-    void PrintMatrix();
+    void Print() const;
+    Vector Translation() const { return Vector ( m_mat[0][3], m_mat[1][3], m_mat [2][3], 1 ); }
 private:
     Vector m_mat[4];
 };//end of class

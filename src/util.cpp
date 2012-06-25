@@ -1,5 +1,7 @@
 #include "util.h"
+
 #include <math.h>
+#include "vector.h"
 
 namespace rayTracer
 {

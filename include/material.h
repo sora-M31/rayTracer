@@ -2,11 +2,13 @@
 #define _MATERIAL_H_
 
 #include "texture.h"
-#include "vector.h"
+//#include "vector.h"
 
 namespace rayTracer
 {
 class Shape;
+class Vector;
+
 class Material
 {
 public:

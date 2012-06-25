@@ -5,7 +5,7 @@ namespace rayTracer
 //------------------------------------------------------------------------------
 PointLight::PointLight ( const Vector& _position, float _intensity )
 {
-    m_position = _position;
+    m_translation = _position;
     m_intensity = _intensity;
 }
 //------------------------------------------------------------------------------
@@ -14,7 +14,7 @@ PointLight::~PointLight()
 //------------------------------------------------------------------------------
 void PointLight::GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, float& o_attenuation ) const
 {
-	Vector lightDir = m_position - _intersection.Position();
+	Vector lightDir = Position() - _intersection.Position();
 	float dis = lightDir.Length();
 	float attenuation = m_intensity / ( dis*dis );
 	Clamp( attenuation, 0, 1);

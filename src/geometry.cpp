@@ -7,7 +7,7 @@ namespace rayTracer
 Sphere::Sphere( const Vector& _pos, float _radius )
 : m_radius( _radius )
 {
-    m_position = _pos;
+	Translate( _pos);
     m_radiusSquared = _radius * _radius;
 }
 //------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ Sphere::Sphere( const Vector& _pos,
                 const Material* _material )
 : m_radius( _radius )
 {
-    m_position = _pos;
+	Translate( _pos);
     m_pMaterial = _material;
     m_radiusSquared = _radius * _radius;
 }
@@ -30,10 +30,10 @@ Sphere::~Sphere()
 bool Sphere::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 {
 	// ray pointing away from sphere
-	if ( _ray.Direction().Dot( Vector( m_position - _ray.Origin() ) ) < 0 )
+	if ( _ray.Direction().Dot( Vector( Position() - _ray.Origin() ) ) < 0 )
 	    return false;
 
-	Vector p = m_position - _ray.Origin();
+	Vector p = Position() - _ray.Origin();
 	float pDotRayDir = p.Dot( _ray.Direction() );
 
 	/* pDotRayDir distance between origin and P's projection on Ray
@@ -67,7 +67,7 @@ bool Sphere::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	{
 		rayParameter = pDotRayDir + sqrtf( temp );
 		Vector position = _ray.GetPosition( rayParameter );
-		Vector normal = ( position - Center() ).Normalise();
+		Vector normal = ( position - Position() ).Normalise();
 		o_intersection =  Intersection( position, normal, rayParameter, g_air );
 		//inside intersection;
 		return true;
@@ -75,7 +75,7 @@ bool Sphere::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 		
 	rayParameter = pDotRayDir - sqrtf( temp );
 	Vector position = _ray.GetPosition( rayParameter );
-	Vector normal = ( position - Center() ).Normalise();
+	Vector normal = ( position - Position() ).Normalise();
 	o_intersection =  Intersection( position, normal, rayParameter, m_pMaterial );
 	return true;
 }
@@ -118,4 +118,97 @@ void Plane::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const
 		o_v = _pos.Dot( m_v )/30 ;
 }
 //------------------------------------------------------------------------------
+Triangle Triangle::operator * ( const Matrix& _matrix ) const
+{
+	return Triangle( m_vertex[0] * _matrix, m_vertex[1] * _matrix, m_vertex[2] * _matrix,
+					 m_normal[0] * _matrix, m_normal[1] * _matrix, m_normal[2] * _matrix, s_id );
+}
+//------------------------------------------------------------------------------
+Triangle::Triangle ( const Triangle& _other )
+{
+	m_vertex.push_back(_other.m_vertex[0]);
+	m_vertex.push_back(_other.m_vertex[1]);
+	m_vertex.push_back(_other.m_vertex[2]);
+	m_normal.push_back(_other.m_normal[0]);
+	m_normal.push_back(_other.m_normal[1]);
+	m_normal.push_back(_other.m_normal[2]);
+	s_id = _other.s_id;
+}
+//------------------------------------------------------------------------------
+Triangle& Triangle::operator = ( const Triangle& _other )
+{
+	m_vertex[0] = _other.m_vertex[0];
+	m_vertex[1] = _other.m_vertex[1];
+	m_vertex[2] = _other.m_vertex[2];
+	m_normal[0] = _other.m_normal[0];
+	m_normal[1] = _other.m_normal[1];
+	m_normal[2] = _other.m_normal[2];
+	s_id = _other.s_id;
+	return *this;
+}
+//------------------------------------------------------------------------------
+//from[http://www.flipcode.com/archives/Raytracing_Topics_Techniques-Part_7_Kd-Trees_and_More_Speed.shtml]
+bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
+{
+	/*      v0
+		/\
+	 b /   \c
+	v1/_____\ v2
+		a
+	*/
+	Vector b = m_vertex[1] - m_vertex[0];
+	Vector c = m_vertex[2] - m_vertex[0];
+	Vector normal = b.Cross (c);
+	if( RealCompare( normal.Dot(normal), 0.0f, 0.00000000001 ) )
+		return false;
+	Normalise(normal);
+
+	float rayParameter = normal.Dot ( m_vertex[0] - _ray.Origin () ) / normal.Dot ( _ray.Direction () );
+	//no intersection on the plane ( pointing away or parallel )
+	if ( rayParameter < 0.0f )
+	{
+		return false;
+	}
+
+	//if on the plane
+	//solve the problem on 2d
+	//get dominant axis of normal
+    uint8_t axis = normal.DominantAxis();
+	// p = p1*v1 + p2*v2 + p3*v3
+	// p1+ p2+ p3 =1
+	// p2 (  v2 - v1 ) + p3 (  v3 - v1 ) = intersection - v1
+	Vector intersectionPos = _ray.Origin () + rayParameter * _ray.Direction ();
+	Vector diff = intersectionPos - m_vertex[0];
+	float bU, bV, cU, cV, diffU, diffV;
+	uint8_t axisU = ( axis + 1 )%3;
+	uint8_t axisV = ( axis + 2 )%3;
+	diffU = diff[axisU];
+	diffV = diff[axisV];
+	bU = b[axisU];
+	bV = b[axisV];
+	cU = c[axisU];
+	cV = c[axisV];
+	float tmp =  bU * cV - bV * cU ;
+	float p2 = (  cV * diffU - cU * diffV ) / tmp;
+	if ( p2<0.0 )
+	{
+		return false;
+	}
+	float p3 = (  bU * diffV - bV * diffU ) / tmp;
+	if (  p3<0.0 )
+	{
+		return false;
+	}
+	if (  p2+ p3> 1.0 )
+	{
+		return false;
+	}
+	float p1 = 1.0 - p2 - p3;
+	Vector averageNormal = p1 * m_normal[0] + p2 * m_normal[1] + p3 * m_normal[2];
+	Normalise(averageNormal);
+	
+	o_intersection = Intersection ( intersectionPos, averageNormal, rayParameter,0 );
+	//o_intersection = Intersection ( intersectionPos, normal, rayParameter,0 );
+	return true;
+}
 }//end of namespace

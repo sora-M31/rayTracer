@@ -33,12 +33,13 @@ Matrix::~Matrix ()
 {
 }
 //------------------------------------------------------------------------------
-void Matrix::AsIdentity ()
+Matrix Matrix::AsIdentity ()
 {
     m_mat[0] = Vector ( 1, 0, 0, 0 );
     m_mat[1] = Vector ( 0, 1, 0, 0 );
     m_mat[2] = Vector ( 0, 0, 1, 0 );
     m_mat[3] = Vector ( 0, 0, 0, 1 );
+    return *this;
 }
 //------------------------------------------------------------------------------
 float Matrix::Determinant () const
@@ -122,7 +123,7 @@ Matrix Matrix::operator * ( float i_other ) const
     return Matrix( m_mat[0] * i_other, m_mat[1] * i_other, m_mat [2] * i_other, m_mat[3] * i_other );
 }
 //------------------------------------------------------------------------------
-void Matrix::PrintMatrix ()
+void Matrix::Print() const
 {
     std::cout<<m_mat[0]<<"\n"<<m_mat[1]<<"\n"<<m_mat[2]<<"\n"<<m_mat[3]<<"\n";
 }

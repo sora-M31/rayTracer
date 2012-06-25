@@ -5,17 +5,16 @@
 #include "vector.h"
 #include "image.h"
 #include "AABB.h"
-#define TEST
+//#define TEST
 
 
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-RayTracer::RayTracer( const Scene* _pScene, const Camera* _pCamera )
+RayTracer::RayTracer( Scene* _pScene )
 :m_pScene( _pScene ),
- m_pCamera( _pCamera ),
  m_antialias ( false ),
- m_depthOfField ( true ),
+ m_depthOfField ( false ),
  m_softShadow ( false ),
  m_differentGeo ( false )
 {
@@ -48,7 +47,7 @@ Intersection RayTracer::Intersect ( const Ray& _ray )
 	{
 		const Shape* shape = m_pScene->GetShapes()[i];
 		Intersection tmpIntersection;
-		if ( shape->Intersect ( _ray, intersection )
+		if ( shape->Intersect ( _ray, intersection)
              && tmpIntersection.RayParameter() < intersection.RayParameter()  )
         {
 			intersection = tmpIntersection;
@@ -235,8 +234,7 @@ void RayTracer::CastRay( uint32_t _frame)
 				while( iter!= pixSamples.end() )
 				{
 					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), (*iter), g_air );
-					Ray ray = m_pCamera->WorldTransform() * cameraSpaceRay;
-					color += Trace( ray, depth, debug_mel);
+					color += Trace( cameraSpaceRay, depth, debug_mel);
 					++iter;
 				}
 				color/=pixSamples.size();
@@ -254,14 +252,14 @@ void RayTracer::CastRay( uint32_t _frame)
 				{
 					Vector dir = (focalPoint - (*iter) ).Normalise();
 					Ray cameraSpaceRay = Ray( (*iter), dir, g_air);
-					Ray ray = m_pCamera->Transform() * cameraSpaceRay;
+					Ray ray = m_pCamera->Transformation() * cameraSpaceRay;
 					color += Trace( ray, depth, debug_mel);
 					++iter;
 				}
 				color/= m_pCamera->LensSample().size();
 			}
 #endif
-#if 1
+#if 0
 			else if( m_depthOfField )
 			{
 				std::list<Vector>::const_iterator iter = m_pCamera->LensSample().begin();
@@ -269,7 +267,8 @@ void RayTracer::CastRay( uint32_t _frame)
 				{
 					Vector dir = m_pCamera->RayDirection( dx, dy, *iter );
 					Ray cameraSpaceRay = Ray( (*iter), dir, g_air);
-					Ray ray = m_pCamera->Transform() * cameraSpaceRay;
+					Ray ray = m_pCamera->Transformation() * cameraSpaceRay;
+					//Ray ray = _camTrans * cameraSpaceRay;
 					color += Trace( ray, depth, debug_mel);
 					++iter;
 				}
@@ -279,8 +278,8 @@ void RayTracer::CastRay( uint32_t _frame)
 			else
 			{
 				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), g_air );
-				Ray ray = m_pCamera->WorldTransform() * cameraSpaceRay;
-				color = Trace( ray, depth, debug_mel);
+				//color = Trace( ray, depth, debug_mel);
+				color = Trace( cameraSpaceRay, depth, debug_mel);
 			}
 
 			img.Set( x, y, color );
@@ -291,7 +290,7 @@ void RayTracer::CastRay( uint32_t _frame)
 #endif
 	// Format the filename
 	std::stringstream ss;
-	ss << "img";
+	ss << "img/img";
 	ss.width( 4 );
 	ss.fill( '0' );
 	ss << _frame +1 << ".tga";

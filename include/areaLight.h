@@ -11,6 +11,8 @@ public:
 	~AreaLight ();
 
 	void GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, float& o_attenuation ) const;
+	Vector Normal();
+	void ToCameraSpace( const Matrix& _transform);
 
 private:
 	Vector m_normal;

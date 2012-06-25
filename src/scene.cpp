@@ -11,24 +11,30 @@ namespace rayTracer
 //------------------------------------------------------------------------------
 Scene::Scene()
 {
+	m_stack.push_back( Matrix().AsIdentity() );
+
     ObjLoader obj;
     obj.ParseFile ("resources/teapot.obj" );
     //obj.PrintLoadedInfo();
+    ObjLoader loadplane;
+    loadplane.ParseFile( "resources/plane.obj");
 
-    Shape* sphere1 = new Sphere( Vector( 1, 0, 10, 1), 1.0 );
-    Shape* sphere2 = new Sphere( Vector( -1, 0, 7, 1), 1.0 );
-    Shape* plane = new Plane( Vector(0,1,0,0), -1 );
+    Shape* sphere1 = new Sphere( Vector( 1, 0, 3, 1), 1.0 );
+    Shape* sphere2 = new Sphere( Vector( -1, 0, 0, 1), 1.0 );
+    //Shape* plane = new Plane( Vector(0,1,0,0), -1 );
+    Shape* plane = new Mesh( Vector(0,-1,0,1), loadplane );
     Shape* test = new Mesh( Vector ( 0.5,0, 8, 1), obj);
 
     Material* diffuse = new Material ( 0, 0, sphere1 );
     Material* test2 = new Material ( 0, 0 , test);
     //Material* glass = new Material ( 0, 1, test, GLASS_INDEX );
     Material* glass = new Material ( 0, 1, sphere2, GLASS_INDEX );
+    //Material* floor = new Material ( 0, 0, plane );
     Material* floor = new Material ( 0, 0, plane );
 
     Texture* checker = new Texture(160, 160);
     checker->MakeChecker();
-    floor->SetTexture( checker );
+    //floor->SetTexture( checker );
 
     sphere1->SetMaterial( diffuse );
     //test->SetMaterial( glass );
@@ -36,9 +42,9 @@ Scene::Scene()
     sphere2->SetMaterial( glass );
     plane->SetMaterial( floor );
 
-    m_shapes.push_back( plane );
+	m_shapes.push_back( plane );
     m_shapes.push_back( sphere1 );
-    m_shapes.push_back( sphere2 );
+    //m_shapes.push_back( sphere2 );
     //m_shapes.push_back( test );
     m_materials.push_back( diffuse );
     m_materials.push_back( floor );
@@ -50,6 +56,7 @@ Scene::Scene()
     //Light* light2 = new AreaLight ( Vector (2,3,9,1),3,Vector(0,-1,0,0), 4, 4 );
 
     m_lights.push_back ( light1);
+	//m_shapes.push_back ( light1);
 }
 //------------------------------------------------------------------------------
 Scene::~Scene()
@@ -74,5 +81,56 @@ Scene::~Scene()
     {
         delete m_textures[i];
     }
+}
+//------------------------------------------------------------------------------
+void Scene::Update( uint32_t _time)
+{
+	m_camera.Translate( Vector( 0,0,-3,1) );
+#if 0
+	std::cout<<m_camera.Transformation().Inverse()[0][3]<<" ";
+	std::cout<<m_camera.Transformation().Inverse()[1][3]<<" ";
+	std::cout<<m_camera.Transformation().Inverse()[2][3]<<"\n";
+#endif
+	//m_stack.push_back ( Quaternion( 0.1*_time, 0,1,0 ).AsMatrix() );
+	m_stack.push_back ( m_camera.LocalTransformation().Inverse() );
+#if 1
+    uint32_t size = m_shapes.size();
+    for( uint32_t i = 0; i < size; ++i )
+    {
+#if 0
+	std::cout<<m_shapes[i]->Transformation()[0][3]<<" ";
+	std::cout<<m_shapes[i]->Transformation()[1][3]<<" ";
+	std::cout<<m_shapes[i]->Transformation()[2][3]<<"\n";
+#endif
+        //m_shapes[i]->Rotate( 0.05 * _time, Vector ( 0,1,0,0) );
+		m_stack.push_back ( m_shapes[i]->LocalTransformation() );
+		m_shapes[i]->ToCameraSpace( GetStackMatrix() );
+		m_stack.pop_back();
+    }
+    size = m_lights.size();
+    for( uint32_t i = 0; i < size; ++i )
+    {
+        //m_lights[i]->Rotate( 0.1 * _time, Vector ( 0,1,0,0) );
+        //m_lights[i]->Translate( Vector ( 0,0.5*_time,0,1) );
+		m_stack.push_back ( m_lights[i]->LocalTransformation() );
+		m_lights[i]->ToCameraSpace( GetStackMatrix() );
+		m_stack.pop_back();
+    }
+#endif
+	//m_stack.pop_back();
+	m_stack.pop_back();
+}
+//------------------------------------------------------------------------------
+Matrix Scene::GetStackMatrix()
+{
+    std::list<Matrix>::iterator iter = m_stack.begin();
+    Matrix transform;
+    while( iter != m_stack.end() )
+    {
+        transform = (*iter) * transform;
+        ++iter;
+    }
+    return transform;
+	
 }
 }//end of space

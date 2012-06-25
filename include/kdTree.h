@@ -31,12 +31,12 @@ template <class T>
 class KdTree
 {
 public:
-    KdTree( uint32_t _num, const Matrix* _matrix, const std::vector<T>& _list = std::vector<T>(0) );
+    KdTree( uint32_t _num, const std::vector<T>& _list = std::vector<T>(0) );
     ~KdTree()
     {
         DeleteBranch( m_root );
     }
-    void Init();
+    void SetBBox();
     void AddData(const T& _data) { m_data.push_back(_data); };
     void DeleteBranch( Node<T>* _node )
     {
@@ -46,30 +46,28 @@ public:
             DeleteBranch( _node->m_rightNode );
         delete _node;
     }
-    void Transform( const Matrix* _matrix );
+    void Transform( const Matrix& _transform );
     void BuildTree( Node<T>* _node, uint32_t _depth );
     bool Intersect( const Node<T>* _node, const Ray& _ray, Intersection& o_intersection ) const;
     Node<T>* m_root;
 
 //private:
     uint32_t m_leastObjNum;
-    const Matrix* m_transform;
     std::vector<T> m_data;
     std::vector<T> m_dataTransformed;
     AABB m_bbox;
 };
 //------------------------------------------------------------------------------
 template <class T>
-KdTree<T>::KdTree( uint32_t _num, const Matrix* _matrix, const std::vector<T>& _list )
+KdTree<T>::KdTree( uint32_t _num, const std::vector<T>& _list )
 : m_leastObjNum ( _num ),
-  m_transform( _matrix ),
   m_data( _list )
 {
     m_root = new Node<T>();
 }
 //------------------------------------------------------------------------------
 template <class T>
-void KdTree<T>::Init()
+void KdTree<T>::SetBBox()
 {
     //decide the boundary of the initial box
     float xmin = FLT_MAX;
@@ -109,15 +107,24 @@ void KdTree<T>::Init()
 }
 //------------------------------------------------------------------------------
 template <class T>
-void KdTree<T>::Transform(const Matrix* _matrix)
+void KdTree<T>::Transform(const Matrix& _transform)
 {
+	//delete the old tree and prepare for building a new tree
+	if( m_root->m_leftNode)
+		DeleteBranch( m_root->m_leftNode );
+	if( m_root->m_rightNode)
+		DeleteBranch( m_root->m_rightNode );
+
+    m_dataTransformed.clear();
+    m_root->m_list.clear();
     m_dataTransformed.reserve( m_data.size() );
     for( uint32_t i=0; i< m_data.size(); ++i )
     {
-        m_dataTransformed.push_back (m_data[i] * ( *_matrix ));
+        m_dataTransformed.push_back (m_data[i] * ( _transform ));
         m_root->m_list.push_back( &m_dataTransformed[i] );
     }
-    m_root->m_box = m_root->m_box * (*_matrix );
+    //todo
+    m_root->m_box = m_bbox * (_transform );
 }
 //------------------------------------------------------------------------------
 template <class T>
@@ -188,7 +195,7 @@ bool KdTree<T>::Intersect( const Node<T>* _node, const Ray& _ray, Intersection& 
             for( uint32_t i=0; i< _node->m_list.size(); ++i )
             {
                 Intersection tmp;
-                if ( ( ( *_node->m_list[i] ) ). Intersect ( _ray, tmp )
+                if (  ( *(_node->m_list[i]) ). Intersect ( _ray, tmp )
                      && ( tmp.RayParameter() < intersection.RayParameter() ) )
                     intersection = tmp;
             }

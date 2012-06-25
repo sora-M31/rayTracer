@@ -10,4 +10,5 @@ resources/*.mtl
 resources/workspace.mel
 tmp/
 resources/*.ma
+.mayaSwatches/
 

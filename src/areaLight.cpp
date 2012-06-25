@@ -8,10 +8,10 @@ AreaLight::AreaLight(const Vector& _position, float _intensity, Vector _normal, 
   m_height ( _height )
 {
 	Normalise ( m_normal );
-    m_position = _position;
+    m_translation = _position;
     m_intensity = _intensity;
 
-    Sampling( m_position, m_width, m_height,8,8,Vector(0,0,1,0), m_normal.Cross(Vector(0,0,1,0)), m_lightSamples );
+    Sampling( m_translation, m_width, m_height,8,8,Vector(0,0,1,0), m_normal.Cross(Vector(0,0,1,0)), m_lightSamples );
 }
 //------------------------------------------------------------------------------
 AreaLight::~AreaLight()
@@ -33,5 +33,16 @@ void AreaLight::GetShadowRay ( const Intersection& _intersection, RayList& o_sha
 		o_shadowRays.push_back ( Ray ( _intersection.Position () + _intersection.Normal () * EPSILON, lightDir, g_air ) );
 		++iter;
 	}
+}
+//------------------------------------------------------------------------------
+Vector AreaLight::Normal()
+{
+	return m_normal * m_transformation;
+}
+//------------------------------------------------------------------------------
+void AreaLight::ToCameraSpace( const Matrix& _transform)
+{
+	m_lightSamples.clear();
+    Sampling( Position(), m_width, m_height,8,8,Vector(0,0,1,0), Normal().Cross(Vector(0,0,1,0)), m_lightSamples );
 }
 }
