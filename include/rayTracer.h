@@ -14,7 +14,7 @@ public:
     ~RayTracer();
 	void SetScene( Scene* _pScene ) { m_pScene = _pScene; }
 	//void SetScene( const Scene* _pScene ) { m_pScene = _pScene; }
-    Intersection Intersect ( const Ray& _ray );
+    Intersection IntersectScene ( const Ray& _ray );
     Color Trace( const Ray& _ray, int _depth, std::ofstream& o_output );
     void CastRay( uint32_t _frame );
 

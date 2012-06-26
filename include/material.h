@@ -12,6 +12,8 @@ class Vector;
 class Material
 {
 public:
+	//static const Material kAir;
+
 	Material ();
 	Material ( float _reflective, float _refractive, const Shape* _pShape = 0, float _index = 0, float _attenuation = 0.1 );
 	Material ( const Material& _material );

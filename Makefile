@@ -5,5 +5,5 @@ all:
 	scons $@
 
 clean:
-	scons -c
+	scons -c && rm -rf img/*
 

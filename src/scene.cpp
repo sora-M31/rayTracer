@@ -11,19 +11,15 @@ namespace rayTracer
 //------------------------------------------------------------------------------
 Scene::Scene()
 {
-	m_stack.push_back( Matrix().AsIdentity() );
-
     ObjLoader obj;
-    obj.ParseFile ("resources/teapot.obj" );
-    //obj.PrintLoadedInfo();
+    obj.ParseFile ("resources/cube.obj" );
     ObjLoader loadplane;
     loadplane.ParseFile( "resources/plane.obj");
 
-    Shape* sphere1 = new Sphere( Vector( 1, 0, 3, 1), 1.0 );
+    Shape* sphere1 = new Sphere( Vector( 1, 0, 1, 1), 1.0 );
     Shape* sphere2 = new Sphere( Vector( -1, 0, 0, 1), 1.0 );
-    //Shape* plane = new Plane( Vector(0,1,0,0), -1 );
-    Shape* plane = new Mesh( Vector(0,-1,0,1), loadplane );
-    Shape* test = new Mesh( Vector ( 0.5,0, 8, 1), obj);
+    Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
+    Shape* test = new Mesh( Vector ( 0.5,0, 2, 1), obj);
 
     Material* diffuse = new Material ( 0, 0, sphere1 );
     Material* test2 = new Material ( 0, 0 , test);
@@ -85,14 +81,15 @@ Scene::~Scene()
 //------------------------------------------------------------------------------
 void Scene::Update( uint32_t _time)
 {
-	m_camera.Translate( Vector( 0,0,-3,1) );
+	m_camera.Translate( Vector( 0,0,-8,1) );
+	//m_camera.Rotate( -0.1*_time, Vector(0,1,0,0 ));
 #if 0
 	std::cout<<m_camera.Transformation().Inverse()[0][3]<<" ";
 	std::cout<<m_camera.Transformation().Inverse()[1][3]<<" ";
 	std::cout<<m_camera.Transformation().Inverse()[2][3]<<"\n";
 #endif
-	//m_stack.push_back ( Quaternion( 0.1*_time, 0,1,0 ).AsMatrix() );
 	m_stack.push_back ( m_camera.LocalTransformation().Inverse() );
+	m_stack.push_back ( Quaternion( 0.1*_time, Vector( 0,1,0,0 ) ).AsMatrix() );
 #if 1
     uint32_t size = m_shapes.size();
     for( uint32_t i = 0; i < size; ++i )
@@ -105,32 +102,34 @@ void Scene::Update( uint32_t _time)
         //m_shapes[i]->Rotate( 0.05 * _time, Vector ( 0,1,0,0) );
 		m_stack.push_back ( m_shapes[i]->LocalTransformation() );
 		m_shapes[i]->ToCameraSpace( GetStackMatrix() );
+		//m_stack.pop_back();
 		m_stack.pop_back();
     }
     size = m_lights.size();
     for( uint32_t i = 0; i < size; ++i )
     {
-        //m_lights[i]->Rotate( 0.1 * _time, Vector ( 0,1,0,0) );
+        //m_lights[i]->Rotate( 0.05 * _time, Vector ( 0,1,0,0) );
         //m_lights[i]->Translate( Vector ( 0,0.5*_time,0,1) );
 		m_stack.push_back ( m_lights[i]->LocalTransformation() );
 		m_lights[i]->ToCameraSpace( GetStackMatrix() );
 		m_stack.pop_back();
     }
 #endif
-	//m_stack.pop_back();
+	m_stack.pop_back();
 	m_stack.pop_back();
 }
 //------------------------------------------------------------------------------
 Matrix Scene::GetStackMatrix()
 {
     std::list<Matrix>::iterator iter = m_stack.begin();
-    Matrix transform;
+	Matrix transform;
+	transform.AsIdentity();
     while( iter != m_stack.end() )
     {
-        transform = (*iter) * transform;
+        transform = transform * (*iter) ;
+        //transform = (*iter) * transform ;
         ++iter;
     }
     return transform;
-	
 }
 }//end of space

@@ -73,5 +73,6 @@ bool Mesh::Intersect ( const Ray& _ray, Intersection& o_intersection ) const
 //------------------------------------------------------------------------------
 void Mesh::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const
 {
+
 }
 }//end of namespace

@@ -14,7 +14,7 @@ public:
     AABB( const Vector& _min, const Vector& _max );
     AABB( const AABB& _other );
     AABB& operator = ( const AABB& _other );
-    AABB operator * ( const Matrix& _matrix ) const;
+    AABB Update( const Matrix& _matrix ) const;
     ~AABB();
 
     bool Intersect( const Ray& _ray, float& o_rayDis ) const;

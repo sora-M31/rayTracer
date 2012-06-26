@@ -12,18 +12,20 @@ namespace rayTracer
 class Scene
 {
 public:
-    Scene();
-    ~Scene();
-    void Update( uint32_t _time);
-    const std::vector<Shape*>& GetShapes() const { return m_shapes; }
-    const std::vector<Light*>& GetLights() const { return m_lights; }
+	Scene();
+	~Scene();
+	void Update( uint32_t _time);
+	const std::vector<Shape*>& GetShapes() const { return m_shapes; }
+	const std::vector<Light*>& GetLights() const { return m_lights; }
 	Matrix GetStackMatrix();
 private:
-    std::vector< Shape* > m_shapes;
-    std::vector< Light* > m_lights;
-    std::vector< Material* > m_materials;
-    std::vector< Texture* > m_textures;
-    Camera m_camera;
+	std::vector< Shape* > m_shapes;
+	std::vector< Light* > m_lights;
+	std::vector< Material* > m_materials;
+	std::vector< Texture* > m_textures;
+	Camera m_camera;
+	// --------------------------------------------------------------------------
+	/// \brief Transformation stack
 	std::list<Matrix> m_stack;
 };//end of class
 }//end of namespace

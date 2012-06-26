@@ -2,6 +2,8 @@
 #include "shape.h"
 namespace rayTracer
 {
+//Material::kAir(foobar);
+
 //---------------------------------------------------------------------------------------
 Material::Material()
 : m_reflection ( 0 ),

@@ -20,7 +20,8 @@ public:
       m_rightNode( 0 )
     {}
     ~Node() {}
-    bool IsLeaf() const { if ( (m_leftNode ==0) && (m_rightNode==0) ) return true; else return false;}
+    bool IsLeaf() const {  return ( m_leftNode ==0 ) && ( m_rightNode==0 ); }
+
     std::vector<const T*> m_list;
     AABB m_box;
     Node<T>* m_leftNode;
@@ -31,13 +32,15 @@ template <class T>
 class KdTree
 {
 public:
-    KdTree( uint32_t _num, const std::vector<T>& _list = std::vector<T>(0) );
+	//comment
+    KdTree( uint32_t _maxNum, const std::vector<T>& _list = std::vector<T>(0) );
     ~KdTree()
     {
         DeleteBranch( m_root );
     }
+	//rename make/create bounding box
     void SetBBox();
-    void AddData(const T& _data) { m_data.push_back(_data); };
+    void AddData( const T& _data ) { m_data.push_back(_data); };
     void DeleteBranch( Node<T>* _node )
     {
         if ( _node->m_leftNode!=0 )
@@ -109,6 +112,8 @@ void KdTree<T>::SetBBox()
 template <class T>
 void KdTree<T>::Transform(const Matrix& _transform)
 {
+	//transformed ray in to local space  of object with out reconstructing the tree?
+
 	//delete the old tree and prepare for building a new tree
 	if( m_root->m_leftNode)
 		DeleteBranch( m_root->m_leftNode );
@@ -124,7 +129,7 @@ void KdTree<T>::Transform(const Matrix& _transform)
         m_root->m_list.push_back( &m_dataTransformed[i] );
     }
     //todo
-    m_root->m_box = m_bbox * (_transform );
+    m_root->m_box = m_bbox.Update( _transform );
 }
 //------------------------------------------------------------------------------
 template <class T>
@@ -132,6 +137,7 @@ void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
 {
     //std::cout<<"\n"<<"depth=========================== "<<_depth<<"\n";
     //std::cout<<"object number "<< _node->m_list.size()<<"\n";
+	// number->definition
     if( (_depth < 5) && (_node->m_list.size() > 50) )//m_leastObjNum ))
     {
         uint32_t axis = _depth%3;
@@ -156,6 +162,7 @@ void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
         typename std::vector<const T*>::const_iterator iter = _node->m_list.begin();
         while(iter!=_node->m_list.end())
         {
+			//comparison template
             if( (*iter)->Max()[axis] < splitPos || (*iter)->Min()[axis] < splitPos )
             {
                 _node->m_leftNode->m_list.push_back(*iter);
@@ -165,11 +172,6 @@ void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
                 _node->m_rightNode->m_list.push_back(*iter);
             }
             ++iter;
-        }
-
-        for( uint32_t i=0; i< _node->m_list.size(); ++i)
-        {
-            //std::cout<< _node->m_list[i]->s_id <<" ";
         }
 
         _depth+=1;
@@ -225,14 +227,16 @@ bool KdTree<T>::Intersect( const Node<T>* _node, const Ray& _ray, Intersection& 
                 bool intersected = Intersect ( _node->m_leftNode, _ray, o_intersection );
                 if( intersected )
                     return true;
-                else return Intersect ( _node->m_rightNode, _ray, o_intersection );
+                else
+					return Intersect ( _node->m_rightNode, _ray, o_intersection );
             }
             else
             {
                 bool intersected = Intersect ( _node->m_rightNode, _ray, o_intersection );
                 if( intersected )
                     return true;
-                else return Intersect ( _node->m_leftNode, _ray, o_intersection );
+                else
+					return Intersect ( _node->m_leftNode, _ray, o_intersection );
             }
         }
         //one of them have intersection

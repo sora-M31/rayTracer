@@ -21,8 +21,9 @@ public:
     const Material* GetMaterial () const { return m_pMaterial; }
 
     Vector Position () const { return Vector ( m_transformation[0][3], m_transformation[1][3], m_transformation[2][3], 1.0); }
-	Matrix LocalTransformation() const { return  m_rotation.AsMatrix() * Matrix( 1,0,0,m_translation.x(), 0,1,0,m_translation.y(), 0,0,1,m_translation.z(), 0,0,0,1 ) ; }
-	//Matrix LocalTransformation() const { return Matrix( 1,0,0,m_translation.x(), 0,1,0,m_translation.y(), 0,0,1,m_translation.z(), 0,0,0,1 ) * m_rotation.AsMatrix(); }
+    //Vector Position () const { return Vector ( LocalTransformation()[0][3], LocalTransformation()[1][3], LocalTransformation()[2][3], 1.0); }
+	Matrix LocalTransformation() const { return Matrix( 1,0,0,m_translation.x(), 0,1,0,m_translation.y(), 0,0,1,m_translation.z(), 0,0,0,1 ) * m_rotation.AsMatrix(); }
+	//Matrix LocalTransformation() const { return m_rotation.AsMatrix() * Matrix( 1,0,0,m_translation.x(), 0,1,0,m_translation.y(), 0,0,1,m_translation.z(), 0,0,0,1 ) ; }
 	virtual void ToCameraSpace( const Matrix& _transform ) { m_transformation = _transform; }
 
 	void Translate( const Vector& _pos) { m_translation = _pos ; }
