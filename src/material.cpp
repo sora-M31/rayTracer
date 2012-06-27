@@ -43,6 +43,14 @@ Material& Material::operator = ( const Material& _other )
     return *this;
 }
 //---------------------------------------------------------------------------------------
+Color Material::GetColor( const Vector2D& _texCoord ) const
+{
+    Color color ( 1,1,1,1 );
+    if ( m_pTexture != 0 )
+        color = m_pTexture->GetColorBilinear( _texCoord.u(), _texCoord.v() );
+    return color;
+}
+#if 0
 Color Material::GetColor( const Vector& _position ) const
 {
     float u(0);
@@ -54,4 +62,5 @@ Color Material::GetColor( const Vector& _position ) const
         color = m_pTexture->GetColorBilinear( u, v );
     return color;
 }
+#endif
 }//end of namespace

@@ -13,11 +13,26 @@ Mesh::Mesh ( const Vector& _pos, const ObjLoader& _obj, Material* _pMaterial )
 	m_pMaterial = _pMaterial;
 
 	uint32_t size = _obj.GetVertexArray().size();
+	std::cout<<size<<"size \n";
 	m_tree.m_data.reserve(size);
 	for(uint32_t i=0; i< size; i+=3 )
 	{
-		m_tree.m_data.push_back( Triangle( _obj.GetVertexArray()[i], _obj.GetVertexArray()[i+1], _obj.GetVertexArray()[i+2],
-								  _obj.GetNormalArray()[i], _obj.GetNormalArray()[i+1], _obj.GetNormalArray()[i+2] , i/3.0) );
+		std::cout<<"flag=-=-=-=-=-=-=-=-=-\n";
+										   std::cout<<_obj.GetTextureArray()[i]<<"\n";
+										   std::cout<<_obj.GetTextureArray()[i+1]<<"\n";
+										   std::cout<<_obj.GetTextureArray()[i+2]<<"\n";
+		if ( _obj.GetTextureArray().size()!=0 )
+		m_tree.m_data.push_back( Triangle( _obj.GetVertexArray()[i],
+										   _obj.GetVertexArray()[i+1],
+										   _obj.GetVertexArray()[i+2],
+										   _obj.GetNormalArray()[i],
+										   _obj.GetNormalArray()[i+1],
+										   _obj.GetNormalArray()[i+2],
+										   _obj.GetTextureArray()[i],
+										   _obj.GetTextureArray()[i+1],
+										   _obj.GetTextureArray()[i+2],
+										   m_pMaterial,
+										   i/3.0) );
 	}
 	m_tree.SetBBox();
 }

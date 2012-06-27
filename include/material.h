@@ -2,12 +2,13 @@
 #define _MATERIAL_H_
 
 #include "texture.h"
-//#include "vector.h"
+//#include "vector2D.h"
 
 namespace rayTracer
 {
 class Shape;
 class Vector;
+class Vector2D;
 
 class Material
 {
@@ -19,7 +20,8 @@ public:
 	Material ( const Material& _material );
 	Material& operator = ( const Material& _other );
 
-	Color GetColor( const Vector& _position ) const;
+	//Color GetColor( const Vector& _position ) const;
+	Color GetColor( const Vector2D& _texCoord ) const;
 
 	float Index () const { return m_index; };
 	float Reflection () const { return m_reflection; }

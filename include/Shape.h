@@ -30,12 +30,12 @@ public:
 	void Rotate( float _angle, const Vector& _axis ) { m_rotation = Quaternion(_angle, _axis); }
 
     virtual bool Intersect ( const Ray& _ray, Intersection& o_intersection ) const = 0;
-    virtual void ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const = 0;
+    //virtual void ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const = 0;
 
 protected:
     const Material* m_pMaterial;
-    Vector m_u;
-    Vector m_v;
+    //Vector m_u;
+    //Vector m_v;
     Vector m_translation;
     Quaternion m_rotation;
 	Matrix m_transformation;

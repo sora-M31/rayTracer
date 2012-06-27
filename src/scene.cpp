@@ -12,9 +12,11 @@ namespace rayTracer
 Scene::Scene()
 {
     ObjLoader obj;
-    obj.ParseFile ("resources/cube.obj" );
+   // obj.ParseFile ("resources/cube.obj" );
     ObjLoader loadplane;
     loadplane.ParseFile( "resources/plane.obj");
+	loadplane.PrintLoadedInfo();
+	loadplane.PrintSerializedInfo();
 
     Shape* sphere1 = new Sphere( Vector( 1, 0, 1, 1), 1.0 );
     Shape* sphere2 = new Sphere( Vector( -1, 0, 0, 1), 1.0 );
@@ -30,7 +32,7 @@ Scene::Scene()
 
     Texture* checker = new Texture(160, 160);
     checker->MakeChecker();
-    //floor->SetTexture( checker );
+    floor->SetTexture( checker );
 
     sphere1->SetMaterial( diffuse );
     //test->SetMaterial( glass );
@@ -39,7 +41,7 @@ Scene::Scene()
     plane->SetMaterial( floor );
 
 	m_shapes.push_back( plane );
-    m_shapes.push_back( sphere1 );
+    //m_shapes.push_back( sphere1 );
     //m_shapes.push_back( sphere2 );
     //m_shapes.push_back( test );
     m_materials.push_back( diffuse );

@@ -68,7 +68,7 @@ bool Sphere::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 		rayParameter = pDotRayDir + sqrtf( temp );
 		Vector position = _ray.GetPosition( rayParameter );
 		Vector normal = ( position - Position() ).Normalise();
-		o_intersection =  Intersection( position, normal, rayParameter, g_air );
+		o_intersection =  Intersection( position, normal, Vector2D(0,0), rayParameter, g_air );
 		//inside intersection;
 		return true;
 	}
@@ -76,7 +76,7 @@ bool Sphere::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	rayParameter = pDotRayDir - sqrtf( temp );
 	Vector position = _ray.GetPosition( rayParameter );
 	Vector normal = ( position - Position() ).Normalise();
-	o_intersection =  Intersection( position, normal, rayParameter, m_pMaterial );
+	o_intersection =  Intersection( position, normal, Vector2D(0,0), rayParameter, m_pMaterial );
 	return true;
 }
 //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ bool Plane::Intersect( const Ray& _ray, Intersection& o_intersection) const
 
 	Vector position = _ray.Origin() + _ray.Direction() * rayParameter;
 
-	o_intersection =  Intersection( position, m_normal, rayParameter, m_pMaterial);
+	o_intersection =  Intersection( position, m_normal,Vector2D(0,0), rayParameter, m_pMaterial );
 	return true;
 }
 //------------------------------------------------------------------------------
@@ -118,11 +118,15 @@ void Plane::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const
 		o_v = _pos.Dot( m_v )/30 ;
 }
 //------------------------------------------------------------------------------
+#if 1
 Triangle Triangle::operator * ( const Matrix& _matrix ) const
 {
 	return Triangle( m_vertex[0] * _matrix, m_vertex[1] * _matrix, m_vertex[2] * _matrix,
-					 m_normal[0] * _matrix, m_normal[1] * _matrix, m_normal[2] * _matrix, s_id );
+					 m_normal[0] * _matrix, m_normal[1] * _matrix, m_normal[2] * _matrix,
+					 m_texture[0], m_texture[1], m_texture[2],
+					 m_pMaterial, s_id );
 }
+#endif
 //------------------------------------------------------------------------------
 Triangle::Triangle ( const Triangle& _other )
 {
@@ -132,6 +136,10 @@ Triangle::Triangle ( const Triangle& _other )
 	m_normal.push_back(_other.m_normal[0]);
 	m_normal.push_back(_other.m_normal[1]);
 	m_normal.push_back(_other.m_normal[2]);
+	m_texture.push_back(_other.m_texture[0]);
+	m_texture.push_back(_other.m_texture[1]);
+	m_texture.push_back(_other.m_texture[2]);
+	m_pMaterial = _other.m_pMaterial;
 	s_id = _other.s_id;
 }
 //------------------------------------------------------------------------------
@@ -143,6 +151,10 @@ Triangle& Triangle::operator = ( const Triangle& _other )
 	m_normal[0] = _other.m_normal[0];
 	m_normal[1] = _other.m_normal[1];
 	m_normal[2] = _other.m_normal[2];
+	m_texture[0] = _other.m_texture[0];
+	m_texture[1] = _other.m_texture[1];
+	m_texture[2] = _other.m_texture[2];
+	m_pMaterial = _other.m_pMaterial;
 	s_id = _other.s_id;
 	return *this;
 }
@@ -205,9 +217,10 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	}
 	float p1 = 1.0 - p2 - p3;
 	Vector averageNormal = p1 * m_normal[0] + p2 * m_normal[1] + p3 * m_normal[2];
+	Vector2D averageTexCoord = p1 * m_texture[0] + p2 * m_texture[1] + p3 * m_texture[2];
 	Normalise(averageNormal);
 	
-	o_intersection = Intersection ( intersectionPos, averageNormal, rayParameter,0 );
+	o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, m_pMaterial );
 	//o_intersection = Intersection ( intersectionPos, normal, rayParameter,0 );
 	return true;
 }

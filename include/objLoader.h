@@ -8,6 +8,7 @@
 #include <fstream>
 #include <assert.h>
 #include "vector.h"
+#include "vector2D.h"
 
 namespace rayTracer
 {
@@ -20,13 +21,14 @@ public:
 
     bool ParseFile ( const char* _fileName );
     void PrintLoadedInfo ();
+	void PrintSerializedInfo();
     void ClearData ();
 
     const std::vector<Vector>& GetVertexArray() const
     {
         return m_vertexArray;
     }
-    const std::vector<Vector>& GetTextureArray() const
+    const std::vector<Vector2D>& GetTextureArray() const
     {
         return m_textureArray;
     }
@@ -49,7 +51,7 @@ private:
 
     std::vector<Vector> m_vertexArray;
     std::vector<Vector> m_normalArray;
-    std::vector<Vector> m_textureArray;
+    std::vector<Vector2D> m_textureArray;
 };//end of class
 }//end of namespace
 #endif

@@ -5,7 +5,7 @@ int main()
 {
     rayTracer::Scene scene;
     rayTracer::RayTracer raytracer ( &scene );
-    for(float i=0; i< 50; i +=1)
+    for(float i=0; i< 30; i +=1)
     {
         std::cout<<"frame "<<i<<"\n";
         scene.Update(i);

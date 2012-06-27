@@ -133,7 +133,8 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 				{
 					if( !IntersectScene ( *iter ).Intersected() )
 					{
-						shade += ( intersection.GetMaterial()->GetColor(intersection.Position() )
+						shade += ( intersection.GetColor()
+						//shade += ( intersection.GetMaterial()->GetColor(intersection.Position() )
 								* std::max( 0.0f, intersection.Normal().Dot( (*iter).Direction() ) ) //);
 								* attenuation );
 					}
