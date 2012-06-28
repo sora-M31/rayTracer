@@ -23,12 +23,12 @@ Scene::Scene()
     Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
     Shape* test = new Mesh( Vector ( -1,0, 2, 1), obj);
 
-    Material* diffuse = new Material ( 0, 0, sphere1 );
+    Material* diffuse = new Material ( 1, 0, sphere1 );
     Material* test2 = new Material ( 0, 0 , test);
     //Material* glass = new Material ( 0, 1, test, GLASS_INDEX );
     Material* glass = new Material ( 0, 1, sphere2, GLASS_INDEX );
     //Material* floor = new Material ( 0, 0, plane );
-    Material* floor = new Material ( 0, 0, plane );
+    Material* floor = new Material ( 1, 0, plane );
 
     Texture* checker = new Texture(160, 160);
     checker->MakeChecker();
@@ -44,7 +44,7 @@ Scene::Scene()
 	m_shapes.push_back( plane );
     m_shapes.push_back( sphere1 );
     //m_shapes.push_back( sphere2 );
-    m_shapes.push_back( test );
+    //m_shapes.push_back( test );
     m_materials.push_back( diffuse );
     m_materials.push_back( floor );
     m_materials.push_back( glass );
