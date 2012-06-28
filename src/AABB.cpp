@@ -47,17 +47,17 @@ AABB AABB::Update( const Matrix& _matrix ) const
         max[i] = _matrix[i][3];
         for( uint8_t j=0; j<3; ++j )
         {
-            float e = _matrix[i][j] * m_min[j];
-            float f = _matrix[i][j] * m_max[j];
+            float e = _matrix[j][i] * m_min[j];
+            float f = _matrix[j][i] * m_max[j];
             if ( e < f )
             {
-                min[j] += e;
-                max[j] += f;
+                min[i] += e;
+                max[i] += f;
             }
             else
             {
-                max[j] += e;
-                min[j] += f;
+                max[i] += e;
+                min[i] += f;
             }
         }
     }

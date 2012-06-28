@@ -17,6 +17,8 @@ public:
     Intersection IntersectScene ( const Ray& _ray );
     Color Trace( const Ray& _ray, int _depth, std::ofstream& o_output );
     void CastRay( uint32_t _frame );
+	Color Diffuse();
+	Color Specular();
 
 private:
     //Scene m_scene;

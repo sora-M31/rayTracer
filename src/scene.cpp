@@ -12,16 +12,16 @@ namespace rayTracer
 Scene::Scene()
 {
     ObjLoader obj;
-   // obj.ParseFile ("resources/cube.obj" );
+	obj.ParseFile ("resources/teapotTexture.obj" );
     ObjLoader loadplane;
     loadplane.ParseFile( "resources/plane.obj");
-	loadplane.PrintLoadedInfo();
-	loadplane.PrintSerializedInfo();
+	//loadplane.PrintLoadedInfo();
+	//loadplane.PrintSerializedInfo();
 
     Shape* sphere1 = new Sphere( Vector( 1, 0, 1, 1), 1.0 );
     Shape* sphere2 = new Sphere( Vector( -1, 0, 0, 1), 1.0 );
     Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
-    Shape* test = new Mesh( Vector ( 0.5,0, 2, 1), obj);
+    Shape* test = new Mesh( Vector ( -1,0, 2, 1), obj);
 
     Material* diffuse = new Material ( 0, 0, sphere1 );
     Material* test2 = new Material ( 0, 0 , test);
@@ -33,6 +33,7 @@ Scene::Scene()
     Texture* checker = new Texture(160, 160);
     checker->MakeChecker();
     floor->SetTexture( checker );
+	test2->SetTexture(checker);
 
     sphere1->SetMaterial( diffuse );
     //test->SetMaterial( glass );
@@ -41,9 +42,9 @@ Scene::Scene()
     plane->SetMaterial( floor );
 
 	m_shapes.push_back( plane );
-    //m_shapes.push_back( sphere1 );
+    m_shapes.push_back( sphere1 );
     //m_shapes.push_back( sphere2 );
-    //m_shapes.push_back( test );
+    m_shapes.push_back( test );
     m_materials.push_back( diffuse );
     m_materials.push_back( floor );
     m_materials.push_back( glass );
@@ -83,8 +84,8 @@ Scene::~Scene()
 //------------------------------------------------------------------------------
 void Scene::Update( uint32_t _time)
 {
-	m_camera.Translate( Vector( 0,0,-8,1) );
-	//m_camera.Rotate( -0.1*_time, Vector(0,1,0,0 ));
+	m_camera.Translate( Vector( 0,3,-6,1) );
+	m_camera.Rotate( -0.5, Vector(1,0,0,0 ));
 #if 0
 	std::cout<<m_camera.Transformation().Inverse()[0][3]<<" ";
 	std::cout<<m_camera.Transformation().Inverse()[1][3]<<" ";

@@ -6,7 +6,6 @@
 #include <math.h>
 #include "util.h"
 
-#define EPSILON 0.0001
 
 namespace rayTracer
 {

@@ -47,7 +47,7 @@ Color Material::GetColor( const Vector2D& _texCoord ) const
 {
     Color color ( 1,1,1,1 );
     if ( m_pTexture != 0 )
-        color = m_pTexture->GetColorBilinear( _texCoord.u(), _texCoord.v() );
+        color = m_pTexture->GetColorBilinear( _texCoord );
     return color;
 }
 #if 0

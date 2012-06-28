@@ -8,9 +8,9 @@
 namespace rayTracer
 {
 class Vector;
-
 #define AIR_INDEX  1.00028f
 #define GLASS_INDEX 2.50f
+#define EPSILON 0.0001
 static Material* const g_air = new Material( 0, 1, 0,AIR_INDEX );
 enum Path { DIFFUSE, SPECULAR, ABSORB, TRANSMIT };
 // --------------------------------------------------------------------------
@@ -32,6 +32,5 @@ float min( const float& _a, const float& _b, const float& _c );
 float max( const float& _a, const float& _b, const float& _c );
 // --------------------------------------------------------------------------
 bool RealCompare( const float& _a, const float& _b, const float& _epsilon);
-
 }
 #endif

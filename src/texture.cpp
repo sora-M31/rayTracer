@@ -34,7 +34,7 @@ void Texture::MakeChecker()
 	}
 }
 //------------------------------------------------------------------------------
-const Color& Texture::GetColorBilinear( float _u, float _v) const
+const Color& Texture::GetColorBilinear( const Vector2D& _texCoord ) const
 {
 #if 0
 	if ( _u < 0.0) _u = -_u;
@@ -45,9 +45,9 @@ const Color& Texture::GetColorBilinear( float _u, float _v) const
 #endif
 
 	//uint32_t column = floor( _u * m_width );
-	int column = _u * m_width ;
-	//uint32_t row = floor( _v * m_height );
-	int row = _v * m_height;
+	int column = _texCoord.u() * m_width ;
+	//uint32_t row = floor( _texCoord.v() * m_height );
+	int row = _texCoord.v() * m_height;
 	if ( column < 0 )
 		column += m_width;
 	if ( row < 0 )

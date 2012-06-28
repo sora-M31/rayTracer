@@ -3,6 +3,8 @@
 
 #include <vector>
 #include "color.h"
+#include "vector2D.h"
+
 namespace rayTracer
 {
 class Texture
@@ -11,7 +13,7 @@ public:
 	Texture ();
 	Texture ( uint32_t _height, uint32_t _width );
 	void MakeChecker ();
-	const Color& GetColorBilinear ( float _u, float _v ) const;
+	const Color& GetColorBilinear ( const Vector2D& _texCoord ) const;
 
 private:
 	uint32_t m_height;
