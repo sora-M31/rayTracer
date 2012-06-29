@@ -23,21 +23,16 @@ Scene::Scene()
     Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
     Shape* test = new Mesh( Vector ( -1,0, 2, 1), obj);
 
-    Material* diffuse = new Material ( 1, 0, sphere1 );
-    Material* test2 = new Material ( 0, 0 , test);
-    //Material* glass = new Material ( 0, 1, test, GLASS_INDEX );
-    Material* glass = new Material ( 0, 1, sphere2, GLASS_INDEX );
-    //Material* floor = new Material ( 0, 0, plane );
-    Material* floor = new Material ( 1, 0, plane );
+    Material* diffuse = new Material ( 0, 0, 1 );
+    Material* glass = new Material ( 0, 1, 0, GLASS_INDEX );
+    Material* floor = new Material ( 1, 0, 0 );
 
     Texture* checker = new Texture(160, 160);
     checker->MakeChecker();
     floor->SetTexture( checker );
-	test2->SetTexture(checker);
 
     sphere1->SetMaterial( diffuse );
     //test->SetMaterial( glass );
-    test->SetMaterial( test2 );
     sphere2->SetMaterial( glass );
     plane->SetMaterial( floor );
 
@@ -48,7 +43,6 @@ Scene::Scene()
     m_materials.push_back( diffuse );
     m_materials.push_back( floor );
     m_materials.push_back( glass );
-    m_materials.push_back( test2 );
     m_textures.push_back ( checker );
 
     Light* light1 = new PointLight ( Vector (1,2,1,1), 30 );

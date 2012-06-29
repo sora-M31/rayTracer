@@ -5,7 +5,7 @@
 #include "vector.h"
 #include "image.h"
 #include "AABB.h"
-//#define TEST
+#define TEST
 
 
 namespace rayTracer
@@ -35,6 +35,23 @@ RayTracer::RayTracer( Scene* _pScene )
 	}
 #endif
 }
+#if 0
+//------------------------------------------------------------------------------
+Color RayTracer::AmbientOcc( const Intersection& _intersection)
+{
+	float c=0;
+	//at intersection point, shoot rays into the hemisphere with samples given
+	shadowRays;
+	//loop through all the ray
+	for( std::vector<Ray>::iterator iter = shadowRays.begin(); iter != shadowRays.end(); ++iter )
+	{
+		//if no intersection with objects in scene
+		// c += 1
+	}
+	//average color by number of points
+	return Color( c, c, c, 1 );
+}
+#endif
 //------------------------------------------------------------------------------
 Color RayTracer::Diffuse( const Intersection& _intersection, const Vector& _lightDir, float _attenuation )
 {
@@ -91,16 +108,19 @@ Color RayTracer::Refract()
 			}
 }
 #endif
-#if 0
-Color RayTracer::MirrorReflection( const Intersection& _intersection, const Ray& _ray )
+#if  1
+Color RayTracer::MirrorReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output )
 {
+	Color c(0,0,0,1);
 	//income radiance direction
-	Vector reflectDir = _ray.Direction() - 2.0f * ( _ray.Direction().Dot( intersection.Normal() ) * intersection.Normal() );
+	Vector reflectDir = _viewingDir - 2.0f * ( _viewingDir.Dot( _intersection.Normal() ) * _intersection.Normal() );
 
-	Ray reflectRay ( intersection.Position() + intersection.Normal() * EPSILON, reflectDir, g_air);
+	Ray reflectRay ( _intersection.Position() + _intersection.Normal() * EPSILON, reflectDir, g_air);
 	//color from reflected ray
-	Color shade = Trace( reflectRay, --_depth, o_output);
-	c += shade * intersection.GetMaterial()->Reflection();
+	//std::cout<<_depth<<"callling depth\n";
+	Color shade = Trace( reflectRay, _depth--, o_output);
+	c += shade;
+	return c;
 }
 #endif
 //------------------------------------------------------------------------------
@@ -124,9 +144,10 @@ Intersection RayTracer::IntersectScene ( const Ray& _ray )
 	return intersection;
 }
 //------------------------------------------------------------------------------
-Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
+Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_output )
 {
 //change name
+//std::cout<<_depth<<" depth input\n";
 #if TestAABB
 	AABB test( Vector(-3,1,9,1), Vector(3,3,13,1) );
 	float dis;
@@ -186,17 +207,25 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 				++test;
 			}
 #endif
+			//std::cout<<_depth<<" depth \n";
 
 			//calculate shade from a single light
 			std::list<Ray>::iterator iter = shadowRays.begin();
 			Color shade(0,0,0,0);
+			assert( intersection.GetMaterial() !=0 );
 			while( iter != shadowRays.end() )
 			{
-				if( !IntersectScene ( *iter ).Intersected() )
+				if ( IntersectScene( *iter).Intersected() )
 				{
-					assert( intersection.GetMaterial() !=0 );
-					shade += Diffuse( intersection, iter->Direction(), attenuation ) * ( intersection.GetMaterial()->kDiffuse() ) +
+					if ( intersection.GetMaterial()->kMirror() > EPSILON )
+						shade += MirrorReflection( intersection, _ray.Direction(), _depth, o_output) * (intersection.GetMaterial()->kMirror() );
+				}
+				else
+				{
+					if ( intersection.GetMaterial()->kMirror() < EPSILON )
+						shade += Diffuse( intersection, iter->Direction(), attenuation ) * ( intersection.GetMaterial()->kDiffuse() ) +
 							 Specular( intersection, _ray.Direction(), iter->Direction(), attenuation ) * ( intersection.GetMaterial()->kSpecular() );
+
 				}
 				++iter;
 			}
