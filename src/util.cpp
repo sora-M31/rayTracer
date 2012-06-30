@@ -47,4 +47,40 @@ bool RealCompare( const float& _a, const float& _b, const float& _epsilon)
 		return true;
 	else return false;
 }
+//------------------------------------------------------------------------------
+void SampleSquare( std::vector<Vector2D>& o_samples)
+{
+	uint32_t grid = 10;
+	float size = 1.0/(float)grid;
+
+	for( uint32_t i=0; i< grid ; ++i )
+	{
+		for( uint32_t j=0; j< grid ; ++j )
+		{
+			float x = i * size;
+			float y = j * size;
+			o_samples.push_back( Vector2D( x + rand()/(float)RAND_MAX*size,  y + rand()/(float)RAND_MAX*size) );
+			//std::cout<<rand()/(float)RAND_MAX*size<<"x\n";
+			//std::cout<<rand()/(float)RAND_MAX*size<<"y\n";
+			//o_samples.push_back( Vector2D( x + rand()/RAND_MAX*size,  y + rand()/RAND_MAX*size) );
+		}
+	}
+}
+//------------------------------------------------------------------------------
+void SampleHemisphere ( const Vector& _u, const Vector& _v, const Vector& _w, std::list<Vector>& o_samples)
+{
+	//generate planesamples within 0 and 1
+	std::vector<Vector2D> squareSamples;
+	uint32_t grid = 8;
+	uint32_t sampleSize = grid * grid;
+	uint32_t e = 10;
+	float PI = 3.14;
+	for( uint32_t i=0; i< sampleSize; ++i )
+	{
+		float theta = 2.0f * PI * squareSamples[i].u();
+		float phi = acos( pow( (1-squareSamples[i].v() ), 1.0/(e + 1) ) );
+		Vector p = _u * sin(theta) * cos (phi) + _v * sin(theta) * sin(phi) + cos(theta) * _w;
+		o_samples.push_back(p);
+	}
+}
 }//end of namespace

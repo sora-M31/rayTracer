@@ -21,7 +21,7 @@ Scene::Scene()
     Shape* sphere1 = new Sphere( Vector( 1, 0, 1, 1), 1.0 );
     Shape* sphere2 = new Sphere( Vector( -1, 0, 0, 1), 1.0 );
     Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
-    Shape* test = new Mesh( Vector ( -1,0, 2, 1), obj);
+    //Shape* test = new Mesh( Vector ( -1,0, 2, 1), obj);
 
     Material* diffuse = new Material ( 0, 0, 1 );
     Material* glass = new Material ( 0, 1, 0, GLASS_INDEX );
