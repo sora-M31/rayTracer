@@ -67,19 +67,23 @@ void SampleSquare( std::vector<Vector2D>& o_samples)
 	}
 }
 //------------------------------------------------------------------------------
-void SampleHemisphere ( const Vector& _u, const Vector& _v, const Vector& _w, std::list<Vector>& o_samples)
+void SampleHemisphere ( const Vector& _u, const Vector& _v, const Vector& _w, std::vector<Vector>& o_samples)
 {
 	//generate planesamples within 0 and 1
 	std::vector<Vector2D> squareSamples;
-	uint32_t grid = 8;
-	uint32_t sampleSize = grid * grid;
-	uint32_t e = 10;
+	SampleSquare( squareSamples );
+	uint32_t sampleSize = squareSamples.size();
+	uint32_t e = 100;
 	float PI = 3.14;
 	for( uint32_t i=0; i< sampleSize; ++i )
 	{
-		float theta = 2.0f * PI * squareSamples[i].u();
-		float phi = acos( pow( (1-squareSamples[i].v() ), 1.0/(e + 1) ) );
-		Vector p = _u * sin(theta) * cos (phi) + _v * sin(theta) * sin(phi) + cos(theta) * _w;
+		float phi = 2.0f * PI * squareSamples[i].u();
+		float theta = acos( pow( (1-squareSamples[i].v() ), 1.0/(e + 1) ) );
+		float sinTheta = sin (theta);
+		float cosTheta = cos (theta);
+		float sinPhi = sin (phi);
+		float cosPhi = cos (phi);
+		Vector p = _u * sinTheta * cosPhi + _v * sinTheta * sinPhi + cosTheta * _w;
 		o_samples.push_back(p);
 	}
 }

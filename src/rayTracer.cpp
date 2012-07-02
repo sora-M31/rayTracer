@@ -5,7 +5,7 @@
 #include "vector.h"
 #include "image.h"
 #include "AABB.h"
-#define TEST
+#define TEST1
 
 
 namespace rayTracer
@@ -18,22 +18,6 @@ RayTracer::RayTracer( Scene* _pScene )
  m_softShadow ( false ),
  m_differentGeo ( false )
 {
-#if 0
-	if(m_depthOfField)
-	{
-		//sampling camera
-		//set aperture and focal depth
-		float aperture = 1;
-		//sample lens
-		float unitNumber = 8;
-		
-		Vector unitX = Vector(1,0,0,0);
-		Vector unitY = Vector(0,1,0,0);
-		Vector centre = Vector(0,0,0,1);
-
-		Sampling( centre, aperture, aperture, unitNumber, unitNumber, unitX, unitY, lenSample );
-	}
-#endif
 }
 #if 0
 //------------------------------------------------------------------------------
@@ -112,13 +96,32 @@ Color RayTracer::Refract()
 Color RayTracer::MirrorReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output )
 {
 	Color c(0,0,0,1);
-	//income radiance direction
+	//income radiance ray
 	Vector reflectDir = _viewingDir - 2.0f * ( _viewingDir.Dot( _intersection.Normal() ) * _intersection.Normal() );
-
+	//reflect one ray
+	#if 1
 	Ray reflectRay ( _intersection.Position() + _intersection.Normal() * EPSILON, reflectDir, g_air);
-	//color from reflected ray
-	//std::cout<<_depth<<"callling depth\n";
-	Color shade = Trace( reflectRay, _depth--, o_output);
+	//color from income radiance
+	//Color shade = ( Trace( reflectRay, --_depth, o_output) ) * ( reflectDir.Dot(_intersection.Normal() ) );
+	Color shade = ( Trace( reflectRay, --_depth, o_output) ) ;
+	#endif
+
+	#if 0
+	//reflect a sample of rays
+	Vector u ( _viewingDir );
+	Vector w ( reflectDir );
+	Vector v = u.Cross(w);
+	std::vector<Vector> dirSamples;
+	SampleHemisphere( u, v, w, dirSamples );
+	Color shade( 0,0,0,1);
+	for( std::vector<Vector>::iterator iter = dirSamples.begin(); iter!= dirSamples.end(); ++iter )
+	{
+		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, *iter, g_air );
+		shade += Trace (raySample, --_depth, o_output );
+	}
+	//todo weighted
+	shade/=dirSamples.size();
+	#endif
 	c += shade;
 	return c;
 }
@@ -147,7 +150,6 @@ Intersection RayTracer::IntersectScene ( const Ray& _ray )
 Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_output )
 {
 //change name
-//std::cout<<_depth<<" depth input\n";
 #if TestAABB
 	AABB test( Vector(-3,1,9,1), Vector(3,3,13,1) );
 	float dis;
@@ -160,7 +162,6 @@ Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_outpu
 		return Color ( 0,0,0,1);
 }
 #endif
-#if 1
 	Intersection intersection = IntersectScene ( _ray );
 
 	Color c(0,0,0,0);
@@ -250,7 +251,6 @@ Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_outpu
 #endif
 	return c;
 }
-#endif
 //------------------------------------------------------------------------------
 void RayTracer::CastRay( uint32_t _frame)
 {

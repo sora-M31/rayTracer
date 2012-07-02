@@ -12,18 +12,22 @@ namespace rayTracer
 Scene::Scene()
 {
     ObjLoader obj;
-	obj.ParseFile ("resources/teapotTexture.obj" );
+	//obj.ParseFile ("resources/teapotTexture.obj" );
+	obj.ParseFile ("resources/cube.obj" );
     ObjLoader loadplane;
     loadplane.ParseFile( "resources/plane.obj");
+    ObjLoader loadsky;
+    loadsky.ParseFile( "resources/cubeSky.obj");
 	//loadplane.PrintLoadedInfo();
 	//loadplane.PrintSerializedInfo();
 
     Shape* sphere1 = new Sphere( Vector( 1, 0, 1, 1), 1.0 );
     Shape* sphere2 = new Sphere( Vector( -1, 0, 0, 1), 1.0 );
     Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
-    //Shape* test = new Mesh( Vector ( -1,0, 2, 1), obj);
+    Shape* test = new Mesh( Vector ( -1,0, 2, 1), obj);
+    Shape* sky = new Mesh( Vector ( 0,0, 0, 1), loadsky);
 
-    Material* diffuse = new Material ( 0, 0, 1 );
+    Material* diffuse = new Material ( 1, 0, 0 );
     Material* glass = new Material ( 0, 1, 0, GLASS_INDEX );
     Material* floor = new Material ( 1, 0, 0 );
 
@@ -32,14 +36,16 @@ Scene::Scene()
     floor->SetTexture( checker );
 
     sphere1->SetMaterial( diffuse );
-    //test->SetMaterial( glass );
+    test->SetMaterial( diffuse );
+    sky->SetMaterial( diffuse );
     sphere2->SetMaterial( glass );
     plane->SetMaterial( floor );
 
 	m_shapes.push_back( plane );
+	m_shapes.push_back( sky );
     m_shapes.push_back( sphere1 );
     //m_shapes.push_back( sphere2 );
-    //m_shapes.push_back( test );
+    m_shapes.push_back( test );
     m_materials.push_back( diffuse );
     m_materials.push_back( floor );
     m_materials.push_back( glass );

@@ -171,15 +171,15 @@ void ObjLoader::PrintSerializedInfo()
 {
     for(uint32_t i=0; i<m_vertexArray.size(); ++i)
     {
-            std::cout<<m_vertexArray[i]<<" \n";
+            std::cout<<"vertex "<<m_vertexArray[i]<<" \n";
     }
     for(uint32_t i=0; i<m_textureArray.size(); ++i)
     {
-            std::cout<<m_textureArray[i]<<" \n";
+            std::cout<<"texture "<<m_textureArray[i]<<" \n";
     }
     for(uint32_t i=0; i<m_normalArray.size(); ++i)
     {
-            std::cout<<m_normalArray[i]<<" \n";
+            std::cout<<"normal "<<m_normalArray[i]<<" \n";
     }
 }
 }//end of space
