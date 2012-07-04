@@ -11,15 +11,17 @@ Material::Material()
   m_km ( 0 ),
   m_index ( 0 ),
   m_attenuation ( 0.1 ),
+  m_color( Color(1,1,1,1) ),
   m_pTexture ( 0 )
 {}
 //---------------------------------------------------------------------------------------
-Material::Material ( float _kd, float _ks, float _km, float _index, float _attenuation )
+Material::Material ( float _kd, float _ks, float _km, float _index, float _attenuation, const Color& _color )
 : m_kd ( _kd ),
   m_ks ( _ks ),
   m_km ( _km ),
   m_index ( _index ),
   m_attenuation ( _attenuation ),
+  m_color ( _color ),
   m_pTexture ( 0 )
 {}
 //---------------------------------------------------------------------------------------
@@ -29,6 +31,7 @@ Material::Material ( const Material& _material )
   m_km ( _material.m_km ),
   m_index ( _material.m_index ),
   m_attenuation ( _material.m_attenuation ),
+  m_color ( _material.m_color ),
   m_pTexture ( _material.m_pTexture )
 {}
 //---------------------------------------------------------------------------------------
@@ -40,15 +43,21 @@ Material& Material::operator = ( const Material& _other )
     m_index = _other.m_index;
     m_attenuation = _other.m_attenuation;
     m_pTexture = _other.m_pTexture;
+    m_color = _other.m_color;
     return *this;
 }
 //---------------------------------------------------------------------------------------
 Color Material::GetColor( const Vector2D& _texCoord ) const
 {
-    Color color ( 1,1,1,1 );
     if ( m_pTexture != 0 )
-        color = m_pTexture->GetColorBilinear( _texCoord );
-    return color;
+        return m_pTexture->GetColorBilinear( _texCoord );
+    else
+        return m_color;
+}
+//---------------------------------------------------------------------------------------
+void Material::SetColor( const Color& _color )
+{
+    m_color = _color;
 }
 #if 0
 Color Material::GetColor( const Vector& _position ) const

@@ -7,12 +7,12 @@ int main()
 {
     rayTracer::Scene scene;
     rayTracer::RayTracer raytracer ( &scene );
-    for(float i=0; i< 1; i +=1)
+    for(float i=0; i< 10; i +=1)
     {
         std::cout<<"frame "<<i<<"\n";
         scene.Update(i);
         // Cast rays into scene and write to image
-        raytracer.CastRay(i);
+        raytracer.CastRay( i, 400, 300 );
     }
 #if 0
     //test square sample

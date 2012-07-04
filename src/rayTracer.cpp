@@ -99,14 +99,14 @@ Color RayTracer::MirrorReflection( const Intersection& _intersection, const Vect
 	//income radiance ray
 	Vector reflectDir = _viewingDir - 2.0f * ( _viewingDir.Dot( _intersection.Normal() ) * _intersection.Normal() );
 	//reflect one ray
-	#if 1
+	#if 0
 	Ray reflectRay ( _intersection.Position() + _intersection.Normal() * EPSILON, reflectDir, g_air);
 	//color from income radiance
 	//Color shade = ( Trace( reflectRay, --_depth, o_output) ) * ( reflectDir.Dot(_intersection.Normal() ) );
 	Color shade = ( Trace( reflectRay, --_depth, o_output) ) ;
 	#endif
 
-	#if 0
+	#if 1
 	//reflect a sample of rays
 	Vector u ( _viewingDir );
 	Vector w ( reflectDir );
@@ -117,7 +117,7 @@ Color RayTracer::MirrorReflection( const Intersection& _intersection, const Vect
 	for( std::vector<Vector>::iterator iter = dirSamples.begin(); iter!= dirSamples.end(); ++iter )
 	{
 		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, *iter, g_air );
-		shade += Trace (raySample, --_depth, o_output );
+		shade += ( Trace (raySample, --_depth, o_output )* ( reflectDir.Dot(_intersection.Normal() )) );
 	}
 	//todo weighted
 	shade/=dirSamples.size();
@@ -138,7 +138,7 @@ Intersection RayTracer::IntersectScene ( const Ray& _ray )
 	{
 		const Shape* shape = m_pScene->GetShapes()[i];
 		Intersection tmpIntersection;
-		if ( shape->Intersect ( _ray, intersection)
+		if ( shape->Intersect ( _ray, tmpIntersection)
              && tmpIntersection.RayParameter() < intersection.RayParameter()  )
         {
 			intersection = tmpIntersection;
@@ -252,13 +252,13 @@ Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_outpu
 	return c;
 }
 //------------------------------------------------------------------------------
-void RayTracer::CastRay( uint32_t _frame)
+void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 {
-	Image img (800, 600);
+	Image img ( _width, _height );
 	uint32_t depth =3;
 	std::ofstream debug_mel;
 //change name
-#ifdef TEST
+#ifdef TEST1
 	debug_mel.open("output.mel");
 #endif
 
@@ -340,7 +340,7 @@ void RayTracer::CastRay( uint32_t _frame)
 			img.Set( x, y, color );
 		}
 	}
-#ifdef TEST
+#ifdef TEST1
 	debug_mel.close();
 #endif
 	char filename[256];
