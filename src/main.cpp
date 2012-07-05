@@ -7,7 +7,8 @@ int main()
 {
     rayTracer::Scene scene;
     rayTracer::RayTracer raytracer ( &scene );
-    for(float i=0; i< 10; i +=1)
+	raytracer.SetDepthOfField();
+    for(float i=0; i< 1; i +=1)
     {
         std::cout<<"frame "<<i<<"\n";
         scene.Update(i);

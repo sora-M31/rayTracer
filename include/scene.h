@@ -17,6 +17,7 @@ public:
 	void Update( uint32_t _time);
 	const std::vector<Shape*>& GetShapes() const { return m_shapes; }
 	const std::vector<Light*>& GetLights() const { return m_lights; }
+	const Camera& GetCamera()const { return m_camera; }
 	Matrix GetStackMatrix();
 private:
 	std::vector< Shape* > m_shapes;

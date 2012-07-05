@@ -50,7 +50,7 @@ bool RealCompare( const float& _a, const float& _b, const float& _epsilon)
 //------------------------------------------------------------------------------
 void SampleSquare( std::vector<Vector2D>& o_samples)
 {
-	uint32_t grid = 10;
+	uint32_t grid = 5;
 	float size = 1.0/(float)grid;
 
 	for( uint32_t i=0; i< grid ; ++i )
@@ -60,9 +60,6 @@ void SampleSquare( std::vector<Vector2D>& o_samples)
 			float x = i * size;
 			float y = j * size;
 			o_samples.push_back( Vector2D( x + rand()/(float)RAND_MAX*size,  y + rand()/(float)RAND_MAX*size) );
-			//std::cout<<rand()/(float)RAND_MAX*size<<"x\n";
-			//std::cout<<rand()/(float)RAND_MAX*size<<"y\n";
-			//o_samples.push_back( Vector2D( x + rand()/RAND_MAX*size,  y + rand()/RAND_MAX*size) );
 		}
 	}
 }

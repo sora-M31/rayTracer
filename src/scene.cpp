@@ -10,6 +10,7 @@ namespace rayTracer
 {
 //------------------------------------------------------------------------------
 Scene::Scene()
+:m_camera ()
 {
     ObjLoader obj;
 	//obj.ParseFile ("resources/teapotTexture.obj" );
@@ -24,7 +25,7 @@ Scene::Scene()
 	scene.ParseFile( "resources/cornellBox.obj" );
 
     Shape* sphere1 = new Sphere( Vector( 1, 0, 0, 1), 1.0 );
-    Shape* sphere2 = new Sphere( Vector( -1, 2, 0, 1), 1.0 );
+    Shape* sphere2 = new Sphere( Vector( 0, 0, 0, 1), 1.0 );
     Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
     Shape* test = new Mesh( Vector ( -1,0, 2, 1), obj);
     Shape* sky = new Mesh( Vector ( 0,0, 5, 1), loadsky);
@@ -50,7 +51,7 @@ Scene::Scene()
     sky->SetMaterial( blueDiffuse );
 	//cornellBox->SetMaterial(  );
 
-	m_shapes.push_back( sky );
+	//m_shapes.push_back( sky );
 	m_shapes.push_back( plane );
     //m_shapes.push_back( sphere1 );
     //m_shapes.push_back( cornellBox );
@@ -69,6 +70,8 @@ Scene::Scene()
     m_lights.push_back ( light1);
 	//m_shapes.push_back ( light1);
 	sky->GetMaterial()->GetColor(Vector2D(0,0)).PrintColor();
+	
+
 }
 //------------------------------------------------------------------------------
 Scene::~Scene()

@@ -7,10 +7,13 @@ namespace rayTracer
 Camera::Camera ( float _aperture, float _focalLength, float _viewDistance )
 : m_aperture( _aperture ),
   m_focalLength( _focalLength ),
-  m_viewDistance( _viewDistance )
+  m_viewDistance( _viewDistance ),
+  m_lookat( Vector (0,0,1,0) ),
+  m_up( Vector (0,1,0,0) )
 {
 	m_translation = Vector( 0,0,0,1 );
 	m_rotation = Quaternion( 1,0,0,0 );
+	SampleLens( 5 );
 }
 //------------------------------------------------------------------------------
 Camera::~Camera()
@@ -18,11 +21,15 @@ Camera::~Camera()
 //------------------------------------------------------------------------------
 void Camera::SampleLens( float _unitNumber )
 {
-		Vector unitX = Vector(1,0,0,0);
-		Vector unitY = Vector(0,1,0,0);
-		Vector centre = Vector(0,0,0,1);
+		std::vector<Vector2D> samples(0);
+		SampleSquare(samples);
 
-		Sampling( centre, m_aperture, m_aperture, _unitNumber, _unitNumber, unitX, unitY, m_lenSample );
+		for( size_t i=0; i< samples.size(); ++i )
+		{
+			m_lenSample.push_back( Vector ( ( -0.5 + samples[i].u() )* m_aperture,
+											(- 0.5 + samples[i].v() )* m_aperture,
+											0, 1 ) );
+		}
 }
 //------------------------------------------------------------------------------
 Vector Camera::RayDirection( float _dx, float _dy, const Vector& _lensSample ) const
@@ -35,7 +42,7 @@ Vector Camera::RayDirection( float _dx, float _dy, const Vector& _lensSample ) c
 
 	//dir = focalPoint - samplePoint
 	Vector sampleRayDir = (focalX - _lensSample.x() ) * Vector(1,0,0,0) +
-						  (focalY - _lensSample.x() ) * Vector(0,1,0,0) +
+						  (focalY - _lensSample.y() ) * Vector(0,1,0,0) +
 						  m_focalLength * Vector(0,0,1,0);
 	return sampleRayDir.Normalise();
 #endif

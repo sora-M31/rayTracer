@@ -14,9 +14,7 @@ namespace rayTracer
 RayTracer::RayTracer( Scene* _pScene )
 :m_pScene( _pScene ),
  m_antialias ( false ),
- m_depthOfField ( false ),
- m_softShadow ( false ),
- m_differentGeo ( false )
+ m_depthOfField ( false )
 {
 }
 #if 0
@@ -39,11 +37,6 @@ Color RayTracer::AmbientOcc( const Intersection& _intersection)
 //------------------------------------------------------------------------------
 Color RayTracer::Diffuse( const Intersection& _intersection, const Vector& _lightDir, float _attenuation )
 {
-#if 0
-	_intersection.GetColor().PrintColor();
-	std::cout<<std::max( 0.0f, _intersection.Normal().Dot( _lightDir ) )<<"\n";
-	std::cout<<_attenuation<<"\n"<<"Color ";
-#endif
 	Color c = _intersection.GetColor() *
 			  std::max( 0.0f, _intersection.Normal().Dot( _lightDir ) ) *
 			  _attenuation;
@@ -55,7 +48,6 @@ Color RayTracer::Specular( const Intersection& _intersection, const Vector& _vie
 {
 	//reflected direction
 	Vector reflectDir = _lightDir - 2.0f * ( _lightDir.Dot( _intersection.Normal() ) * _intersection.Normal() );
-	//
 	float e = 10.0f;
 	Color c = _intersection.GetColor() *
 			  std::max( 0.0f, _intersection.Normal().Dot( _lightDir ) )*
@@ -64,7 +56,6 @@ Color RayTracer::Specular( const Intersection& _intersection, const Vector& _vie
 	return c;
 }
 //------------------------------------------------------------------------------
-#if 1
 Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray, uint32_t _depth, std::ofstream& o_output )
 {
 	Vector reverseNormal = -_intersection.Normal();
@@ -73,8 +64,6 @@ Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray,
 	//derived from 2 equation beblow
 	//cosSquared+sinSquared = 1
 	//cosIn/cosOut = outIndex/inIndex
-	//std::cout<<_ray.GetMaterial()->Index()<<"/";
-	//std::cout<<_intersection.GetMaterial()->Index()<<"\n";
 	float ratio = _ray.GetMaterial()->Index() / _intersection.GetMaterial()->Index();
 	float sinOutSquared = ( 1.0f- cosIn * cosIn ) * ratio * ratio;
 
@@ -86,6 +75,7 @@ Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray,
 						 outRayDir,
 						 _intersection.GetMaterial() );
 
+		//todo beer's law
 		//float distance = _intersection.RayParameter();
 		//float attenuation =  expf( -distance * _ray->GetMaterial().Attenuation());
 		c +=Trace ( refractRay, --_depth, o_output ) * _intersection.GetMaterial()->kRefraction();
@@ -98,8 +88,7 @@ Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray,
 	}
 	return c;
 }
-#endif
-#if  1
+//------------------------------------------------------------------------------
 Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output )
 {
 	Color c(0,0,0,1);
@@ -122,38 +111,18 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 	c += shade;
 	return c;
 }
+//------------------------------------------------------------------------------
 Color RayTracer::MirrorReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output )
 {
 	Color c(0,0,0,1);
 	//income radiance ray
 	Vector reflectDir = _viewingDir - 2.0f * ( _viewingDir.Dot( _intersection.Normal() ) * _intersection.Normal() );
-	//reflect one ray
-	#if 1
 	Ray reflectRay ( _intersection.Position() + _intersection.Normal() * EPSILON, reflectDir, g_air);
 	//color from income radiance
 	Color shade = ( Trace( reflectRay, --_depth, o_output) ) * ( reflectDir.Dot(_intersection.Normal() ) );
-	#endif
-
-	#if 0
-	//reflect a sample of rays
-	Vector u ( _viewingDir );
-	Vector w ( reflectDir );
-	Vector v = u.Cross(w);
-	std::vector<Vector> dirSamples;
-	SampleHemisphere( u, v, w, dirSamples );
-	Color shade( 0,0,0,1);
-	for( std::vector<Vector>::iterator iter = dirSamples.begin(); iter!= dirSamples.end(); ++iter )
-	{
-		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, *iter, g_air );
-		shade += ( Trace (raySample, --_depth, o_output )* ( reflectDir.Dot(_intersection.Normal() )) );
-	}
-	//todo weighted
-	shade/=dirSamples.size();
-	#endif
 	c += shade;
 	return c;
 }
-#endif
 //------------------------------------------------------------------------------
 RayTracer::~RayTracer()
 {}
@@ -311,56 +280,31 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 			if( m_antialias )
 			{
 				//get samples
-				std::list< Vector > pixSamples(0);
-				//change lines
+				std::vector< Vector2D > pixSamples(0);
 				//sample pixels
-				Sampling( Vector( dx, dy, 1.0f, 0.0f ), pixelWidth, pixelHeight, 4, 4,
-								  Vector( 1,0,0,0 ), Vector( 0,1,0,0 ), pixSamples );
-
+				SampleSquare( pixSamples );
 				//get color from samples and average them
-				std::list<Vector>::iterator iter = pixSamples.begin();
+				std::vector<Vector2D>::iterator iter = pixSamples.begin();
 				while( iter!= pixSamples.end() )
 				{
-					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), (*iter), g_air );
+					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector(dx+iter->u()*pixelWidth, dy+iter->v()*pixelHeight, 1, 1), g_air );
 					color += Trace( cameraSpaceRay, depth, debug_mel);
 					++iter;
 				}
 				color/=pixSamples.size();
 			}
-			//depth of field
-#if 0
+#if 1
 			else if( m_depthOfField )
 			{
-				//point on ray = origin + dir * param
-				float focalLength = 10;
-				Vector focalPoint = Vector(0, 0, 0, 1.0f) + Vector(dx, dy, 1.0f, 0) * focalLength;
-				//calculate color using rays formed from sample points on lens and fp on focal plane,
-				std::list<Vector>::const_iterator iter = m_pCamera->LensSample().begin();
-				while( iter!= m_pCamera->LensSample().end() )
+				for( std::vector<Vector>::const_iterator iter = m_pScene->GetCamera().LensSample().begin();
+					 iter != m_pScene->GetCamera().LensSample().end();
+					 ++iter )
 				{
-					Vector dir = (focalPoint - (*iter) ).Normalise();
+					Vector dir = m_pScene->GetCamera().RayDirection( dx, dy, *iter );
 					Ray cameraSpaceRay = Ray( (*iter), dir, g_air);
-					Ray ray = m_pCamera->Transformation() * cameraSpaceRay;
-					color += Trace( ray, depth, debug_mel);
-					++iter;
+					color += Trace( cameraSpaceRay, depth, debug_mel);
 				}
-				color/= m_pCamera->LensSample().size();
-			}
-#endif
-#if 0
-			else if( m_depthOfField )
-			{
-				std::list<Vector>::const_iterator iter = m_pCamera->LensSample().begin();
-				while( iter!= m_pCamera->LensSample().end() )
-				{
-					Vector dir = m_pCamera->RayDirection( dx, dy, *iter );
-					Ray cameraSpaceRay = Ray( (*iter), dir, g_air);
-					Ray ray = m_pCamera->Transformation() * cameraSpaceRay;
-					//Ray ray = _camTrans * cameraSpaceRay;
-					color += Trace( ray, depth, debug_mel);
-					++iter;
-				}
-				color/= m_pCamera->LensSample().size();
+				color/= m_pScene->GetCamera().LensSample().size();
 			}
 #endif
 			else
@@ -378,16 +322,6 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 #endif
 	char filename[256];
 	sprintf(filename, "img/img%04d.tga", _frame+1 );
-	// Format the filename
-#if 0
-	std::stringstream ss;
-	ss << "img/img";
-	ss.width( 4 );
-	ss.fill( '0' );
-	ss << _frame +1 << ".tga";
-	// Write the image to file
-	img.WriteTga( ss.str().c_str() );
-#endif 
 	img.WriteTga(filename  );
 }
 }//end of namespace
