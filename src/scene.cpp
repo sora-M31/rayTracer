@@ -30,33 +30,36 @@ Scene::Scene()
     Shape* sky = new Mesh( Vector ( 0,0, 5, 1), loadsky);
 	Shape* cornellBox = new Mesh( Vector( 0,0,0,1), scene );
 
-    Material* mirror = new Material ( 0, 0, 1 );
-    Material* blueDiffuse = new Material ( 1, 0, 0 );
-    Material* glass = new Material ( 0, 1, 0, GLASS_INDEX );
-    Material* floor = new Material ( 1, 0, 0 );
+    Material* mirror = new Material ( 0, 0, 1, 0);
+    Material* glossy = new Material ( 0, 0.5, 0, 1 );
+    Material* blueDiffuse = new Material ( 0.8, 0.2, 0, 0);
+    Material* glass = new Material ( 0, 0, 0, 0, 1, GLASS_INDEX );
+    Material* floor = new Material ( 1, 0, 0 ,0);
 
     Texture* checker = new Texture(160, 160);
     checker->MakeChecker();
     floor->SetTexture( checker );
 	blueDiffuse->SetColor( Color( 1,0,0,1 ));
 
-    sphere1->SetMaterial( mirror );
+    //sphere1->SetMaterial(  );
     test->SetMaterial( blueDiffuse );
-    sphere2->SetMaterial( blueDiffuse );
+    sphere2->SetMaterial( glass );
     plane->SetMaterial( floor );
-    sky->SetMaterial( floor );
-    sky->SetMaterial( mirror );
+    //sky->SetMaterial( floor );
+    //sky->SetMaterial( mirror );
+    sky->SetMaterial( blueDiffuse );
 	//cornellBox->SetMaterial(  );
 
 	m_shapes.push_back( sky );
 	m_shapes.push_back( plane );
-    m_shapes.push_back( sphere1 );
+    //m_shapes.push_back( sphere1 );
     //m_shapes.push_back( cornellBox );
     m_shapes.push_back( sphere2 );
     //m_shapes.push_back( test );
     m_materials.push_back( mirror );
     m_materials.push_back( floor );
     m_materials.push_back( glass );
+    m_materials.push_back( glossy );
     m_materials.push_back( blueDiffuse );
     m_textures.push_back ( checker );
 

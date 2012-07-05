@@ -16,7 +16,7 @@ public:
 	//static const Material kAir;
 
 	Material ();
-	Material ( float _kd, float _ks, float _km, float _index=0, float _attenuation=0, const Color& _color = Color(1,1,1,1) );
+	Material ( float _kd, float _ks, float _km, float _kg, float _kr=0, float _index=0, float _attenuation=0, const Color& _color = Color(1,1,1,1) );
 	Material ( const Material& _material );
 	Material& operator = ( const Material& _other );
 
@@ -28,6 +28,8 @@ public:
 	float kDiffuse () const { return m_kd; }
 	float kSpecular () const { return m_ks; }
 	float kMirror () const { return m_km; }
+	float kGlossy () const { return m_kg; }
+	float kRefraction () const { return m_kr; }
 	float Attenuation () const { return m_attenuation; }
 	const Texture* GetTexture () const { return m_pTexture; }
 	void SetTexture ( const Texture* _texture ) { m_pTexture = _texture; }
@@ -36,6 +38,8 @@ private:
 	float m_kd;
 	float m_ks;
 	float m_km;
+	float m_kg;
+	float m_kr;
 	//refraction index
 	float m_index;
 	///\coefficient for attenuation

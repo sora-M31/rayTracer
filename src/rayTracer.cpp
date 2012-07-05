@@ -64,41 +64,64 @@ Color RayTracer::Specular( const Intersection& _intersection, const Vector& _vie
 	return c;
 }
 //------------------------------------------------------------------------------
-#if 0
-Color RayTracer::Refract()
+#if 1
+Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray, uint32_t _depth, std::ofstream& o_output )
 {
-			//else if refractive
-			if ( intersection.GetMaterial()->Refraction() > EPSILON)
-			{
-				//comment?
-				//refraction
-				Vector reverseNormal = -intersection.Normal();
-				float cosIn = reverseNormal.Dot( _ray.Direction()) ;
-				//cosSquared+sinSquared = 1
-				//cosIn/cosOut = outIndex/inIndex
-				float ratio = _ray.GetMaterial()->Index() / intersection.GetMaterial()->Index();
-				float sinOutSquared = ( 1.0f- cosIn * cosIn ) * ratio * ratio;
-				if ( sinOutSquared < 1.0)
-				{
-					Vector outRayDir = _ray.Direction() * ratio - ( cosIn * ratio + sqrtf( 1.0 - sinOutSquared) ) * intersection.Normal();
-					Ray refractRay ( intersection.Position() + outRayDir * EPSILON,
-									 outRayDir,
-									 intersection.GetMaterial() );
+	Vector reverseNormal = -_intersection.Normal();
+	float cosIn = reverseNormal.Dot( _ray.Direction()) ;
 
-					//float distance = intersection.RayParameter();
-					//float attenuation =  expf( -distance * _ray->GetMaterial().Attenuation()); 
-					c +=Trace ( refractRay, --_depth, o_output ) * intersection.GetMaterial()->Refraction();
-				}
-				else
-				{
+	//derived from 2 equation beblow
+	//cosSquared+sinSquared = 1
+	//cosIn/cosOut = outIndex/inIndex
+	//std::cout<<_ray.GetMaterial()->Index()<<"/";
+	//std::cout<<_intersection.GetMaterial()->Index()<<"\n";
+	float ratio = _ray.GetMaterial()->Index() / _intersection.GetMaterial()->Index();
+	float sinOutSquared = ( 1.0f- cosIn * cosIn ) * ratio * ratio;
+
+	Color c;
+	if ( sinOutSquared < 1.0)
+	{
+		Vector outRayDir = _ray.Direction() * ratio - ( cosIn * ratio + sqrtf( 1.0 - sinOutSquared) ) * _intersection.Normal();
+		Ray refractRay ( _intersection.Position() + outRayDir * EPSILON,
+						 outRayDir,
+						 _intersection.GetMaterial() );
+
+		//float distance = _intersection.RayParameter();
+		//float attenuation =  expf( -distance * _ray->GetMaterial().Attenuation());
+		c +=Trace ( refractRay, --_depth, o_output ) * _intersection.GetMaterial()->kRefraction();
+	}
+	else
+	{
 #if  _DEBUG
-					std::cout<<" total refelction\n";
+		std::cout<<" total refelction\n";
 #endif
-				}
-			}
+	}
+	return c;
 }
 #endif
 #if  1
+Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output )
+{
+	Color c(0,0,0,1);
+	//income radiance ray
+	Vector reflectDir = _viewingDir - 2.0f * ( _viewingDir.Dot( _intersection.Normal() ) * _intersection.Normal() );
+	//reflect a sample of rays
+	Vector u ( _viewingDir );
+	Vector w ( reflectDir );
+	Vector v = u.Cross(w);
+	std::vector<Vector> dirSamples;
+	SampleHemisphere( u, v, w, dirSamples );
+	Color shade( 0,0,0,1);
+	for( std::vector<Vector>::iterator iter = dirSamples.begin(); iter!= dirSamples.end(); ++iter )
+	{
+		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, *iter, g_air );
+		shade += ( Trace (raySample, --_depth, o_output )* ( reflectDir.Dot(_intersection.Normal() )) );
+	}
+	//todo weighted
+	shade/=dirSamples.size();
+	c += shade;
+	return c;
+}
 Color RayTracer::MirrorReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output )
 {
 	Color c(0,0,0,1);
@@ -190,11 +213,20 @@ Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_outpu
 #endif
 		c.a() = 1.0f;
 
+		assert( intersection.GetMaterial() !=0 );
 		if ( intersection.GetMaterial()->kMirror() >0 )
 		{
 			c += MirrorReflection( intersection, _ray.Direction(), _depth, o_output );
 		}
-		else
+		else if ( intersection.GetMaterial()->kGlossy() >0 )
+		{
+			c += GlossyReflection( intersection, _ray.Direction(), _depth, o_output );
+		}
+		else if ( intersection.GetMaterial()->kRefraction() >0 )
+		{
+			c += Refraction( intersection, _ray, _depth, o_output );
+		}
+		if( intersection.GetMaterial()->kSpecular() > 0 || intersection.GetMaterial() -> kDiffuse() >0 )
 		{
 			uint32_t size = m_pScene->GetLights().size();
 			for ( uint32_t i= 0; i < size; ++i)
@@ -223,7 +255,6 @@ Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_outpu
 				//calculate shade from a single light
 				std::list<Ray>::iterator iter = shadowRays.begin();
 				Color shade(0,0,0,1);
-				assert( intersection.GetMaterial() !=0 );
 				while( iter != shadowRays.end() )
 				{
 					if ( !IntersectScene( *iter).Intersected() )

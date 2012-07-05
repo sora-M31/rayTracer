@@ -23,7 +23,7 @@ public:
 	const Vector& Normal () const { return m_normal; }
 	const Vector2D& TexCoord () const { return m_texCoord; }
 	float RayParameter () const { return m_rayParameter; }
-	const Material* GetMaterial() { return m_pMaterial; }
+	const Material* GetMaterial() const { return m_pMaterial; }
 	void SetMaterial( const Material* _pMaterial ) { m_pMaterial = _pMaterial; }
 	Color GetColor() const { return m_pMaterial->GetColor( m_texCoord ); }
 

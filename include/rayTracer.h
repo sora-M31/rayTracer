@@ -20,6 +20,8 @@ public:
 	Color Diffuse( const Intersection& _intersection, const Vector& _lightDir, float _attenuation );
 	Color Specular( const Intersection& _intersection, const Vector& _viewingDir, const Vector& _lightDir, float _attenuation );
 	Color MirrorReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output );
+	Color Refraction( const Intersection& _intersection, const Ray& _ray, uint32_t _depth, std::ofstream& o_output );
+	Color GlossyReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output );
 
 private:
     //Scene m_scene;
