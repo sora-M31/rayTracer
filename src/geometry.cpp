@@ -176,7 +176,7 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	Normalise(normal);
 
 	float rayParameter = normal.Dot ( m_vertex[0] - _ray.Origin () ) / normal.Dot ( _ray.Direction () );
-	//no intersection on the plane ( pointing away or parallel )
+	//no intersection on the plane
 	if ( rayParameter < 0.0f )
 	{
 		return false;
@@ -220,7 +220,15 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	Vector2D averageTexCoord = p1 * m_texture[0] + p2 * m_texture[1] + p3 * m_texture[2];
 	Normalise(averageNormal);
 	
-	o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, m_pMaterial );
+	if( _ray.Direction().Dot( averageNormal ) < 0 )
+	{
+		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, m_pMaterial );
+	}
+	else
+	{
+		std::cout<<"internal\n";
+		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, g_air );
+	}
 	//o_intersection = Intersection ( intersectionPos, normal, rayParameter,0 );
 	return true;
 }

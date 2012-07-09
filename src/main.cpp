@@ -7,8 +7,8 @@ int main()
 {
     rayTracer::Scene scene;
     rayTracer::RayTracer raytracer ( &scene );
-	raytracer.SetDepthOfField();
-    for(float i=0; i< 1; i +=1)
+	//raytracer.SetDepthOfField();
+    for(uint32_t i=0; i< 1; i +=1)
     {
         std::cout<<"frame "<<i<<"\n";
         scene.Update(i);
@@ -21,10 +21,10 @@ int main()
     ////img.Set( x, y, color );
     //std::vector<rayTracer::Vector2D> samples;
     //SampleSquare( samples );
-#if 0
+#if 1
 	using namespace rayTracer;
 	std::vector<rayTracer::Vector> sampleshemi;
-	SampleHemisphere( Vector(1,0,0,0), Vector(0,0,1,0), Vector(0,1,0,0), sampleshemi );
+	SampleHemisphere(sampleshemi );
     for( size_t i =0; i< sampleshemi.size(); ++i )
     {
         //img.Set( (int)(samples[i].u()*256.0), (int)(samples[i].v() * 256.0), rayTracer::Color(1,1,1,1) );

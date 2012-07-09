@@ -19,6 +19,7 @@ public:
 	bool Intersect(const Ray& _ray, Intersection& o_intersection ) const;
 	void ToUVSpace( const Vector& _pos, float& o_u, float& o_v )  const;
 	void ToCameraSpace( const Matrix& _transform );
+	void SetMaterial( const Material* _pMaterial );
 
 private:
 	KdTree<Triangle> m_tree;

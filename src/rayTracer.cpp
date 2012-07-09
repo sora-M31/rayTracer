@@ -56,7 +56,7 @@ Color RayTracer::Specular( const Intersection& _intersection, const Vector& _vie
 	return c;
 }
 //------------------------------------------------------------------------------
-Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray, uint32_t _depth, std::ofstream& o_output )
+Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray, int _depth, std::ofstream& o_output )
 {
 	Vector reverseNormal = -_intersection.Normal();
 	float cosIn = reverseNormal.Dot( _ray.Direction()) ;
@@ -64,10 +64,11 @@ Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray,
 	//derived from 2 equation beblow
 	//cosSquared+sinSquared = 1
 	//cosIn/cosOut = outIndex/inIndex
+	std::cout<<_ray.GetMaterial()->Index() <<"/"<< _intersection.GetMaterial()->Index()<<"\n";
 	float ratio = _ray.GetMaterial()->Index() / _intersection.GetMaterial()->Index();
 	float sinOutSquared = ( 1.0f- cosIn * cosIn ) * ratio * ratio;
 
-	Color c;
+	Color c(0,0,0,1);
 	if ( sinOutSquared < 1.0)
 	{
 		Vector outRayDir = _ray.Direction() * ratio - ( cosIn * ratio + sqrtf( 1.0 - sinOutSquared) ) * _intersection.Normal();
@@ -89,36 +90,50 @@ Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray,
 	return c;
 }
 //------------------------------------------------------------------------------
-Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output )
+Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vector& _viewingDir, int _depth, std::ofstream& o_output )
 {
-	Color c(0,0,0,1);
 	//income radiance ray
 	Vector reflectDir = _viewingDir - 2.0f * ( _viewingDir.Dot( _intersection.Normal() ) * _intersection.Normal() );
+	Normalise( reflectDir );
+#if 1
 	//reflect a sample of rays
-	Vector u ( _viewingDir );
 	Vector w ( reflectDir );
-	Vector v = u.Cross(w);
+	Vector u,v;
+	w.ProjectAxis(u,v);
+	Normalise(u);
+	Normalise(v);
 	std::vector<Vector> dirSamples;
-	SampleHemisphere( u, v, w, dirSamples );
+	SampleHemisphere( dirSamples );
+	Color c(0,0,0,1);
 	Color shade( 0,0,0,1);
+	float e=10;
 	for( std::vector<Vector>::iterator iter = dirSamples.begin(); iter!= dirSamples.end(); ++iter )
 	{
-		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, *iter, g_air );
-		shade += ( Trace (raySample, --_depth, o_output )* ( reflectDir.Dot(_intersection.Normal() )) );
+		Vector dir;
+		if( iter->Dot(_intersection.Normal()) < 0 )
+			dir = -u * iter->x() - v * iter->z() + w* iter->y();
+		else
+			dir = u * iter->x() + v * iter->z() + w* iter->y();
+		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, dir, g_air );
+		//radiance
+		float tmp1 = _intersection.Normal().Dot( dir );
+		float tmp2 = reflectDir.Dot( dir );
+		Clamp(tmp1,0,1);
+		Clamp(tmp2,0,1);
+		shade += (Trace (raySample, --_depth, o_output ) * tmp1 * pow( tmp2, e ));
 	}
-	//todo weighted
-	shade/=dirSamples.size();
-	c += shade;
+	c += shade ;
+#endif
 	return c;
 }
 //------------------------------------------------------------------------------
-Color RayTracer::MirrorReflection( const Intersection& _intersection, const Vector& _viewingDir, uint32_t _depth, std::ofstream& o_output )
+Color RayTracer::MirrorReflection( const Intersection& _intersection, const Vector& _viewingDir, int _depth, std::ofstream& o_output )
 {
-	Color c(0,0,0,1);
 	//income radiance ray
 	Vector reflectDir = _viewingDir - 2.0f * ( _viewingDir.Dot( _intersection.Normal() ) * _intersection.Normal() );
 	Ray reflectRay ( _intersection.Position() + _intersection.Normal() * EPSILON, reflectDir, g_air);
 	//color from income radiance
+	Color c(0,0,0,1);
 	Color shade = ( Trace( reflectRay, --_depth, o_output) ) * ( reflectDir.Dot(_intersection.Normal() ) );
 	c += shade;
 	return c;
@@ -144,12 +159,11 @@ Intersection RayTracer::IntersectScene ( const Ray& _ray )
 	return intersection;
 }
 //------------------------------------------------------------------------------
-Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_output )
+Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 {
 //change name
 #if TestAABB
 	AABB test( Vector(-3,1,9,1), Vector(3,3,13,1) );
-	float dis;
 	if (test.Intersect( _ray,dis))
 	{
 		std::cout<<dis<<" ";
@@ -162,6 +176,7 @@ Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_outpu
 	Intersection intersection = IntersectScene ( _ray );
 
 	Color c(0,0,0,0);
+	//std::cout<<_depth<<" depth\n";
 
 	//rescursion depth limit
 	if ( _depth < 0 )
@@ -189,7 +204,7 @@ Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_outpu
 		}
 		else if ( intersection.GetMaterial()->kGlossy() >0 )
 		{
-			c += GlossyReflection( intersection, _ray.Direction(), _depth, o_output );
+			c += GlossyReflection( intersection, _ray.Direction(), _depth, o_output ) * intersection.GetMaterial()->kGlossy();
 		}
 		else if ( intersection.GetMaterial()->kRefraction() >0 )
 		{
@@ -236,7 +251,7 @@ Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_outpu
 			}//end of light iteration
 		}//end of non mirror reflection
 	}//end of intersected
-#ifdef TEST1
+#ifdef TEST0
 	else
 	{
 		//not intersected
@@ -257,7 +272,7 @@ Color RayTracer::Trace( const Ray& _ray, uint32_t _depth, std::ofstream& o_outpu
 void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 {
 	Image img ( _width, _height );
-	uint32_t depth =3;
+	int depth =3;
 	std::ofstream debug_mel;
 //change name
 #ifdef TEST1
@@ -272,6 +287,7 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 	{
 		for (uint32_t x = 0; x < img.Width(); ++x)
 		{
+			//std::cout<<"pixel "<<y<<" "<<x<<"\n";
 			Color color(0,0,0,0);
 
 			float dx = ( x * pixelWidth ) - 0.5f;

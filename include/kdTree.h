@@ -138,7 +138,7 @@ void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
     //std::cout<<"\n"<<"depth=========================== "<<_depth<<"\n";
     //std::cout<<"object number "<< _node->m_list.size()<<"\n";
 	// number->definition
-    if( (_depth < 5) && (_node->m_list.size() > 50) )//m_leastObjNum ))
+    if( (_depth < 10) && (_node->m_list.size() > 50) )//m_leastObjNum ))
     {
         uint32_t axis = _depth%3;
         //get the centre of the box as median

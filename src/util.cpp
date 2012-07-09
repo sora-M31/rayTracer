@@ -50,7 +50,7 @@ bool RealCompare( const float& _a, const float& _b, const float& _epsilon)
 //------------------------------------------------------------------------------
 void SampleSquare( std::vector<Vector2D>& o_samples)
 {
-	uint32_t grid = 5;
+	uint32_t grid = 15;
 	float size = 1.0/(float)grid;
 
 	for( uint32_t i=0; i< grid ; ++i )
@@ -64,14 +64,14 @@ void SampleSquare( std::vector<Vector2D>& o_samples)
 	}
 }
 //------------------------------------------------------------------------------
-void SampleHemisphere ( const Vector& _u, const Vector& _v, const Vector& _w, std::vector<Vector>& o_samples)
+void SampleHemisphere ( std::vector<Vector>& o_samples)
 {
 	//generate planesamples within 0 and 1
 	std::vector<Vector2D> squareSamples;
 	SampleSquare( squareSamples );
 	uint32_t sampleSize = squareSamples.size();
-	uint32_t e = 100;
-	float PI = 3.14;
+	uint32_t e = 10;
+	float PI = 3.1415;
 	for( uint32_t i=0; i< sampleSize; ++i )
 	{
 		float phi = 2.0f * PI * squareSamples[i].u();
@@ -80,7 +80,7 @@ void SampleHemisphere ( const Vector& _u, const Vector& _v, const Vector& _w, st
 		float cosTheta = cos (theta);
 		float sinPhi = sin (phi);
 		float cosPhi = cos (phi);
-		Vector p = _u * sinTheta * cosPhi + _v * sinTheta * sinPhi + cosTheta * _w;
+		Vector p= Vector(1,0,0,0) * sinTheta * cosPhi + Vector(0,0,1,0)* sinTheta * sinPhi + Vector(0,1,0,0) * cosTheta ;
 		o_samples.push_back(p);
 	}
 }

@@ -17,7 +17,7 @@ public:
     {}
     ~Shape(){};
 
-    void SetMaterial ( const Material* _material) { m_pMaterial = _material; }
+    virtual void SetMaterial ( const Material* _material) { m_pMaterial = _material; }
     const Material* GetMaterial () const { return m_pMaterial; }
 
     Vector Position () const { return Vector ( m_transformation[0][3], m_transformation[1][3], m_transformation[2][3], 1.0); }

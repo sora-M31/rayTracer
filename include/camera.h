@@ -9,7 +9,7 @@ namespace rayTracer
 class Camera : public Shape
 {
 public:
-	Camera ( float _aperture = 0.2, float _focalLength = 7, float _viewDistance = 1);
+	Camera ( float _aperture = 0.5, float _focalLength = 7, float _viewDistance = 1);
     ~Camera();
 
     void SampleLens( float _unitNumber );

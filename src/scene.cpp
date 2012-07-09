@@ -13,55 +13,52 @@ Scene::Scene()
 :m_camera ()
 {
     ObjLoader obj;
-	//obj.ParseFile ("resources/teapotTexture.obj" );
-	obj.ParseFile ("resources/cube.obj" );
+	obj.ParseFile ("resources/teapotTexture.obj" );
     ObjLoader loadplane;
     loadplane.ParseFile( "resources/plane.obj");
     ObjLoader loadsky;
     loadsky.ParseFile( "resources/cubeSky.obj");
-	//loadplane.PrintLoadedInfo();
-	//loadplane.PrintSerializedInfo();
 	ObjLoader scene;
 	scene.ParseFile( "resources/cornellBox.obj" );
 
-    Shape* sphere1 = new Sphere( Vector( 1, 0, 0, 1), 1.0 );
+    Shape* sphere1 = new Sphere( Vector( 0, 0, 0, 1), 1.0 );
     Shape* sphere2 = new Sphere( Vector( 0, 0, 0, 1), 1.0 );
     Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
-    Shape* test = new Mesh( Vector ( -1,0, 2, 1), obj);
+    Shape* test = new Mesh( Vector ( 0,0, 0, 1), obj);
     Shape* sky = new Mesh( Vector ( 0,0, 5, 1), loadsky);
 	Shape* cornellBox = new Mesh( Vector( 0,0,0,1), scene );
 
     Material* mirror = new Material ( 0, 0, 1, 0);
-    Material* glossy = new Material ( 0, 0.5, 0, 1 );
-    Material* blueDiffuse = new Material ( 0.8, 0.2, 0, 0);
+    Material* glossy = new Material ( 0, 0, 0, 1 );
+    Material* diffuse = new Material ( 0.8, 0.2, 0, 0);
     Material* glass = new Material ( 0, 0, 0, 0, 1, GLASS_INDEX );
     Material* floor = new Material ( 1, 0, 0 ,0);
 
     Texture* checker = new Texture(160, 160);
     checker->MakeChecker();
     floor->SetTexture( checker );
-	blueDiffuse->SetColor( Color( 1,0,0,1 ));
+	diffuse->SetColor( Color( 1,1,1,1 ));
 
-    //sphere1->SetMaterial(  );
-    test->SetMaterial( blueDiffuse );
+    sphere1->SetMaterial( glass );
+    test->SetMaterial( glass );
     sphere2->SetMaterial( glass );
     plane->SetMaterial( floor );
     //sky->SetMaterial( floor );
     //sky->SetMaterial( mirror );
-    sky->SetMaterial( blueDiffuse );
+    sky->SetMaterial( diffuse );
 	//cornellBox->SetMaterial(  );
 
 	//m_shapes.push_back( sky );
 	m_shapes.push_back( plane );
     //m_shapes.push_back( sphere1 );
     //m_shapes.push_back( cornellBox );
-    m_shapes.push_back( sphere2 );
-    //m_shapes.push_back( test );
+    //m_shapes.push_back( sphere2 );
+    m_shapes.push_back( test );
     m_materials.push_back( mirror );
     m_materials.push_back( floor );
     m_materials.push_back( glass );
     m_materials.push_back( glossy );
-    m_materials.push_back( blueDiffuse );
+    m_materials.push_back( diffuse );
     m_textures.push_back ( checker );
 
     Light* light1 = new PointLight ( Vector (0,15,0,1), 200 );
@@ -69,9 +66,6 @@ Scene::Scene()
 
     m_lights.push_back ( light1);
 	//m_shapes.push_back ( light1);
-	sky->GetMaterial()->GetColor(Vector2D(0,0)).PrintColor();
-	
-
 }
 //------------------------------------------------------------------------------
 Scene::~Scene()
@@ -100,8 +94,9 @@ Scene::~Scene()
 //------------------------------------------------------------------------------
 void Scene::Update( uint32_t _time)
 {
-	m_camera.Translate( Vector( 0,5,-7,1) );
-	m_camera.Rotate( -0.5, Vector(1,0,0,0 ));
+	//m_camera.Translate( Vector( 0,5,-7,1) );
+	m_camera.Translate( Vector( 0,1,-7,1) );
+	//m_camera.Rotate( -0.5, Vector(1,0,0,0 ));
 #if 0
 	std::cout<<m_camera.Transformation().Inverse()[0][3]<<" ";
 	std::cout<<m_camera.Transformation().Inverse()[1][3]<<" ";

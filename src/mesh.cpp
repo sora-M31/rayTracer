@@ -6,6 +6,15 @@ namespace rayTracer
 Mesh::~Mesh ()
 {}
 //------------------------------------------------------------------------------
+void Mesh::SetMaterial( const Material* _pMaterial )
+{
+	m_pMaterial = _pMaterial;
+	for(uint32_t i=0; i< m_tree.m_data.size(); ++i )
+	{
+		m_tree.m_data[i].SetMaterial(_pMaterial);
+	}
+}
+//------------------------------------------------------------------------------
 Mesh::Mesh ( const Vector& _pos, const ObjLoader& _obj, Material* _pMaterial )
 : m_tree(5)
 {
@@ -58,10 +67,6 @@ bool Mesh::Intersect ( const Ray& _ray, Intersection& o_intersection ) const
 {
 	//intersect kd tree
 	bool result = m_tree.Intersect( m_tree.m_root, _ray, o_intersection );
-	if(result )
-	{
-		o_intersection.SetMaterial( m_pMaterial );
-	}
 	return result;
 	
 	//set material
