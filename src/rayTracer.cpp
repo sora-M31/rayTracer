@@ -64,7 +64,7 @@ Color RayTracer::Refraction( const Intersection& _intersection, const Ray& _ray,
 	//derived from 2 equation beblow
 	//cosSquared+sinSquared = 1
 	//cosIn/cosOut = outIndex/inIndex
-	std::cout<<_ray.GetMaterial()->Index() <<"/"<< _intersection.GetMaterial()->Index()<<"\n";
+	//std::cout<<_ray.GetMaterial()->Index() <<"/"<< _intersection.GetMaterial()->Index()<<"\n";
 	float ratio = _ray.GetMaterial()->Index() / _intersection.GetMaterial()->Index();
 	float sinOutSquared = ( 1.0f- cosIn * cosIn ) * ratio * ratio;
 
@@ -122,7 +122,7 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 		Clamp(tmp2,0,1);
 		shade += (Trace (raySample, --_depth, o_output ) * tmp1 * pow( tmp2, e ));
 	}
-	c += shade ;
+	c += shade/dirSamples.size()*5.0;
 #endif
 	return c;
 }
@@ -198,58 +198,69 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 		c.a() = 1.0f;
 
 		assert( intersection.GetMaterial() !=0 );
-		if ( intersection.GetMaterial()->kMirror() >0 )
+		/*
+		if ( intersection.GetMaterial()->kMirror() - 1 < 0.0000001 )
 		{
 			c += MirrorReflection( intersection, _ray.Direction(), _depth, o_output );
 		}
-		else if ( intersection.GetMaterial()->kGlossy() >0 )
-		{
-			c += GlossyReflection( intersection, _ray.Direction(), _depth, o_output ) * intersection.GetMaterial()->kGlossy();
-		}
-		else if ( intersection.GetMaterial()->kRefraction() >0 )
-		{
-			c += Refraction( intersection, _ray, _depth, o_output );
-		}
-		if( intersection.GetMaterial()->kSpecular() > 0 || intersection.GetMaterial() -> kDiffuse() >0 )
-		{
-			uint32_t size = m_pScene->GetLights().size();
-			for ( uint32_t i= 0; i < size; ++i)
+		*/
+			float roulette = rand()/(float)RAND_MAX;
+			//std::cout<<roulette<<"\n";
+			if ( roulette <= intersection.GetMaterial()->kMirror() )
 			{
-				const Light* light = m_pScene->GetLights()[i];
-				std::list<Ray> shadowRays;
-				float attenuation=1.0;
-				light->GetShadowRay( intersection, shadowRays, attenuation);
-
-#ifdef TEST
-				RayList::iterator test = shadowRays.begin();
-				while( test != shadowRays.end() )
+				c += MirrorReflection( intersection, _ray.Direction(), _depth, o_output );
+			}
+			else if ( roulette <= ( intersection.GetMaterial()->kMirror() + intersection.GetMaterial()->kRefraction()) )
+			{
+				c += Refraction( intersection, _ray, _depth, o_output );
+			}
+			else if ( roulette <= ( intersection.GetMaterial()->kMirror() + intersection.GetMaterial()->kRefraction() 
+									+ intersection.GetMaterial()->kDiffuse() ) )
+			{
+				uint32_t size = m_pScene->GetLights().size();
+				for ( uint32_t i= 0; i < size; ++i)
 				{
-					o_output<<"curve -p "
-					   <<(*test).Origin().x()<<" "
-					   <<(*test).Origin().y()<<" "
-					   <<(*test).Origin().z()<<" "
-					   <<"-p "
-					   <<(*test).Origin().x() + (*test).Direction().x()*100<<" "
-					   <<(*test).Origin().y() + (*test).Direction().y()*100<<" "
-					   <<(*test).Origin().z() + (*test).Direction().z()*100<<" "
-					   <<";\n";
-					++test;
-				}
-#endif
-				//calculate shade from a single light
-				std::list<Ray>::iterator iter = shadowRays.begin();
-				Color shade(0,0,0,1);
-				while( iter != shadowRays.end() )
+					const Light* light = m_pScene->GetLights()[i];
+					std::list<Ray> shadowRays;
+					float attenuation=1.0;
+					light->GetShadowRay( intersection, shadowRays, attenuation);
+					//calculate shade from a single light
+					std::list<Ray>::iterator iter = shadowRays.begin();
+					Color shade(0,0,0,1);
+					while( iter != shadowRays.end() )
+					{
+						if ( !IntersectScene( *iter).Intersected() )
+							shade += Diffuse( intersection, iter->Direction(), attenuation );
+						++iter;
+					}
+					shade /= shadowRays.size();
+					c += shade;// + ka * Ambient();
+				}//end of light iteration
+			}
+			//else if ( roulette <= ( intersection.GetMaterial()->kMirror() + intersection.GetMaterial()->kRefraction() 
+			//						+ intersection.GetMaterial()->kDiffuse() + intersection.GetMaterial() -> kSpecular()) )
+			else
+			{
+				uint32_t size = m_pScene->GetLights().size();
+				for ( uint32_t i= 0; i < size; ++i)
 				{
-					if ( !IntersectScene( *iter).Intersected() )
-						shade += Diffuse( intersection, iter->Direction(), attenuation ) * ( intersection.GetMaterial()->kDiffuse() ) +
-								 Specular( intersection, _ray.Direction(), iter->Direction(), attenuation ) * ( intersection.GetMaterial()->kSpecular() );
-					++iter;
-				}
-				shade /= shadowRays.size();
-				c += shade;// + ka * Ambient();
-			}//end of light iteration
-		}//end of non mirror reflection
+					const Light* light = m_pScene->GetLights()[i];
+					std::list<Ray> shadowRays;
+					float attenuation=1.0;
+					light->GetShadowRay( intersection, shadowRays, attenuation);
+					//calculate shade from a single light
+					std::list<Ray>::iterator iter = shadowRays.begin();
+					Color shade(0,0,0,1);
+					while( iter != shadowRays.end() )
+					{
+						if ( !IntersectScene( *iter).Intersected() )
+							shade +=Specular( intersection, _ray.Direction(), iter->Direction(), attenuation );
+							++iter;
+					}
+					shade /= shadowRays.size();
+					c += shade;// + ka * Ambient();
+				}//end of light iteration
+			}
 	}//end of intersected
 #ifdef TEST0
 	else

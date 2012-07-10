@@ -16,13 +16,14 @@ public:
 	//static const Material kAir;
 
 	Material ();
-	Material ( float _kd, float _ks, float _km, float _kg, float _kr=0, float _index=0, float _attenuation=0, const Color& _color = Color(1,1,1,1) );
+	Material ( float _kd, float _ks, float _km, float _kg, float _kr, float _index, float _attenuation, const Color& _color = Color(1,1,1,1) );
 	Material ( const Material& _material );
 	Material& operator = ( const Material& _other );
 
 	//Color GetColor( const Vector& _position ) const;
 	void SetColor ( const Color& _color );
 	Color GetColor( const Vector2D& _texCoord ) const;
+	Color GetColor() const { return m_color; }
 
 	float Index () const { return m_index; };
 	float kDiffuse () const { return m_kd; }

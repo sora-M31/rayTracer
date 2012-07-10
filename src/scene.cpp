@@ -13,7 +13,8 @@ Scene::Scene()
 :m_camera ()
 {
     ObjLoader obj;
-	obj.ParseFile ("resources/teapotTexture.obj" );
+	//obj.ParseFile ("resources/teapotTexture.obj" );
+	obj.ParseFile ("resources/sphere.obj" );
     ObjLoader loadplane;
     loadplane.ParseFile( "resources/plane.obj");
     ObjLoader loadsky;
@@ -28,16 +29,17 @@ Scene::Scene()
     Shape* sky = new Mesh( Vector ( 0,0, 5, 1), loadsky);
 	Shape* cornellBox = new Mesh( Vector( 0,0,0,1), scene );
 
-    Material* mirror = new Material ( 0, 0, 1, 0);
-    Material* glossy = new Material ( 0, 0, 0, 1 );
-    Material* diffuse = new Material ( 0.8, 0.2, 0, 0);
-    Material* glass = new Material ( 0, 0, 0, 0, 1, GLASS_INDEX );
-    Material* floor = new Material ( 1, 0, 0 ,0);
+    Material* mirror = new Material ( 0, 0, 1, 0,0,0,0);
+    Material* glossy = new Material ( 0.5, 0, 0, 1, 0,0,0 );
+    Material* diffuse = new Material ( 1, 0, 0, 0,0,0,0);
+    Material* glass = new Material ( 0.1, 0.1, 0.2, 0, 0.6, GLASS_INDEX,0 );
+    Material* floor = new Material ( 1, 0, 0 ,0,0,0,0);
 
     Texture* checker = new Texture(160, 160);
     checker->MakeChecker();
     floor->SetTexture( checker );
 	diffuse->SetColor( Color( 1,1,1,1 ));
+	//glossy->SetColor( Color ( 1,1,0.2,1) );
 
     sphere1->SetMaterial( glass );
     test->SetMaterial( glass );
@@ -56,7 +58,7 @@ Scene::Scene()
     m_shapes.push_back( test );
     m_materials.push_back( mirror );
     m_materials.push_back( floor );
-    m_materials.push_back( glass );
+    //m_materials.push_back( glass );
     m_materials.push_back( glossy );
     m_materials.push_back( diffuse );
     m_textures.push_back ( checker );

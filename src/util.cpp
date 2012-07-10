@@ -50,7 +50,7 @@ bool RealCompare( const float& _a, const float& _b, const float& _epsilon)
 //------------------------------------------------------------------------------
 void SampleSquare( std::vector<Vector2D>& o_samples)
 {
-	uint32_t grid = 15;
+	uint32_t grid = 8;
 	float size = 1.0/(float)grid;
 
 	for( uint32_t i=0; i< grid ; ++i )

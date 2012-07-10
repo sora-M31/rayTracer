@@ -8,7 +8,8 @@ int main()
     rayTracer::Scene scene;
     rayTracer::RayTracer raytracer ( &scene );
 	//raytracer.SetDepthOfField();
-    for(uint32_t i=0; i< 1; i +=1)
+	raytracer.SetAntialias();
+    for(uint32_t i=0; i< 10; i +=1)
     {
         std::cout<<"frame "<<i<<"\n";
         scene.Update(i);
