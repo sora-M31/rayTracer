@@ -17,21 +17,36 @@ RayTracer::RayTracer( Scene* _pScene )
  m_depthOfField ( 0 )
 {
 }
-#if 0
+#if 1
 //------------------------------------------------------------------------------
-Color RayTracer::AmbientOcc( const Intersection& _intersection)
+Color RayTracer::AmbientOcc( const Intersection& _intersection )
 {
-	float c=0;
 	//at intersection point, shoot rays into the hemisphere with samples given
-	shadowRays;
-	//loop through all the ray
-	for( std::vector<Ray>::iterator iter = shadowRays.begin(); iter != shadowRays.end(); ++iter )
+	Vector w(_intersection.Normal() );
+	Vector tmp1, tmp2;
+	w.ProjectAxis(tmp1,tmp2);
+	Vector u = w.Cross(tmp1);
+	Normalise( u );
+	Vector v = w.Cross(u);
+	Normalise( v );
+
+	std::vector<Vector> dirSamples;
+	float e=10;
+	SampleHemisphere( dirSamples, 10, e );
+	float c(0);
+	for( uint32_t i=0; i< dirSamples.size(); ++i )
 	{
+		Vector dir = u * dirSamples[i].x() + v *dirSamples[i].z() + w*dirSamples[i].y();
+		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, dir, g_air );
 		//if no intersection with objects in scene
-		// c += 1
+		if( !IntersectScene ( raySample ).Intersected() )
+		{
+			c+=1.0 * dir.Dot( _intersection.Normal() );
+		}
 	}
+	c/=dirSamples.size();
 	//average color by number of points
-	return Color( c, c, c, 1 );
+	return Color(c,c,c,0);
 }
 #endif
 //------------------------------------------------------------------------------
@@ -168,13 +183,21 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 #if 1
 	//reflect a sample of rays
 	Vector w ( reflectDir );
-	Vector u,v;
+	Vector tmp1,tmp2;
+	#if 0
 	w.ProjectAxis(u,v);
 	Normalise(u);
 	Normalise(v);
+	#endif
+	w.ProjectAxis(tmp1,tmp2);
+	Vector u = w.Cross(tmp1);
+	Normalise( u );
+	Vector v = w.Cross(u);
+	Normalise( v );
+	
 	std::vector<Vector> dirSamples;
 	float e=10;
-	SampleHemisphere( dirSamples, 6, e );
+	SampleHemisphere( dirSamples, 5, e );
 	Color c(0,0,0,1);
 	Color shade( 0,0,0,1);
 	for( std::vector<Vector>::iterator iter = dirSamples.begin(); iter!= dirSamples.end(); ++iter )
@@ -192,7 +215,7 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 		Clamp(tmp2,0,1);
 		shade += (Trace (raySample, --_depth, o_output ) * tmp1 * pow( tmp2, e ));
 	}
-	c += shade/dirSamples.size()*5.0;
+	c += shade * 0.5;
 #endif
 	return c;
 }
@@ -257,11 +280,16 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 
 		assert( intersection.GetMaterial() !=0 );
 		uint32_t size = m_pScene->GetLights().size();
+		#if 0
 		if( intersection.GetMaterial()->kRefraction() >0 )
 		{
 			c += Fresnel( intersection, _ray, _depth, o_output );
 		}
-		else
+		if( intersection.GetMaterial()->kGlossy() >0 )
+		{
+			c += GlossyReflection( intersection, _ray.Direction(), _depth, o_output );
+		}
+		if( intersection.GetMaterial()->kDiffuse() >0 )
 		{
 			for ( uint32_t i= 0; i < size; ++i)
 			{
@@ -283,6 +311,8 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 				c += shade;// + ka * Ambient();
 			}//end of light iteration
 		}
+		#endif
+		c+= AmbientOcc( intersection );
 	}//end of intersected
 #ifdef TEST1
 	else

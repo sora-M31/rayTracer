@@ -5,11 +5,12 @@
 #include "vector2D.h"
 int main()
 {
-    rayTracer::Scene scene;
-    rayTracer::RayTracer raytracer ( &scene );
-	//raytracer.SetDepthOfField();
-	raytracer.SetAntialias(10);
-    for(uint32_t i=0; i< 1; i +=1)
+	rayTracer::Camera cam( 0.3, 8, 1 );
+    rayTracer::Scene scene( cam );
+    rayTracer::RayTracer raytracer( &scene );
+	//raytracer.SetDepthOfField(5);
+	//raytracer.SetAntialias(2);
+    for(uint32_t i=0; i< 10; i +=1)
     {
         std::cout<<"frame "<<i<<"\n";
         scene.Update(i);

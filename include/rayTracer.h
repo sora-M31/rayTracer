@@ -25,6 +25,7 @@ private:
 	Color Fresnel( const Intersection& _intersection, const Ray& _ray, int _depth, std::ofstream& o_output );
 	Color MirrorReflection( const Intersection& _intersection, const Vector& _viewingDir, int _depth, std::ofstream& o_output );
 	Color GlossyReflection( const Intersection& _intersection, const Vector& _viewingDir, int _depth, std::ofstream& o_output );
+	Color AmbientOcc( const Intersection& _intersection );
 	const Scene* m_pScene;
 	uint32_t m_antialias;
     uint32_t m_depthOfField;

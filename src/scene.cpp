@@ -9,11 +9,11 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-Scene::Scene()
-:m_camera ()
+Scene::Scene( const Camera& _camera )
+:m_camera ( _camera )
 {
     ObjLoader obj;
-	obj.ParseFile ("resources/sphere.obj" );
+	obj.ParseFile ("resources/teapotTexture.obj" );
 	//obj.ParseFile ("resources/sphere.obj" );
     ObjLoader loadplane;
     loadplane.ParseFile( "resources/plane.obj");
@@ -27,7 +27,7 @@ Scene::Scene()
     Shape* sky = new Mesh( Vector ( 0,0, 5, 1), loadsky);
 
     Material* mirror = new Material ( 0, 0, 1, 0,0,0,0);
-    Material* glossy = new Material ( 0.5, 0, 0, 1, 0,0,0 );
+    Material* glossy = new Material ( 0, 0, 0, 1, 0,0,0 );
     Material* diffuse = new Material ( 1, 0, 0, 0,0,0,0);
     Material* glass = new Material ( 0.05, 0.05, 0.5, 0, 0.4, GLASS_INDEX,0 );
     Material* floor = new Material ( 1, 0, 0 ,0,0,0,0);
@@ -38,8 +38,8 @@ Scene::Scene()
 	diffuse->SetColor( Color( 1,1,1,1 ));
 	//glossy->SetColor( Color ( 1,1,0.2,1) );
 
-    sphere1->SetMaterial( glass );
-    test->SetMaterial( glass );
+    sphere1->SetMaterial( glossy );
+    test->SetMaterial( glossy );
     sphere2->SetMaterial( glass );
     plane->SetMaterial( floor );
     //sky->SetMaterial( floor );
@@ -47,7 +47,7 @@ Scene::Scene()
     sky->SetMaterial( diffuse );
 	//cornellBox->SetMaterial(  );
 
-	m_shapes.push_back( sky );
+	//m_shapes.push_back( sky );
 	m_shapes.push_back( plane );
     m_shapes.push_back( sphere1 );
     //m_shapes.push_back( cornellBox );
@@ -64,7 +64,7 @@ Scene::Scene()
     //Light* light2 = new AreaLight ( Vector (10,5,0,1),300,Vector(0,-1,0,0), 3 );
 
     m_lights.push_back ( light1);
-    //m_lights.push_back ( light2 );
+   // m_lights.push_back ( light2 );
 	//m_shapes.push_back ( light1);
 }
 //------------------------------------------------------------------------------
@@ -97,22 +97,12 @@ void Scene::Update( uint32_t _time)
 	//m_camera.Translate( Vector( 0,5,-7,1) );
 	m_camera.Translate( Vector( -1,1,-7,1) );
 	//m_camera.Rotate( -0.5, Vector(1,0,0,0 ));
-#if 0
-	std::cout<<m_camera.Transformation().Inverse()[0][3]<<" ";
-	std::cout<<m_camera.Transformation().Inverse()[1][3]<<" ";
-	std::cout<<m_camera.Transformation().Inverse()[2][3]<<"\n";
-#endif
 	m_stack.push_back ( m_camera.LocalTransformation().Inverse() );
-	m_stack.push_back ( Quaternion( 0.5*_time, Vector( 1,0,0,0 ) ).AsMatrix() );
+	m_stack.push_back ( Quaternion( 0.5*_time, Vector( 0,1,0,0 ) ).AsMatrix() );
 #if 1
     uint32_t size = m_shapes.size();
     for( uint32_t i = 0; i < size; ++i )
     {
-#if 0
-	std::cout<<m_shapes[i]->Transformation()[0][3]<<" ";
-	std::cout<<m_shapes[i]->Transformation()[1][3]<<" ";
-	std::cout<<m_shapes[i]->Transformation()[2][3]<<"\n";
-#endif
         //m_shapes[i]->Rotate( 0.05 * _time, Vector ( 0,1,0,0) );
 		m_stack.push_back ( m_shapes[i]->LocalTransformation() );
 		m_shapes[i]->ToCameraSpace( GetStackMatrix() );

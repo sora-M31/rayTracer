@@ -12,7 +12,7 @@ namespace rayTracer
 class Scene
 {
 public:
-	Scene();
+	Scene( const Camera& _camera );
 	~Scene();
 	void Update( uint32_t _time);
 	const std::vector<Shape*>& GetShapes() const { return m_shapes; }
@@ -20,11 +20,11 @@ public:
 	const Camera& GetCamera()const { return m_camera; }
 	Matrix GetStackMatrix();
 private:
+	Camera m_camera;
 	std::vector< Shape* > m_shapes;
 	std::vector< Light* > m_lights;
 	std::vector< Material* > m_materials;
 	std::vector< Texture* > m_textures;
-	Camera m_camera;
 	// --------------------------------------------------------------------------
 	/// \brief Transformation stack
 	std::list<Matrix> m_stack;
