@@ -2,16 +2,28 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-AreaLight::AreaLight(const Vector& _position, float _intensity, Vector _normal, float _width, float _height)
-: m_normal ( _normal),
-  m_width ( _width ),
-  m_height ( _height )
+AreaLight::AreaLight(const Vector& _position, float _intensity, Vector _normal, uint32_t _sampleNum )
+: m_normal ( _normal)
 {
+	//rotation?
 	Normalise ( m_normal );
     m_translation = _position;
     m_intensity = _intensity;
 
-    Sampling( m_translation, m_width, m_height,8,8,Vector(0,0,1,0), m_normal.Cross(Vector(0,0,1,0)), m_lightSamples );
+	std::vector<Vector2D> samples;
+    SampleSquare( samples, _sampleNum );
+	std::vector<Vector2D>::iterator iter = samples.begin();
+	Vector u;
+	Vector v;
+	float width = 10;
+	float height = 10;
+	m_normal.ProjectAxis( u, v );
+	while( iter != samples.end() )
+	{
+		m_lightSamples.push_back( Position() + u *(iter->u() - 0.5) * width + v*( iter->v() - 0.5 ) * height );
+		++iter;
+	}
+	m_lightSamplesTransformed = m_lightSamples;
 }
 //------------------------------------------------------------------------------
 AreaLight::~AreaLight()
@@ -19,9 +31,9 @@ AreaLight::~AreaLight()
 //------------------------------------------------------------------------------
 void AreaLight::GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, float& o_attenuation ) const
 {
-	std::list<Vector>::const_iterator iter = m_lightSamples.begin ();
+	std::vector<Vector>::const_iterator iter = m_lightSamplesTransformed.begin ();
 	
-	while( iter != m_lightSamples.end() )
+	while( iter != m_lightSamplesTransformed.end() )
 	{
 		Vector lightDir = *iter - _intersection.Position();
 		float dis = lightDir.Length ();
@@ -42,7 +54,9 @@ Vector AreaLight::Normal()
 //------------------------------------------------------------------------------
 void AreaLight::ToCameraSpace( const Matrix& _transform)
 {
-	m_lightSamples.clear();
-    Sampling( Position(), m_width, m_height,8,8,Vector(0,0,1,0), Normal().Cross(Vector(0,0,1,0)), m_lightSamples );
+	for( uint32_t i=0; i< m_lightSamples.size(); ++i )
+	{
+		m_lightSamplesTransformed[i] = m_lightSamples[i] * _transform; 
+	}
 }
 }

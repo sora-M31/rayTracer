@@ -25,8 +25,8 @@ enum Path { DIFFUSE, SPECULAR, ABSORB, TRANSMIT };
 /// \param v unit vector (axis)
 /// \param samples
 void Sampling ( const Vector& _centre, float _width, float _height, float _gridNumberU, float _gridNumberV, const Vector& _u, const Vector& _v, std::list<Vector>& o_samples);
-void SampleSquare( std::vector<Vector2D>& o_samples);
-void SampleHemisphere (std::vector<Vector>& o_samples);
+void SampleSquare( std::vector<Vector2D>& o_samples, uint32_t _num );
+void SampleHemisphere ( std::vector<Vector>& o_samples, uint32_t _num, uint32_t _exp );
 // --------------------------------------------------------------------------
 void Clamp( float& io_value, float _min, float _max );
 // --------------------------------------------------------------------------

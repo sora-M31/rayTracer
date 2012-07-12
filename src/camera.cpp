@@ -22,7 +22,7 @@ Camera::~Camera()
 void Camera::SampleLens( float _unitNumber )
 {
 		std::vector<Vector2D> samples(0);
-		SampleSquare(samples);
+		SampleSquare( samples, 5);
 
 		for( size_t i=0; i< samples.size(); ++i )
 		{
