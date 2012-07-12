@@ -26,11 +26,11 @@ Scene::Scene( const Camera& _camera )
     Shape* test = new Mesh( Vector ( 0,0, 0, 1), obj);
     Shape* sky = new Mesh( Vector ( 0,0, 5, 1), loadsky);
 
-    Material* mirror = new Material ( 0, 0, 1, 0,0,0,0);
-    Material* glossy = new Material ( 0, 0, 0, 1, 0,0,0 );
-    Material* diffuse = new Material ( 1, 0, 0, 0,0,0,0);
-    Material* glass = new Material ( 0.05, 0.05, 0.5, 0, 0.4, GLASS_INDEX,0 );
-    Material* floor = new Material ( 1, 0, 0 ,0,0,0,0);
+    Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
+    Material* glossy = new Material ( 0, 0, 0, 0, 0, 1, 0, 0 );
+    Material* diffuse = new Material ( 0.1, 0.8, 0.1, 0, 0, 0, 0, 0);
+    Material* glass = new Material ( 0, 0, 0, 1, 1, 0, GLASS_INDEX,0 );
+    Material* floor = new Material ( 0, 1, 0, 0 ,0, 0, 0, 0);
 
     Texture* checker = new Texture(160, 160);
     checker->MakeChecker();

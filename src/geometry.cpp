@@ -220,7 +220,7 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	Vector2D averageTexCoord = p1 * m_texture[0] + p2 * m_texture[1] + p3 * m_texture[2];
 	Normalise(averageNormal);
 	
-	if( m_pMaterial->kRefraction() > 0 && _ray.Direction().Dot( averageNormal ) > 0 )
+	if( m_pMaterial->kf() > 0 && _ray.Direction().Dot( averageNormal ) > 0 )
 	{
 		//std::cout<<"internal\n";
 		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, g_air );
