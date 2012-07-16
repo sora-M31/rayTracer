@@ -11,9 +11,9 @@ class Vector;
 class Vector2D;
 #define AIR_INDEX  1.00028f
 #define GLASS_INDEX 1.52f
-#define EPSILON 0.0001
+#define EPSILON 0.001
+#define PI  3.14159265
 static Material* const g_air = new Material( 0, 0, 0, 0, 1, 0,AIR_INDEX,0 );
-enum Path { DIFFUSE, SPECULAR, ABSORB, TRANSMIT };
 // --------------------------------------------------------------------------
 /// \brief Sampling a rectangle
 /// \param centre

@@ -14,7 +14,8 @@ class Shape
 public:
     Shape()
     : m_pMaterial (0)
-    {}
+    {
+	}
     ~Shape(){};
 
     virtual void SetMaterial ( const Material* _material) { m_pMaterial = _material; }

@@ -15,10 +15,11 @@ Material::Material()
   m_index ( 0 ),
   m_attenuation ( 0.1 ),
   m_color( Color(1,1,1,1) ),
+  m_aniso( false ),
   m_pTexture ( 0 )
 {}
 //---------------------------------------------------------------------------------------
-Material::Material ( float _ka, float _kd, float _ks, float _km, float _kf, float _kg, float _index, float _attenuation, const Color& _color )
+Material::Material ( float _ka, float _kd, float _ks, float _km, float _kf, float _kg, float _index, float _attenuation, const Color& _color, bool _aniso)
 : m_ka ( _ka ),
   m_kd ( _kd ),
   m_ks ( _ks ),
@@ -28,6 +29,7 @@ Material::Material ( float _ka, float _kd, float _ks, float _km, float _kf, floa
   m_index ( _index ),
   m_attenuation ( _attenuation ),
   m_color ( _color ),
+  m_aniso( _aniso ),
   m_pTexture ( 0 )
 {}
 //---------------------------------------------------------------------------------------
@@ -41,6 +43,7 @@ Material::Material ( const Material& _material )
   m_index ( _material.m_index ),
   m_attenuation ( _material.m_attenuation ),
   m_color ( _material.m_color ),
+  m_aniso ( _material.m_aniso ),
   m_pTexture ( _material.m_pTexture )
 {}
 //---------------------------------------------------------------------------------------
@@ -56,6 +59,7 @@ Material& Material::operator = ( const Material& _other )
     m_attenuation = _other.m_attenuation;
     m_pTexture = _other.m_pTexture;
     m_color = _other.m_color;
+    m_aniso = _other.m_aniso;
     return *this;
 }
 //---------------------------------------------------------------------------------------

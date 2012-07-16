@@ -69,7 +69,6 @@ void SampleHemisphere ( std::vector<Vector>& o_samples, uint32_t _num, uint32_t 
 	std::vector<Vector2D> squareSamples;
 	SampleSquare( squareSamples, _num );
 	uint32_t sampleSize = squareSamples.size();
-	float PI = 3.1415;
 	for( uint32_t i=0; i< sampleSize; ++i )
 	{
 		float phi = 2.0f * PI * squareSamples[i].u();

@@ -20,12 +20,12 @@ public:
 private:
     Intersection IntersectScene ( const Ray& _ray );
     Color Trace( const Ray& _ray, int _depth, std::ofstream& o_output );
-	Color Diffuse( const Intersection& _intersection, const Vector& _lightDir, float _attenuation );
-	Color Specular( const Intersection& _intersection, const Vector& _viewingDir, const Vector& _lightDir, float _attenuation );
-	Color Fresnel( const Intersection& _intersection, const Ray& _ray, int _depth, std::ofstream& o_output );
-	Color MirrorReflection( const Intersection& _intersection, const Vector& _viewingDir, int _depth, std::ofstream& o_output );
-	Color GlossyReflection( const Intersection& _intersection, const Vector& _viewingDir, int _depth, std::ofstream& o_output );
 	Color AmbientOcc( const Intersection& _intersection );
+	Color GlossyReflection( const Intersection& _intersection, const Vector& _viewingDir, int _depth, std::ofstream& o_output );
+	Color Fresnel( const Intersection& _intersection, const Ray& _ray, int _depth, std::ofstream& o_output );
+	float Specular( const Intersection& _intersection, const Vector& _viewingDir, const Vector& _lightDir );
+	float AnisotropicSpecular( const Intersection& _intersection, const Vector& _viewingDir, const Vector& _lightDir );
+	Vector MirrorReflection( const Intersection& _intersection, const Vector& _inDir );
 	const Scene* m_pScene;
 	uint32_t m_antialias;
     uint32_t m_depthOfField;

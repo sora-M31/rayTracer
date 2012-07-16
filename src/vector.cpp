@@ -48,7 +48,7 @@ uint8_t Vector::DominantAxis () const
         else return 2;
 }
 //------------------------------------------------------------------------------
-void Vector::ProjectAxis( Vector& o_u, Vector& o_v )
+void Vector::ProjectAxis( Vector& o_u, Vector& o_v ) const
 {
     uint8_t axis = DominantAxis();
     Vector u(0, 0, 0, 0 );
@@ -57,6 +57,19 @@ void Vector::ProjectAxis( Vector& o_u, Vector& o_v )
     v [ (axis + 2)%3 ] = 1;
     o_u = u;
     o_v = v;
+}
+//------------------------------------------------------------------------------
+void Vector::GetBasis( Vector& o_u, Vector& o_v ) const
+{
+    assert( this->Dot(*this)!=0 );
+    Vector tmp( 1,0,0,0 );
+    if( *this == Vector( 1,0,0,0 ) )
+    {
+        tmp = Vector( 0,1,0,0);
+    }
+    Vector normalised = this->Normalise();
+    o_u = normalised.Cross( tmp );
+    o_v = normalised.Cross( o_u );
 }
 //------------------------------------------------------------------------------
 Vector& Vector::operator =  ( const Vector& _other )

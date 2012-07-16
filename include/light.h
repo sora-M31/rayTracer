@@ -9,6 +9,7 @@
 namespace rayTracer
 {
 typedef std::list<Ray> RayList;
+typedef std::list<float> DisList;
 class Light : public Shape
 {
 public:
@@ -21,10 +22,9 @@ public:
 	~Light() {}
 
 	const float& Intensity () const { return m_intensity; }
-	virtual void GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, float& o_attenuation ) const = 0;
+	virtual void GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, DisList& o_disList, float& o_attenuation ) const = 0;
 
 	bool Intersect(const Ray& _ray, Intersection& o_intersection ) const { return false; }
-    void ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const {}
 
 protected:
 	float m_intensity;

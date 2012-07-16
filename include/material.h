@@ -17,7 +17,7 @@ public:
 
 	Material();
 	Material( float _ka, float _kd, float _ks, float _km, float _kf, float _kg,
-			  float _index, float _attenuation, const Color& _color = Color(1,1,1,1) );
+			  float _index, float _attenuation, const Color& _color = Color(1,1,1,1), bool _aniso = false );
 	Material ( const Material& _material );
 	Material& operator = ( const Material& _other );
 
@@ -31,6 +31,7 @@ public:
 	float km() const { return m_km; }
 	float kg() const { return m_kg; }
 	float kf() const { return m_kf; }
+	bool IsAnisotropic() const { return m_aniso; }
 	float Index() const { return m_index; };
 	float Attenuation () const { return m_attenuation; }
 	const Texture* GetTexture () const { return m_pTexture; }
@@ -55,6 +56,7 @@ private:
 	float m_attenuation;
 	///\ Material color when there's no texture
 	Color m_color;
+	bool m_aniso;
 	const Texture* m_pTexture;
 };
 }//end of namespace

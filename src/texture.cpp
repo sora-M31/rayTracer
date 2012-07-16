@@ -16,6 +16,31 @@ Texture::Texture ( uint32_t _height, uint32_t _width )
   m_colors ( m_height * m_width, Color ( 1,1,1,1) )
 {}
 //------------------------------------------------------------------------------
+void Texture::LoadImage(const std::string& _filename)
+{
+    //get data from file to local array
+    Magick::Image imageFile;
+    imageFile.read(_filename);
+    imageFile.flip();
+    m_width = imageFile.rows();
+    m_height = imageFile.columns();
+    uint8_t data[ m_width * m_height * 4 ];
+    imageFile.write( 0, 0, m_width, m_height, "RGBA", Magick::CharPixel, data );
+	uint32_t size = m_width * m_height * 4;
+	std::cout<<m_colors.size();
+	for( uint32_t i=0; i< size; i+=4 )
+	{
+		//std::cout<<size<<"\n";
+		//std::cout<<m_width*m_height<<"\n";
+		uint32_t index = i/4.0;
+		//std::cout<<index<<"\n";
+		if( index < m_width * m_height )
+		m_colors.push_back ( Color ( data[i]/255.0, data[i+1]/255.0, data[i+2]/255.0, data[i+3]/255.0 ) );
+		//m_colors[index].PrintColor();
+	}
+    //imageFile.write( "output.png");
+}
+//------------------------------------------------------------------------------
 void Texture::MakeChecker()
 {
     //each black or white square with 8 rows and 8 columns, therefore 0x8

@@ -33,7 +33,8 @@ public:
     Vector Cross(const Vector& _other) const;
     float Length() const;
     uint8_t DominantAxis () const;
-    void ProjectAxis( Vector& o_u, Vector& o_v );
+    void ProjectAxis( Vector& o_u, Vector& o_v ) const;
+    void GetBasis( Vector& o_u, Vector& o_v ) const;
     Vector operator + (const Vector& _other) const;
     Vector operator - (const Vector& _other) const;
     Vector operator - () const;

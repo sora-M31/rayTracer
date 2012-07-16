@@ -5,6 +5,7 @@
 #include "vector2D.h"
 int main()
 {
+#if 1
 	rayTracer::Camera cam( 0.3, 8, 1 );
     rayTracer::Scene scene( cam );
     rayTracer::RayTracer raytracer( &scene );
@@ -15,7 +16,20 @@ int main()
         std::cout<<"frame "<<i<<"\n";
         scene.Update(i);
         // Cast rays into scene and write to image
-        raytracer.CastRay( i, 400, 300 );
+		if( i == 7 )
+        raytracer.CastRay( i, 40, 30 );
     }
+#endif
+#if 0
+	rayTracer::Texture texture;
+	texture.LoadImage("resources/flower.jpg");
+	rayTracer::Image img( texture.Width(), texture.Height() );
+	for( uint32_t i=0; i< texture.Width() * texture.Height() ; ++i )
+	{
+		img[i]=texture[i];
+	}
+	img.WriteTga( "textureText" );
+#endif
+
     return EXIT_SUCCESS;
 }

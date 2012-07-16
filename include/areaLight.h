@@ -10,7 +10,7 @@ public:
 	AreaLight ( const Vector& _position, float _intensity, Vector _normal, uint32_t _sampleNum );
 	~AreaLight ();
 
-	void GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, float& o_attenuation ) const;
+	void GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, DisList& o_disList, float& o_attenuation ) const;
 	Vector Normal();
 	void ToCameraSpace( const Matrix& _transform);
 

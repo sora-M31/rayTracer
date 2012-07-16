@@ -12,10 +12,11 @@ PointLight::PointLight ( const Vector& _position, float _intensity )
 PointLight::~PointLight()
 {}
 //------------------------------------------------------------------------------
-void PointLight::GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, float& o_attenuation ) const
+void PointLight::GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, DisList& o_disList, float& o_attenuation ) const
 {
 	Vector lightDir = Position() - _intersection.Position();
 	float dis = lightDir.Length();
+	o_disList.push_back(dis);
 	float attenuation = m_intensity / ( dis*dis );
 	Clamp( attenuation, 0, 1);
 	o_attenuation = attenuation;
