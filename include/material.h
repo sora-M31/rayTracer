@@ -1,7 +1,7 @@
 #ifndef _MATERIAL_H_
 #define _MATERIAL_H_
 
-#include "texture.h"
+#include "Image.h"
 //#include "vector2D.h"
 
 namespace rayTracer
@@ -34,8 +34,8 @@ public:
 	bool IsAnisotropic() const { return m_aniso; }
 	float Index() const { return m_index; };
 	float Attenuation () const { return m_attenuation; }
-	const Texture* GetTexture () const { return m_pTexture; }
-	void SetTexture ( const Texture* _texture ) { m_pTexture = _texture; }
+	const Image* GetTexture () const { return m_pTexture; }
+	void SetTexture ( const Image* _texture ) { m_pTexture = _texture; }
 
 private:
 	/// \m_ka ambient coefficient
@@ -57,7 +57,7 @@ private:
 	///\ Material color when there's no texture
 	Color m_color;
 	bool m_aniso;
-	const Texture* m_pTexture;
+	const Image* m_pTexture;
 };
 }//end of namespace
 #endif

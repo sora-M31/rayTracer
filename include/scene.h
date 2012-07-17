@@ -24,7 +24,7 @@ private:
 	std::vector< Shape* > m_shapes;
 	std::vector< Light* > m_lights;
 	std::vector< Material* > m_materials;
-	std::vector< Texture* > m_textures;
+	std::vector< Image* > m_textures;
 	// --------------------------------------------------------------------------
 	/// \brief Transformation stack
 	std::list<Matrix> m_stack;
