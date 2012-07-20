@@ -24,27 +24,29 @@ Scene::Scene( const Camera& _camera )
     loadCube.ParseFile( "resources/cube.obj");
 
     Shape* sphere1 = new Sphere( Vector( 0, 0, 0, 1), 1.0 );
-    Shape* sphere2 = new Sphere( Vector( 0, 0, 3, 1), 1.0 );
+    Shape* sphere2 = new Sphere( Vector( -2.5, 0, 0, 1), 1.0 );
     Shape* cube = new Mesh( Vector( -3, 0, 0, 1), loadCube );
     Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
     Shape* test = new Mesh( Vector ( 0,0, 2, 1), obj);
     Shape* sky = new Mesh( Vector ( 0,0, 0, 1), loadsky);
 
+	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
     Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
-    Material* glossy = new Material ( 0, 0, 0, 0, 0, 1, 0, 0 );
+    Material* glossy = new Material ( 0, 0, 1, 0, 0, 1, 0, 0 ,Color(1,1,1,1),true);
     Material* diffuse = new Material ( 0, 0.8, 0.2, 0, 0, 0, 0, 0 );
     Material* glass = new Material ( 0, 0, 0, 0, 1, 0, GLASS_INDEX,0 );
     Material* floor = new Material ( 0, 1, 0, 0 ,0, 0, 0, 0);
 
-    Image* checker = new Image(160, 160, Color(1,1,1,1) );
-    checker->MakeChecker();
+    //Image* checker = new Image(160, 160, Color(1,1,1,1) );
+    //checker->MakeChecker();
+
     Image* salad = new Image();
-	salad->ReadFile( "resources/nysalad.jpg" );
-    floor->SetTexture( checker );
+	salad->ReadFile( "resources/flower.jpg" );
+    floor->SetTexture( salad );
 	diffuse->SetColor( Color( 1,1,1,1 ));
 	//glossy->SetColor( Color ( 1,1,0.2,1) );
 
-    sphere1->SetMaterial( diffuse );
+    sphere1->SetMaterial( glossy );
     sphere2->SetMaterial( diffuse );
     cube->SetMaterial( diffuse );
     test->SetMaterial( glossy );
@@ -56,17 +58,17 @@ Scene::Scene( const Camera& _camera )
 
 	//m_shapes.push_back( sky );
 	m_shapes.push_back( plane );
-    m_shapes.push_back( sphere1 );
-    m_shapes.push_back( sphere2 );
+   // m_shapes.push_back( sphere1 );
+    //m_shapes.push_back( sphere2 );
     //m_shapes.push_back( cube );
     //m_shapes.push_back( cornellBox );
-    //m_shapes.push_back( test );
+    m_shapes.push_back( test );
     m_materials.push_back( mirror );
     m_materials.push_back( floor );
     m_materials.push_back( glass );
     m_materials.push_back( glossy );
     m_materials.push_back( diffuse );
-    m_textures.push_back ( checker );
+    //m_textures.push_back ( checker );
     m_textures.push_back ( salad );
 
     Light* light1 = new PointLight ( Vector (0,4,-7,1), 200 );

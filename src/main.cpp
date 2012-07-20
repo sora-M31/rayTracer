@@ -5,27 +5,21 @@
 #include "vector2D.h"
 int main()
 {
-#if 0
+#if 1
 	rayTracer::Camera cam( 0.3, 7, 1 );
     rayTracer::Scene scene( cam );
     rayTracer::RayTracer raytracer( &scene );
-	raytracer.SetDepthOfField(5);
+	//raytracer.SetDepthOfField(5);
 	//raytracer.SetAntialias(10);
-    for(uint32_t i=0; i< 1; i +=1)
+    for(uint32_t i=0; i< 10; i +=1)
     {
         scene.Update(i);
         // Cast rays into scene and write to image
         //raytracer.CastRay( i, 800, 600 );
-        //raytracer.CastRay( i, 200, 150 );
-        raytracer.CastRay( i, 400, 300 );
+        raytracer.CastRay( i, 200, 150 );
+        //raytracer.CastRay( i, 400, 300 );
         std::cout<<"frame "<<i<<"\n";
     }
 #endif
-#if 1
-	rayTracer::Image test;
-	test.ReadFile("resources/flower.jpg");
-	test.WriteTga( "textureText" );
-#endif
-
     return EXIT_SUCCESS;
 }

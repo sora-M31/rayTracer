@@ -1,5 +1,6 @@
 #include "image.h"
 #include <fstream>
+#include "util.h"
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
@@ -36,31 +37,46 @@ void Image::MakeChecker()
 	}
 }
 //------------------------------------------------------------------------------
-const Color& Image::GetColorBilinear( const Vector2D& _texCoord ) const
+Color Image::GetColorBilinear( const Vector2D& _texCoord ) const
 {
-#if 0
-	if ( _u < 0.0) _u = -_u;
-	if ( _v < 0.0) _v = -_v;
+	/*
+	   u->
+	v    _ _ _ _ _ _
+	|	|    _|_ _  |
+	V	| 1 | |  2| |
+		|_  |_|_ _|_|
+		|   |_|_ _| |
+		|  3  |  4  |
+		|_ _ _|_ _ _|
+	*/
+	//from u v  get the four texel for sampling
+	float u = _texCoord.u();
+	float v = _texCoord.v();
+	Clamp( u, 0, 1 );
+	Clamp( v, 0, 1 );
+	u *= m_width;
+	v *= m_height;
+	int ufloor = floor( u );
+	int uceiling = ufloor +1;
+	int vfloor = floor( v );
+	int vceiling = vfloor +1;
 
-	Clamp( _u, 0, 1 );
-	Clamp( _v, 0, 1 );
-#endif
+	int index1 = vfloor * m_width + ufloor;
+	int index2 = vfloor * m_width + uceiling;
+	int index3 = vceiling * m_width + ufloor;
+	int index4 = vceiling * m_width + uceiling;
 
-	//uint32_t column = floor( _u * m_width );
-	int column = _texCoord.u() * m_width ;
-	//uint32_t row = floor( _texCoord.v() * m_height );
-	int row = _texCoord.v() * m_height;
-	if ( column < 0 )
-		column += m_width;
-	if ( row < 0 )
-		row += m_height;
-	uint32_t index =  m_height * row + column;
-
-	if ( index >= m_pixels.size() )
-		index = m_pixels.size() -1;
-	else if ( index < 0 )
-		index = 0;
-	return m_pixels [ index ];
+	float weight1 = ( uceiling - u ) * ( vceiling - v );
+	float weight2 = ( u + 1 - uceiling ) * ( vceiling - v );
+	float weight3 = ( uceiling - u ) * ( v +1 - vceiling );
+	float weight4 = ( u + 1 - uceiling ) * ( v +1 - vceiling );
+	if ( index1 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
+	if ( index2 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
+	if ( index3 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
+	if ( index4 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
+	Color c = m_pixels[index1] * weight1 + m_pixels[index2] * weight2 + m_pixels[index3] * weight3 + m_pixels[index4] * weight4;
+	//Color c = m_pixels[ ufloor*m_width  + vfloor]; 
+	return c;
 }
 //------------------------------------------------------------------------------
 void Image::ReadFile(const std::string& _fileName)
@@ -77,15 +93,11 @@ void Image::ReadFile(const std::string& _fileName)
     m_pixels = std::vector<Color>(0);
 	for( uint32_t i=0; i< size; i+=4 )
 	{
-		//std::cout<<size<<"\n";
-		//std::cout<<m_width*m_height<<"\n";
 		uint32_t index = i/4.0;
 		//std::cout<<index<<"\n";
 		if( index < m_width * m_height )
 		m_pixels.push_back ( Color ( data[i]/255.0, data[i+1]/255.0, data[i+2]/255.0, data[i+3]/255.0 ) );
-		//m_colors[index].PrintColor();
 	}
-    //imageFile.write( "output.png");
 }
 //------------------------------------------------------------------------------
 bool Image::WriteTga ( const std::string& _fileName )

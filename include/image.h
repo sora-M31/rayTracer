@@ -21,7 +21,7 @@ public:
     bool WriteTga( const std::string& _fileName );
 
     const Color& Get( uint32_t _x, uint32_t _y) const;
-	const Color& GetColorBilinear( const Vector2D& _texCoord ) const;
+	Color GetColorBilinear( const Vector2D& _texCoord ) const;
     //set
     void Set( uint32_t _x, uint32_t _y, const Color& _value);
 

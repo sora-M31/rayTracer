@@ -137,7 +137,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 		{
 			c += GlossyReflection( intersection, _ray.Direction(), _depth, o_output ) * pMaterial->kg();
 		}
-		if( pMaterial->kd() )
+		if( pMaterial->kd() || pMaterial->ks() || pMaterial->IsAnisotropic() )
 		{
 			//loop the light
 			for ( uint32_t i= 0; i < size; ++i)
@@ -158,8 +158,11 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 					Intersection shadowRayScene = IntersectScene( *iter );
 					if ( shadowRayScene.RayParameter() > *iter2 )
 					{
-						//diffuse
-						coefficient += pMaterial->kd();
+						if( pMaterial->kd() )
+						{
+							//diffuse
+							coefficient += pMaterial->kd();
+						}
 						//phong specular
 						if( pMaterial->ks() )
 						{
@@ -175,7 +178,8 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 						}
 						float nDotLight = intersection.Normal().Dot(iter->Direction() );
 						Clamp( nDotLight, 0, 1);
-						shade = intersection.GetColor() *coefficient * nDotLight *  attenuation ;
+						shade = intersection.GetColor() *coefficient * nDotLight;// *  attenuation ;
+						//shade *= coefficient * nDotLight *  attenuation ;
 					}
 					++iter;
 					++iter2;
@@ -261,15 +265,13 @@ float RayTracer::AnisotropicSpecular( const Intersection& _intersection, const V
 {
 	Vector reflectDir = MirrorReflection( _intersection, _viewingDir );
 	float albedoS = 1;
-	float alphaX = 0.8;
-	float alphaY = 0.2;
+	float alphaX = 0.7;
+	float alphaY = 0.3;
 	alphaX += EPSILON;
 	alphaY += EPSILON;
-	//Vector halfVector = ( -_viewingDir.Normalise() + reflectDir.Normalise() ).Normalise();
 	Vector halfVector = ( -_viewingDir.Normalise() + _lightDir.Normalise() ).Normalise();
 	Vector normal = _intersection.Normal();
 	float nDotHalf =  normal.Dot( halfVector ) ;
-	//float nDotLight =  normal.Dot( reflectDir );
 	float nDotLight =  normal.Dot( _lightDir );
 	float nDotView =  normal.Dot( -_viewingDir );
 
@@ -375,10 +377,29 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 	Vector w ( reflectDir );
 	Vector u,v;
 	w.GetBasis( u, v );
+
+#if 0
+	std::vector<Vector2D> samples;
+	SampleSquare(samples, 20 );
+	float glossiness(2);
+	Color c(0,0,0,1);
+	Color shade(0,0,0,0);
+	for( std::vector<Vector2D>::iterator iter = samples.begin(); iter!= samples.end(); ++iter )
+	{
+		//std::cout<<iter->v()<<" ";
+		Vector dir;
+		dir = w + ( ( iter->u()  - 0.5 ) * u + ( iter->v() - 0.5 ) * v ) * glossiness;
+		dir.Normalise();
+		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, dir, g_air );
+		shade += Trace (raySample, --_depth, o_output )/ dir.Dot( reflectDir );
+	}
+	c+= shade;
+#endif
 	
+#if 1
 	std::vector<Vector> dirSamples;
-	float e=10;
-	uint32_t sampleSize = 20;
+	float e=1;
+	uint32_t sampleSize = 10;
 	SampleHemisphere( dirSamples, sampleSize, e );
 	Color c(0,0,0,1);
 	Color shade( 0,0,0,1);
@@ -395,9 +416,10 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 		float tmp2 = reflectDir.Dot( dir );
 		Clamp(tmp1,0,1);
 		Clamp(tmp2,0,1);
-		shade += Trace (raySample, --_depth, o_output ) / pow( tmp2, e );
+		shade += Trace (raySample, --_depth, o_output )/ pow( tmp2, e );
 	}
 	c += shade;// / dirSamples.size();
-	return c * 0.3;
+#endif
+	return c;
 }
 }//end of namespace

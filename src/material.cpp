@@ -66,7 +66,9 @@ Material& Material::operator = ( const Material& _other )
 Color Material::GetColor( const Vector2D& _texCoord ) const
 {
     if ( m_pTexture != 0 )
+    {
         return m_pTexture->GetColorBilinear( _texCoord );
+    }
     else
         return m_color;
 }
