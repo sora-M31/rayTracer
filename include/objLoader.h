@@ -19,7 +19,7 @@ public:
     ObjLoader () {}
     ~ObjLoader () {}
 
-    bool ParseFile ( const char* _fileName );
+    bool ParseFile ( const std::string& _fileName );
     void PrintLoadedInfo ();
 	void PrintSerializedInfo();
     void ClearData ();

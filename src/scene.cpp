@@ -12,23 +12,12 @@ namespace rayTracer
 Scene::Scene( const Camera& _camera )
 :m_camera ( _camera )
 {
-    ObjLoader obj;
-	obj.ParseFile ("resources/teapotTexture.obj" );
-	//obj.ParseFile ("resources/sphere.obj" );
-    ObjLoader loadplane;
-    loadplane.ParseFile( "resources/plane.obj");
-    ObjLoader loadsky;
-    loadsky.ParseFile( "resources/cubeSky.obj");
-
-    ObjLoader loadCube;
-    loadCube.ParseFile( "resources/cube.obj");
-
     Shape* sphere1 = new Sphere( Vector( 0, 0, 0, 1), 1.0 );
     Shape* sphere2 = new Sphere( Vector( -2.5, 0, 0, 1), 1.0 );
-    Shape* cube = new Mesh( Vector( -3, 0, 0, 1), loadCube );
-    Shape* plane = new Mesh( Vector(0,-0.9,0,1), loadplane );
-    Shape* test = new Mesh( Vector ( 0,0, 2, 1), obj);
-    Shape* sky = new Mesh( Vector ( 0,0, 0, 1), loadsky);
+    Shape* cube = new Mesh( Vector( -3, 0, 0, 1), "resources/cube.obj" );
+    Shape* plane = new Mesh( Vector(0,-0.9,0,1), "resources/plane.obj");
+    Shape* teapot = new Mesh( Vector ( 0,0, 2, 1),"resources/teapotTexture.obj");
+    Shape* sky = new Mesh( Vector ( 0,0, 0, 1),"resources/cubeSky.obj");
 
 	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
     Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
@@ -49,7 +38,7 @@ Scene::Scene( const Camera& _camera )
     sphere1->SetMaterial( glossy );
     sphere2->SetMaterial( diffuse );
     cube->SetMaterial( diffuse );
-    test->SetMaterial( glossy );
+    teapot->SetMaterial( glossy );
     plane->SetMaterial( floor );
     //sky->SetMaterial( floor );
     //sky->SetMaterial( mirror );
@@ -59,10 +48,10 @@ Scene::Scene( const Camera& _camera )
 	//m_shapes.push_back( sky );
 	m_shapes.push_back( plane );
    // m_shapes.push_back( sphere1 );
-    //m_shapes.push_back( sphere2 );
+    m_shapes.push_back( sphere2 );
     //m_shapes.push_back( cube );
     //m_shapes.push_back( cornellBox );
-    m_shapes.push_back( test );
+    //m_shapes.push_back( teapot);
     m_materials.push_back( mirror );
     m_materials.push_back( floor );
     m_materials.push_back( glass );

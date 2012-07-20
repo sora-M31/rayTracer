@@ -15,26 +15,28 @@ void Mesh::SetMaterial( const Material* _pMaterial )
 	}
 }
 //------------------------------------------------------------------------------
-Mesh::Mesh ( const Vector& _pos, const ObjLoader& _obj, Material* _pMaterial )
+Mesh::Mesh ( const Vector& _pos, const std::string& _fileName, Material* _pMaterial )
 : m_tree(5)
 {
+    ObjLoader obj;
+	obj.ParseFile (_fileName);
 	Translate(_pos);
 	m_pMaterial = _pMaterial;
 
-	uint32_t size = _obj.GetVertexArray().size();
+	uint32_t size = obj.GetVertexArray().size();
 	m_tree.m_data.reserve(size);
 	for(uint32_t i=0; i< size; i+=3 )
 	{
-		if ( _obj.GetTextureArray().size()!=0 )
-		m_tree.m_data.push_back( Triangle( _obj.GetVertexArray()[i],
-										   _obj.GetVertexArray()[i+1],
-										   _obj.GetVertexArray()[i+2],
-										   _obj.GetNormalArray()[i],
-										   _obj.GetNormalArray()[i+1],
-										   _obj.GetNormalArray()[i+2],
-										   _obj.GetTextureArray()[i],
-										   _obj.GetTextureArray()[i+1],
-										   _obj.GetTextureArray()[i+2],
+		if ( obj.GetTextureArray().size()!=0 )
+		m_tree.m_data.push_back( Triangle( obj.GetVertexArray()[i],
+										   obj.GetVertexArray()[i+1],
+										   obj.GetVertexArray()[i+2],
+										   obj.GetNormalArray()[i],
+										   obj.GetNormalArray()[i+1],
+										   obj.GetNormalArray()[i+2],
+										   obj.GetTextureArray()[i],
+										   obj.GetTextureArray()[i+1],
+										   obj.GetTextureArray()[i+2],
 										   m_pMaterial,
 										   i/3.0) );
 	}

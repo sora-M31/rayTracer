@@ -13,7 +13,7 @@ namespace rayTracer
 class Mesh : public Shape
 {
 public:
-	Mesh ( const Vector& _pos, const ObjLoader& _obj, Material* _pMaterial = 0);
+	Mesh ( const Vector& _pos, const std::string& _fileName, Material* _pMaterial = 0);
 	~Mesh ();
 	void PrintData () const;
 	bool Intersect(const Ray& _ray, Intersection& o_intersection ) const;

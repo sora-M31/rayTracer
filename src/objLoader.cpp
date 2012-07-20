@@ -3,10 +3,10 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-bool ObjLoader::ParseFile( const char* _fileName )
+bool ObjLoader::ParseFile( const std::string& _fileName )
 {
     std::ifstream fileIn;
-    fileIn.open( _fileName );
+    fileIn.open( _fileName.c_str() );
     std::string lineBuffer;
     if ( fileIn.is_open() )
     {
