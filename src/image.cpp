@@ -4,11 +4,10 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-Image::Image ()
-: m_width(0),
-  m_height(0),
-  m_pixels(0)
-{}
+Image::Image( const std::string& _fileName )
+{
+	ReadFile( _fileName );
+}
 //------------------------------------------------------------------------------
 Image::Image ( uint32_t _width, uint32_t _height, const Color& _color)
 : m_width ( _width ),
@@ -61,10 +60,10 @@ Color Image::GetColorBilinear( const Vector2D& _texCoord ) const
 	int vfloor = floor( v );
 	int vceiling = vfloor +1;
 
-	int index1 = vfloor * m_width + ufloor;
-	int index2 = vfloor * m_width + uceiling;
-	int index3 = vceiling * m_width + ufloor;
-	int index4 = vceiling * m_width + uceiling;
+	size_t index1 = (size_t) ( vfloor * m_width + ufloor);
+	size_t index2 = (size_t) ( vfloor * m_width + uceiling);
+	size_t index3 = (size_t) ( vceiling * m_width + ufloor);
+	size_t index4 = (size_t) ( vceiling * m_width + uceiling);
 
 	float weight1 = ( uceiling - u ) * ( vceiling - v );
 	float weight2 = ( u + 1 - uceiling ) * ( vceiling - v );

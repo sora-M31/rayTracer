@@ -22,18 +22,15 @@ Scene::Scene( const Camera& _camera )
 	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
     Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
     Material* glossy = new Material ( 0, 0, 1, 0, 0, 1, 0, 0 ,Color(1,1,1,1),true);
-    Material* diffuse = new Material ( 0, 0.8, 0.2, 0, 0, 0, 0, 0 );
+    Material* diffuse = new Material ( 0, 0.8, 0.2, 0, 0, 0, 0, 0, Color(1,1,1,1) );
     Material* glass = new Material ( 0, 0, 0, 0, 1, 0, GLASS_INDEX,0 );
     Material* floor = new Material ( 0, 1, 0, 0 ,0, 0, 0, 0);
 
     //Image* checker = new Image(160, 160, Color(1,1,1,1) );
     //checker->MakeChecker();
 
-    Image* salad = new Image();
-	salad->ReadFile( "resources/flower.jpg" );
+    Image* salad = new Image( "resources/flower.jpg" );
     floor->SetTexture( salad );
-	diffuse->SetColor( Color( 1,1,1,1 ));
-	//glossy->SetColor( Color ( 1,1,0.2,1) );
 
     sphere1->SetMaterial( glossy );
     sphere2->SetMaterial( diffuse );
@@ -95,7 +92,7 @@ Scene::~Scene()
 void Scene::Update( uint32_t _time)
 {
 	//m_camera.Translate( Vector( 0,5,-7,1) );
-	m_camera.Translate( Vector( -1,3,-7,1) );
+	m_camera.Translate( Vector( -1,3,-10,1) );
 	m_camera.Rotate( -0.5, Vector(1,0,0,0 ));
 	m_stack.push_back ( m_camera.LocalTransformation().Inverse() );
 	m_stack.push_back ( Quaternion( 0.5*_time, Vector( 0,1,0,0 ) ).AsMatrix() );

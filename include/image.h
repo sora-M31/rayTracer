@@ -13,7 +13,7 @@ class Image
 {
 public:
 	Image( uint32_t _width, uint32_t _height, const Color& _color);
-	Image();
+	Image( const std::string& _fileName );
 	~Image();
 
     void ReadFile( const std::string& _fileName );
