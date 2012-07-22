@@ -203,14 +203,30 @@ bool KdTree<T>::Intersect( const Node<T>* _node, const Ray& _ray, Intersection& 
             for( uint32_t i=0; i< _node->m_list.size(); ++i )
             {
                 Intersection tmp;
-                if ( _node->m_list[i]->Intersect ( _ray, tmp ) 
-                    && ( tmp.RayParameter() < intersection.RayParameter() ) )
-                    intersection = tmp;
+                if (  _node->m_list[i]->Intersect ( _ray, tmp )
+					&& tmp.RayParameter() < intersection.RayParameter()  )
+				{
+						intersection = tmp;
+				}
             }
             if ( intersection.Intersected() )
             {
-                o_intersection = intersection;
+#if 1
+				Vector dis1 = intersection.Position() - _node->m_box.Min();
+				Vector dis2 = _node->m_box.Max() - intersection.Position();
+				if(    dis1.x() > 0.0000000001
+					&& dis1.y() > 0.0000000001
+					&& dis1.z() > 0.0000000001
+					&& dis2.x() > 0.0000000001
+					&& dis2.y() > 0.0000000001
+					&& dis2.z() > 0.0000000001
+					)
+				#endif
+				{
+					o_intersection = intersection;
                 return true;
+				}
+				else return false;
             }
             else return false;
         }
@@ -228,11 +244,13 @@ bool KdTree<T>::Intersect( const Node<T>* _node, const Ray& _ray, Intersection& 
         {
             //intersect the closer one
             //if no intersection otherwise intersect the further one
-            if ( disLeft < disRight )
+            if ( disRight > disLeft )
             {
                 bool intersected = Intersect ( _node->m_leftNode, _ray, o_intersection );
                 if( intersected )
-                    return true;
+				{
+					return true;
+				}
                 else
 					return Intersect ( _node->m_rightNode, _ray, o_intersection );
             }
