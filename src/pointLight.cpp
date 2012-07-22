@@ -3,10 +3,11 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-PointLight::PointLight ( const Vector& _position, float _intensity )
+PointLight::PointLight ( const Vector& _position, float _intensity, const Color& _color )
 {
     m_translation = _position;
     m_intensity = _intensity;
+	m_color = _color;
 }
 //------------------------------------------------------------------------------
 PointLight::~PointLight()

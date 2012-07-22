@@ -87,7 +87,7 @@ Color& Color::operator /= ( float _other )
     return *this;
 }
 //------------------------------------------------------------------------------
-void Color::PrintColor()
+void Color::PrintColor() const
 {
     std::cout<< "Color " << m_data[0] << " " << m_data[1] << " " << m_data[2] << " " << m_data[3] << " \n";
 }

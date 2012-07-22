@@ -25,7 +25,7 @@ public:
     float g() const { return m_data[1]; }
     float b() const { return m_data[2]; }
     float a() const { return m_data[3]; }
-    void PrintColor();
+    void PrintColor() const;
     void Clamp();
 
 private:

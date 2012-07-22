@@ -135,14 +135,12 @@ void KdTree<T>::Transform(const Matrix& _transform)
 template <class T>
 void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
 {
-    //std::cout<<"\n"<<"depth=========================== "<<_depth<<"\n";
-    //std::cout<<"object number "<< _node->m_list.size()<<"\n";
-	// number->definition
-    if( (_depth < 10) && (_node->m_list.size() > 50) )//m_leastObjNum ))
+    if( (_depth < 1) && (_node->m_list.size() > m_leastObjNum) )
     {
         uint32_t axis = _depth%3;
         //get the centre of the box as median
         float splitPos = ( _node->m_box.Min()[axis] + _node->m_box.Max()[axis] ) /2.0;
+		std::cout<<splitPos<<"\n";
 #if 0
         //get average position as median to get a ballanced tree
         while( iter!=_node->m_list.end())
@@ -162,15 +160,23 @@ void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
         typename std::vector<const T*>::const_iterator iter = _node->m_list.begin();
         while(iter!=_node->m_list.end())
         {
+			bool hit = false;
+			//std::cout<<"before===============================\n";
 			//comparison template
-            if( (*iter)->Max()[axis] < splitPos || (*iter)->Min()[axis] < splitPos )
+            if((*iter)->Min()[axis] < splitPos)
             {
                 _node->m_leftNode->m_list.push_back(*iter);
+				hit = true;
+				//std::cout<<"I'm sent to the left ";
             }
-            if( (*iter)->Max()[axis] > splitPos || (*iter)->Min()[axis] > splitPos )
+            if( (*iter)->Max()[axis] > splitPos)
             {
+				hit = true;
                 _node->m_rightNode->m_list.push_back(*iter);
+				//std::cout<<"I'm sent to the right";
             }
+			if (!hit) std::cout << "No Hit!\n";
+			//std::cout<<"\nafter===============================\n";
             ++iter;
         }
 
@@ -197,8 +203,8 @@ bool KdTree<T>::Intersect( const Node<T>* _node, const Ray& _ray, Intersection& 
             for( uint32_t i=0; i< _node->m_list.size(); ++i )
             {
                 Intersection tmp;
-                if (  ( *(_node->m_list[i]) ). Intersect ( _ray, tmp )
-                     && ( tmp.RayParameter() < intersection.RayParameter() ) )
+                if ( _node->m_list[i]->Intersect ( _ray, tmp ) 
+                    && ( tmp.RayParameter() < intersection.RayParameter() ) )
                     intersection = tmp;
             }
             if ( intersection.Intersected() )

@@ -33,12 +33,12 @@ void Clamp( float& io_value, float _min, float _max )
 //------------------------------------------------------------------------------
 float min( const float& _a, const float& _b, const float& _c )
 {
-	return ( _a<_b ) ? ( (_a<_c )? _a : _c ) : ( ( _b<_c )? _b : _c );
+	return std::min( _a, std::min( _b, _c) );
 }
 //------------------------------------------------------------------------------
 float max( const float& _a, const float& _b, const float& _c )
 {
-	return ( _a>_b ) ? ( (_a>_c )? _a : _c ) : ( ( _b>_c )? _b : _c );
+	return std::max( _a, std::max( _b, _c) );
 }
 //------------------------------------------------------------------------------
 bool RealCompare( const float& _a, const float& _b, const float& _epsilon)

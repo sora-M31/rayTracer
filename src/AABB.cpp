@@ -38,17 +38,17 @@ AABB& AABB::operator = ( const AABB& _other )
 AABB AABB::Update( const Matrix& _matrix ) const
 {
     //return AABB( m_min * _matrix, m_max * _matrix );
-    // from real time collision detection book, sample form amazon[http://books.google.co.uk/books?id=WGpL6Sk9qNAC&pg=PA86&lpg=PA86&ots=Pm0VkH0feJ&dq=transform+aabb#v=onepage&q=transform%20aabb&f=false]
+    // from real time collision detection book, sample form [http://books.google.co.uk/books?id=WGpL6Sk9qNAC&pg=PA86&lpg=PA86&ots=Pm0VkH0feJ&dq=transform+aabb#v=onepage&q=transform%20aabb&f=false]
     Vector min( 0,0,0,1 );
     Vector max( 0,0,0,1 );
     for( uint8_t i=0; i<3; ++i )
     {
-        min[i] = _matrix[i][3];
-        max[i] = _matrix[i][3];
+        min[i] = _matrix[i][3] - EPSILON;
+        max[i] = _matrix[i][3] + EPSILON;
         for( uint8_t j=0; j<3; ++j )
         {
-            float e = _matrix[j][i] * m_min[j];
-            float f = _matrix[j][i] * m_max[j];
+            float e = _matrix[i][j] * m_min[j];
+            float f = _matrix[i][j] * m_max[j];
             if ( e < f )
             {
                 min[i] += e;

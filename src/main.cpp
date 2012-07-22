@@ -15,8 +15,12 @@ int main()
     {
         scene.Update(i);
         // Cast rays into scene and write to image
-        //raytracer.CastRay( i, 800, 600 );
-        raytracer.CastRay( i, 200, 150 );
+		if(i==4)
+		//{
+			//raytracer.CastRay( i, 200, 150 );
+			//raytracer.CastRay( i, 40, 30 );
+		//}
+		raytracer.CastRay( i, 800, 600 );
         //raytracer.CastRay( i, 400, 300 );
         std::cout<<"frame "<<i<<"\n";
     }

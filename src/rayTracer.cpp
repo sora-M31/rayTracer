@@ -5,6 +5,8 @@
 #include "vector.h"
 #include "image.h"
 #include "AABB.h"
+#include "areaLight.h"
+#define TEST1
 
 namespace rayTracer
 {
@@ -25,7 +27,7 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 	int depth =2;
 	std::ofstream debug_mel;
 //change name
-#if TEST1
+#ifdef TEST1
 	debug_mel.open("output.mel");
 #endif
 
@@ -105,15 +107,17 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 
 	if ( intersection.Intersected() )
 	{
-						o_output<<"curve -p "
-							   <<0<<" "
-							   <<0<<" "
-							   <<0<<" "
-							   <<"-p "
-							   <<intersection.Position().x()<<" "
-							   <<intersection.Position().y()<<" "
-							   <<intersection.Position().z()
-							   <<";\n";
+	#ifdef TEST1
+		o_output<<"curve -p "
+			   <<0<<" "
+			   <<0<<" "
+			   <<0<<" "
+			   <<"-p "
+			   <<intersection.Position().x()<<" "
+			   <<intersection.Position().y()<<" "
+			   <<intersection.Position().z()
+			   <<";\n";
+	#endif
 		c = Color ( 0,0,0,1);
 		const Material* pMaterial = intersection.GetMaterial();
 
@@ -177,22 +181,19 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 							}
 						}
 						float nDotLight = intersection.Normal().Dot(iter->Direction() );
-						Clamp( nDotLight, 0, 1);
+						//Clamp( nDotLight, 0, 1);
+						//shade = ( intersection.GetColor() + light->GetColor() )/2.0 *coefficient * nDotLight;// *  attenuation ;
 						shade = intersection.GetColor() *coefficient * nDotLight;// *  attenuation ;
 						//shade *= coefficient * nDotLight *  attenuation ;
 					}
 					++iter;
 					++iter2;
 				}
-				if( shadowRays.size() > 1)
-				{
-					//shade /= light->Area();
-				}
 				c += shade;
 			}//end of light iteration
 		}
 	}//end of intersected
-#ifdef TEST1
+#if 0
 	else
 	{
 		//not intersected

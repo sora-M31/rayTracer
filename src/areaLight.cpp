@@ -2,25 +2,27 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-AreaLight::AreaLight(const Vector& _position, float _intensity, Vector _normal, uint32_t _sampleNum )
-: m_normal ( _normal)
+AreaLight::AreaLight(const Vector& _position, float _width, float _height, Vector _normal, uint32_t _sampleNum, float _intensity, const Color& _color )
+: m_width( _width ),
+  m_height( _height ),
+  m_normal ( _normal)
 {
-	//rotation?
-	Normalise ( m_normal );
     m_translation = _position;
     m_intensity = _intensity;
+	m_color = _color;
+
+	//todo rotation
+	Normalise ( m_normal );
 
 	std::vector<Vector2D> samples;
     SampleSquare( samples, _sampleNum );
 	std::vector<Vector2D>::iterator iter = samples.begin();
 	Vector u;
 	Vector v;
-	float width = 10;
-	float height = 10;
-	m_normal.ProjectAxis( u, v );
+	m_normal.GetBasis( u, v );
 	while( iter != samples.end() )
 	{
-		m_lightSamples.push_back( Position() + u *(iter->u() - 0.5) * width + v*( iter->v() - 0.5 ) * height );
+		m_lightSamples.push_back( Position() + u *(iter->u() - 0.5) * m_width + v*( iter->v() - 0.5 ) * m_height );
 		++iter;
 	}
 	m_lightSamplesTransformed = m_lightSamples;

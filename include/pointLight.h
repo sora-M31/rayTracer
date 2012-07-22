@@ -8,7 +8,7 @@ namespace rayTracer
 class PointLight: public Light
 {
 public:
-	PointLight ( const Vector& _position, float _intensity );
+	PointLight ( const Vector& _position, float _intensity, const Color& _color );
 	~PointLight ();
 
 	void GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, DisList& o_disList, float& o_attenuation ) const;

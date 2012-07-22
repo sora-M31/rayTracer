@@ -171,7 +171,7 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	Vector b = m_vertex[1] - m_vertex[0];
 	Vector c = m_vertex[2] - m_vertex[0];
 	Vector normal = b.Cross (c);
-	if( RealCompare( normal.Dot(normal), 0.0f, 0.00000000001 ) )
+	if( RealCompare( normal.Dot(normal), 0.0f, 0.0001 ) )
 		return false;
 	Normalise(normal);
 

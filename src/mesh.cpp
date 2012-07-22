@@ -16,7 +16,7 @@ void Mesh::SetMaterial( const Material* _pMaterial )
 }
 //------------------------------------------------------------------------------
 Mesh::Mesh ( const Vector& _pos, const std::string& _fileName, Material* _pMaterial )
-: m_tree(5)
+: m_tree(1)
 {
     ObjLoader obj;
 	obj.ParseFile (_fileName);
@@ -48,21 +48,6 @@ void Mesh::ToCameraSpace( const Matrix& _transform)
 	m_tree.Transform( _transform );
 	uint32_t depth=0;
 	m_tree.BuildTree( m_tree.m_root, depth );
-	//std::cout<<Position()<<"\n";
-}
-//------------------------------------------------------------------------------
-void Mesh::PrintData () const
-{
-#if 0
-	for ( uint32_t i=0;i< m_pointArray.size ( ); ++i )
-	{
-		Vector t = m_pointArray[i];
-	}
-	for ( uint32_t i=0 ;i< m_normalArray.size ( ); ++i )
-	{
-		Vector t = m_normalArray[i];
-	}
-#endif
 }
 //------------------------------------------------------------------------------
 bool Mesh::Intersect ( const Ray& _ray, Intersection& o_intersection ) const
@@ -70,26 +55,5 @@ bool Mesh::Intersect ( const Ray& _ray, Intersection& o_intersection ) const
 	//intersect kd tree
 	bool result = m_tree.Intersect( m_tree.m_root, _ray, o_intersection );
 	return result;
-	
-	//set material
-#if 0
-	if (  m_pointArray.size () != 0 && m_normalArray.size () !=0 )
-	{
-		
-		float parameter = FLT_MAX;
-		for ( uint32_t i=0; i< m_pointArray.size () ;i+=3 )
-		{
-			RayTriangle ( _ray, m_transform * m_pointArray[i], m_transform * m_pointArray[i+1], m_transform * m_pointArray[i+2], _intersection, parameter );
-		}
-		return (  _intersection.RayParameter () < FLT_MAX );
-	}
-	else
-		return false;
-#endif
-}
-//------------------------------------------------------------------------------
-void Mesh::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const
-{
-
 }
 }//end of namespace
