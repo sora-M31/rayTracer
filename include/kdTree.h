@@ -135,12 +135,11 @@ void KdTree<T>::Transform(const Matrix& _transform)
 template <class T>
 void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
 {
-    if( (_depth < 1) && (_node->m_list.size() > m_leastObjNum) )
+    if( (_depth < 5) && (_node->m_list.size() > m_leastObjNum) )
     {
         uint32_t axis = _depth%3;
         //get the centre of the box as median
         float splitPos = ( _node->m_box.Min()[axis] + _node->m_box.Max()[axis] ) /2.0;
-		std::cout<<splitPos<<"\n";
 #if 0
         //get average position as median to get a ballanced tree
         while( iter!=_node->m_list.end())
@@ -160,23 +159,15 @@ void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
         typename std::vector<const T*>::const_iterator iter = _node->m_list.begin();
         while(iter!=_node->m_list.end())
         {
-			bool hit = false;
-			//std::cout<<"before===============================\n";
 			//comparison template
             if((*iter)->Min()[axis] < splitPos)
             {
                 _node->m_leftNode->m_list.push_back(*iter);
-				hit = true;
-				//std::cout<<"I'm sent to the left ";
             }
             if( (*iter)->Max()[axis] > splitPos)
             {
-				hit = true;
                 _node->m_rightNode->m_list.push_back(*iter);
-				//std::cout<<"I'm sent to the right";
             }
-			if (!hit) std::cout << "No Hit!\n";
-			//std::cout<<"\nafter===============================\n";
             ++iter;
         }
 
@@ -214,12 +205,12 @@ bool KdTree<T>::Intersect( const Node<T>* _node, const Ray& _ray, Intersection& 
 #if 1
 				Vector dis1 = intersection.Position() - _node->m_box.Min();
 				Vector dis2 = _node->m_box.Max() - intersection.Position();
-				if(    dis1.x() > 0.0000000001
-					&& dis1.y() > 0.0000000001
-					&& dis1.z() > 0.0000000001
-					&& dis2.x() > 0.0000000001
-					&& dis2.y() > 0.0000000001
-					&& dis2.z() > 0.0000000001
+				if(    dis1.x() > EPSILON
+					&& dis1.y() > EPSILON
+					&& dis1.z() > EPSILON
+					&& dis2.x() > EPSILON
+					&& dis2.y() > EPSILON
+					&& dis2.z() > EPSILON
 					)
 				#endif
 				{

@@ -6,7 +6,7 @@
 #include "image.h"
 #include "AABB.h"
 #include "areaLight.h"
-#define TEST1
+//#define TEST1
 
 namespace rayTracer
 {
@@ -34,6 +34,8 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 	// comment
 	float pixelWidth = 1.0f / (float) img.Width();
 	float pixelHeight = 1.0f / (float) img.Height();
+	float planeDis = m_pScene->GetCamera().ViewPlaneDis();
+	std::cout<<planeDis<<"\n";
 
 	for (uint32_t y = 0; y < img.Height(); ++y)
 	{
@@ -57,7 +59,7 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 				Color shade(0,0,0,0);
 				while( iter!= pixSamples.end() )
 				{
-					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector(dx+iter->u()*pixelWidth, dy+iter->v()*pixelHeight, 1, 1), g_air );
+					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector(dx+iter->u()*pixelWidth, dy+iter->v()*pixelHeight,planeDis, 1), g_air );
 					color += Trace( cameraSpaceRay, depth, debug_mel);
 					++iter;
 				}
@@ -78,7 +80,7 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 			else
 			{
 				//Material::kAir
-				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, 1.0f, 0.0f ), g_air );
+				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, planeDis, 0.0f ), g_air );
 				color = Trace( cameraSpaceRay, depth, debug_mel);
 			}
 			#if EXPOSURE

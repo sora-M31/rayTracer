@@ -18,7 +18,7 @@ Scene::Scene( const Camera& _camera )
     Shape* plane = new Mesh( Vector(0,-0.9,0,1), "resources/plane.obj");
     Shape* teapot = new Mesh( Vector ( 0,0, 2, 1),"resources/teapotTexture.obj");
     Shape* sky = new Mesh( Vector ( 0,0, 0, 1),"resources/cubeSky.obj");
-    Shape* cylinder = new Mesh( Vector ( -0,0, 0, 1),"resources/cylinder.obj");
+    Shape* cylinder = new Mesh( Vector ( -3,0, 0, 1),"resources/cylinder.obj");
     Shape* soccerball = new Mesh( Vector ( -3,0, 5, 1),"resources/soccerball.obj");
 
 	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
@@ -43,7 +43,7 @@ Scene::Scene( const Camera& _camera )
     cylinder->SetMaterial( diffuse );
     soccerball->SetMaterial( diffuse );
 
-#if 0
+#if 1
 	m_shapes.push_back( sky );
 	m_shapes.push_back( plane );
     m_shapes.push_back( sphere1 );
@@ -53,7 +53,6 @@ Scene::Scene( const Camera& _camera )
     m_shapes.push_back( cylinder );
     m_shapes.push_back( soccerball);
 #endif
-    m_shapes.push_back( cylinder );
 
     m_materials.push_back( mirror );
     m_materials.push_back( floor );
@@ -65,10 +64,10 @@ Scene::Scene( const Camera& _camera )
 
     //Light* lightKey = new PointLight ( Vector (0,4,-7,1), 200, Color( 1,0,0,1) );
     Light* pointFill = new PointLight ( Vector (-5,4,0,1), 200, Color(1,1,1,1) );
-    //Light* areaKey = new AreaLight ( Vector (0,5,-7,1),10, 10,Vector(0,-1,0,0),3, 300, Color(1,0,0,1) );
+    Light* areaKey = new AreaLight ( Vector (0,5,-7,1),10, 10,Vector(0,-1,0,0),3, 300, Color(1,0,0,1) );
 
     m_lights.push_back ( pointFill);
-	//m_lights.push_back ( areaKey );
+	m_lights.push_back ( areaKey );
 }
 //------------------------------------------------------------------------------
 Scene::~Scene()
