@@ -12,14 +12,13 @@ namespace rayTracer
 Scene::Scene( const Camera& _camera )
 :m_camera ( _camera )
 {
-    Shape* sphere1 = new Sphere( Vector( 0, 0, 0, 1), 1.0 );
-    Shape* sphere2 = new Sphere( Vector( -2.5, 0, 0, 1), 1.0 );
-    Shape* cube = new Mesh( Vector( -3, 0, 0, 1), "resources/cube.obj" );
-    Shape* plane = new Mesh( Vector(0,-0.9,0,1), "resources/plane.obj");
+    Shape* sphere1 = new Sphere( Vector( -2, 0.5, 0, 1), 1.0 );
+    Shape* cube = new Mesh( Vector( 2, 0, -2, 1), "resources/cube.obj" );
+    Shape* plane = new Mesh( Vector(0,0,0,1), "resources/plane.obj");
     Shape* teapot = new Mesh( Vector ( 0,0, 2, 1),"resources/teapotTexture.obj");
     Shape* sky = new Mesh( Vector ( 0,0, 0, 1),"resources/cubeSky.obj");
-    Shape* cylinder = new Mesh( Vector ( -3,0, 0, 1),"resources/cylinder.obj");
-    Shape* soccerball = new Mesh( Vector ( -3,0, 5, 1),"resources/soccerball.obj");
+    Shape* cylinder = new Mesh( Vector ( -3,0, 3, 1),"resources/cylinder.obj");
+    Shape* soccerball = new Mesh( Vector ( -3,0, 0, 1),"resources/soccerball.obj");
 
 	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
     Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
@@ -31,11 +30,10 @@ Scene::Scene( const Camera& _camera )
     //Image* checker = new Image(160, 160, Color(1,1,1,1) );
     //checker->MakeChecker();
 
-    Image* salad = new Image( "resources/flower.jpg" );
+    Image* salad = new Image( "resources/Wood.jpg" );
     floor->SetTexture( salad );
 
     sphere1->SetMaterial( diffuse );
-    sphere2->SetMaterial( diffuse );
     cube->SetMaterial( diffuse );
     teapot->SetMaterial( diffuse );
     plane->SetMaterial( floor );
@@ -47,13 +45,11 @@ Scene::Scene( const Camera& _camera )
 	m_shapes.push_back( sky );
 	m_shapes.push_back( plane );
     m_shapes.push_back( sphere1 );
-    m_shapes.push_back( sphere2 );
-    m_shapes.push_back( cube );
+    //m_shapes.push_back( cube );
     m_shapes.push_back( teapot);
     m_shapes.push_back( cylinder );
-    m_shapes.push_back( soccerball);
+   // m_shapes.push_back( soccerball);
 #endif
-
     m_materials.push_back( mirror );
     m_materials.push_back( floor );
     m_materials.push_back( glass );
@@ -62,11 +58,12 @@ Scene::Scene( const Camera& _camera )
     //m_textures.push_back ( checker );
     m_textures.push_back ( salad );
 
-    //Light* lightKey = new PointLight ( Vector (0,4,-7,1), 200, Color( 1,0,0,1) );
-    Light* pointFill = new PointLight ( Vector (-5,4,0,1), 200, Color(1,1,1,1) );
-    Light* areaKey = new AreaLight ( Vector (0,5,-7,1),10, 10,Vector(0,-1,0,0),3, 300, Color(1,0,0,1) );
+    Light* areaKey = new AreaLight ( Vector (-2,3,-1,1), 3,3, Vector( 0,0,1,0), 5, 25, Color(1,0.3,0,1) );
+    //Light* pointKey = new PointLight ( Vector (-1,4,-1,1), 200, Color(1,0.3,0,1) );
+    Light* pointFill = new PointLight ( Vector (5,3,-1,1), 10, Color(0,0,1,1) );
 
     m_lights.push_back ( pointFill);
+	//m_lights.push_back ( pointKey );
 	m_lights.push_back ( areaKey );
 }
 //------------------------------------------------------------------------------
@@ -97,8 +94,8 @@ Scene::~Scene()
 void Scene::Update( uint32_t _time)
 {
 	//m_camera.Translate( Vector( 0,5,-7,1) );
-	m_camera.Translate( Vector( -1,3,-5,1) );
-	m_camera.Rotate( -0.5, Vector(1,0,0,0 ));
+	m_camera.Translate( Vector( -1,3,-7,1) );
+	m_camera.Rotate( -0.15, Vector(1,0,0,0 ));
 	m_stack.push_back ( m_camera.LocalTransformation().Inverse() );
 	m_stack.push_back ( Quaternion( 0.5*_time, Vector( 0,1,0,0 ) ).AsMatrix() );
 #if 1

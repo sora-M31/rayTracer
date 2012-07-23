@@ -8,7 +8,7 @@ AreaLight::AreaLight(const Vector& _position, float _width, float _height, Vecto
   m_normal ( _normal)
 {
     m_translation = _position;
-    m_intensity = _intensity;
+    m_intensity = _intensity/(float)( _sampleNum * _sampleNum);
 	m_color = _color;
 
 	//todo rotation
@@ -34,7 +34,6 @@ AreaLight::~AreaLight()
 void AreaLight::GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, DisList& o_disList, float& o_attenuation ) const
 {
 	std::vector<Vector>::const_iterator iter = m_lightSamplesTransformed.begin ();
-	
 	while( iter != m_lightSamplesTransformed.end() )
 	{
 		Vector lightDir = *iter - _intersection.Position();

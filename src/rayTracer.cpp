@@ -7,6 +7,7 @@
 #include "AABB.h"
 #include "areaLight.h"
 //#define TEST1
+#define EXPOSURE
 
 namespace rayTracer
 {
@@ -32,10 +33,10 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 #endif
 
 	// comment
-	float pixelWidth = 1.0f / (float) img.Width();
-	float pixelHeight = 1.0f / (float) img.Height();
+	//float imgWidth = 1;
+	//float imgHeight = _height/_width * 1;
+	float pixelSize = 1.0 / (float) img.Width();
 	float planeDis = m_pScene->GetCamera().ViewPlaneDis();
-	std::cout<<planeDis<<"\n";
 
 	for (uint32_t y = 0; y < img.Height(); ++y)
 	{
@@ -45,8 +46,8 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 			//std::cout<<"pixel "<<y<<" "<<x<<"\n";
 			Color color(0,0,0,0);
 
-			float dx = ( x * pixelWidth ) - 0.5f;
-			float dy = ( y * pixelHeight ) - 0.5f;
+			float dx = ( x * pixelSize ) - 0.5f;
+			float dy = ( y * pixelSize ) - 0.5f;
 
 			if( m_antialias )
 			{
@@ -59,7 +60,7 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 				Color shade(0,0,0,0);
 				while( iter!= pixSamples.end() )
 				{
-					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector(dx+iter->u()*pixelWidth, dy+iter->v()*pixelHeight,planeDis, 1), g_air );
+					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector(dx+iter->u()*pixelSize, dy+iter->v()*pixelSize,planeDis, 1), g_air );
 					color += Trace( cameraSpaceRay, depth, debug_mel);
 					++iter;
 				}
@@ -83,8 +84,8 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, planeDis, 0.0f ), g_air );
 				color = Trace( cameraSpaceRay, depth, debug_mel);
 			}
-			#if EXPOSURE
-			float exposure = -1.0;
+			#ifdef EXPOSURE
+			float exposure = -0.3;
 			color.r() = 1.0 - exp( color.r() * exposure );
 			color.g() = 1.0 - exp( color.g() * exposure );
 			color.b() = 1.0 - exp( color.b() * exposure );
@@ -183,10 +184,9 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 							}
 						}
 						float nDotLight = intersection.Normal().Dot(iter->Direction() );
-						//Clamp( nDotLight, 0, 1);
-						//shade = ( intersection.GetColor() + light->GetColor() )/2.0 *coefficient * nDotLight;// *  attenuation ;
-						shade = intersection.GetColor() *coefficient * nDotLight;// *  attenuation ;
-						//shade *= coefficient * nDotLight *  attenuation ;
+						Clamp( nDotLight, 0, 1);
+						//todo light and surface color
+						shade += ( intersection.GetColor() + light->GetColor() )/2.0 *coefficient * nDotLight * attenuation;
 					}
 					++iter;
 					++iter2;

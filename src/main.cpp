@@ -6,18 +6,18 @@
 int main()
 {
 #if 1
-	rayTracer::Camera cam( 0.3, 7, 45 );
+	rayTracer::Camera cam( 0.3, 7, 60 );
     rayTracer::Scene scene( cam );
     rayTracer::RayTracer raytracer( &scene );
 	//raytracer.SetDepthOfField(1);
 	//raytracer.SetAntialias(1);
-    for(uint32_t i=0; i< 10; i +=1)
+    for(uint32_t i=0; i< 5; i +=1)
     {
         scene.Update(i);
         // Cast rays into scene and write to image
 		//if(i==4)
-		//raytracer.CastRay( i, 200, 150 );
-		raytracer.CastRay( i, 40, 30 );
+		raytracer.CastRay( i, 200, 150 );
+		//raytracer.CastRay( i, 40, 30 );
 		//raytracer.CastRay( i, 800, 600 );
         //raytracer.CastRay( i, 400, 300 );
 		//}
