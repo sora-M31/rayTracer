@@ -98,12 +98,13 @@ void KdTree<T>::SetBBox()
         //m_root->m_list.push_back( ptr );
         ++iter;
     }
-    xmin = xmin - EPSILON;
-    ymin = ymin - EPSILON;
-    zmin = zmin - EPSILON;
-    xmax = xmax + EPSILON;
-    ymax = ymax + EPSILON;
-    zmax = zmax + EPSILON;
+	float epsilon = 0.001;
+    xmin = xmin - epsilon;
+    ymin = ymin - epsilon;
+    zmin = zmin - epsilon;
+    xmax = xmax + epsilon;
+    ymax = ymax + epsilon;
+    zmax = zmax + epsilon;
     //m_root->m_box = AABB( xmin, ymin, zmin, xmax, ymax, zmax) ;
     m_bbox = AABB( xmin, ymin, zmin, xmax, ymax, zmax);
     m_root->m_box = m_bbox;
@@ -135,7 +136,7 @@ void KdTree<T>::Transform(const Matrix& _transform)
 template <class T>
 void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
 {
-    if( (_depth < 5) && (_node->m_list.size() > m_leastObjNum) )
+    if( (_depth < 8) && (_node->m_list.size() > m_leastObjNum) )
     {
         uint32_t axis = _depth%3;
         //get the centre of the box as median
@@ -202,17 +203,16 @@ bool KdTree<T>::Intersect( const Node<T>* _node, const Ray& _ray, Intersection& 
             }
             if ( intersection.Intersected() )
             {
-#if 1
 				Vector dis1 = intersection.Position() - _node->m_box.Min();
 				Vector dis2 = _node->m_box.Max() - intersection.Position();
-				if(    dis1.x() > EPSILON
-					&& dis1.y() > EPSILON
-					&& dis1.z() > EPSILON
-					&& dis2.x() > EPSILON
-					&& dis2.y() > EPSILON
-					&& dis2.z() > EPSILON
+				float epsilon = 0.0000001;
+				if(    dis1.x() > epsilon
+					&& dis1.y() > epsilon
+					&& dis1.z() > epsilon
+					&& dis2.x() > epsilon
+					&& dis2.y() > epsilon
+					&& dis2.z() > epsilon
 					)
-				#endif
 				{
 					o_intersection = intersection;
                 return true;

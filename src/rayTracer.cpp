@@ -22,7 +22,7 @@ RayTracer::RayTracer( Scene* _pScene )
 RayTracer::~RayTracer()
 {}
 //------------------------------------------------------------------------------
-void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
+void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, float _exposure )
 {
 	Image img ( _width, _height, Color(0,0,0,0) );
 	int depth =2;
@@ -40,7 +40,7 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 
 	for (uint32_t y = 0; y < img.Height(); ++y)
 	{
-			//std::cout<<"pixel "<<y<<"\n";
+		std::cout<<"pixel "<<y<<"\n";
 		for (uint32_t x = 0; x < img.Width(); ++x)
 		{
 			//std::cout<<"pixel "<<y<<" "<<x<<"\n";
@@ -61,10 +61,11 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 				while( iter!= pixSamples.end() )
 				{
 					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector(dx+iter->u()*pixelSize, dy+iter->v()*pixelSize,planeDis, 1), g_air );
-					color += Trace( cameraSpaceRay, depth, debug_mel);
+					shade += Trace( cameraSpaceRay, depth, debug_mel);
 					++iter;
 				}
-				color/=pixSamples.size();
+				shade/=pixSamples.size();
+				color += shade;
 			}
 			else if( m_depthOfField )
 			{
@@ -85,10 +86,9 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height )
 				color = Trace( cameraSpaceRay, depth, debug_mel);
 			}
 			#ifdef EXPOSURE
-			float exposure = -0.3;
-			color.r() = 1.0 - exp( color.r() * exposure );
-			color.g() = 1.0 - exp( color.g() * exposure );
-			color.b() = 1.0 - exp( color.b() * exposure );
+			color.r() = 1.0 - exp( color.r() * _exposure );
+			color.g() = 1.0 - exp( color.g() * _exposure );
+			color.b() = 1.0 - exp( color.b() * _exposure );
 			#endif
 			img.Set( x, y, color );
 		}
@@ -160,10 +160,11 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 				Color shade(0,0,0,1);
 				while( iter != shadowRays.end() )
 				{
-					//loop the shadow ray
 					float coefficient(0);
+					//loop the shadow ray
 					Intersection shadowRayScene = IntersectScene( *iter );
-					if ( shadowRayScene.RayParameter() > *iter2 )
+					float nDotLight = intersection.Normal().Dot(iter->Direction() );
+					if ( shadowRayScene.RayParameter() >= *iter2 && nDotLight>=-0.0001 )
 					{
 						if( pMaterial->kd() )
 						{
@@ -183,10 +184,9 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 								coefficient += Specular( intersection, _ray.Direction(), iter->Direction() ) * pMaterial->ks();
 							}
 						}
-						float nDotLight = intersection.Normal().Dot(iter->Direction() );
-						Clamp( nDotLight, 0, 1);
+						Clamp(nDotLight, 0,1);
 						//todo light and surface color
-						shade += ( intersection.GetColor() + light->GetColor() )/2.0 *coefficient * nDotLight * attenuation;
+						shade += ( intersection.GetColor() +light->GetColor() )/2.0* nDotLight * attenuation*coefficient ;
 					}
 					++iter;
 					++iter2;
@@ -267,7 +267,6 @@ float RayTracer::Specular( const Intersection& _intersection, const Vector& _vie
 float RayTracer::AnisotropicSpecular( const Intersection& _intersection, const Vector& _viewingDir, const Vector& _lightDir)
 {
 	Vector reflectDir = MirrorReflection( _intersection, _viewingDir );
-	float albedoS = 1;
 	float alphaX = 0.7;
 	float alphaY = 0.3;
 	alphaX += EPSILON;
@@ -278,8 +277,8 @@ float RayTracer::AnisotropicSpecular( const Intersection& _intersection, const V
 	float nDotLight =  normal.Dot( _lightDir );
 	float nDotView =  normal.Dot( -_viewingDir );
 
-	//Clamp( nDotHalf, 0, 1);
-	//Clamp( nDotLight, 0, 1);
+	Clamp( nDotHalf, 0, 1);
+	Clamp( nDotLight, 0, 1);
 	Clamp( nDotView, 0, 1);
 
 	Vector u,v;
@@ -288,7 +287,7 @@ float RayTracer::AnisotropicSpecular( const Intersection& _intersection, const V
 	float tmp1 = halfVector.Dot(u) /  alphaX ;
 	float tmp2 = halfVector.Dot(v) / alphaY ;
 
-	float p = albedoS / ( 4.0 * PI * alphaX * alphaY * sqrt( nDotLight * nDotView) ) ;
+	float p = 1.0 / ( 4.0 * PI * alphaX * alphaY * sqrt( nDotLight * nDotView) ) ;
 	float beta = - 2.0 * ( tmp1 * tmp1 + tmp2 * tmp2 ) / (1.0 + nDotHalf );
 
 	float specular = p * exp(beta);
@@ -401,8 +400,8 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 	
 #if 1
 	std::vector<Vector> dirSamples;
-	float e=1;
-	uint32_t sampleSize = 10;
+	float e=5;
+	uint32_t sampleSize = 5;
 	SampleHemisphere( dirSamples, sampleSize, e );
 	Color c(0,0,0,1);
 	Color shade( 0,0,0,1);

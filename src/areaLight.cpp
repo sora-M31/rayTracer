@@ -44,7 +44,7 @@ void AreaLight::GetShadowRay ( const Intersection& _intersection, RayList& o_sha
 		o_attenuation = attenuation;
 		Normalise( lightDir );
 
-		o_shadowRays.push_back ( Ray ( _intersection.Position () + _intersection.Normal () * EPSILON, lightDir, g_air ) );
+		o_shadowRays.push_back ( Ray ( _intersection.Position () + _intersection.Normal () * 0.01, lightDir, g_air ) );
 		++iter;
 	}
 }

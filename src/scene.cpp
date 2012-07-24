@@ -22,7 +22,7 @@ Scene::Scene( const Camera& _camera )
 
 	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
     Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
-    Material* glossy = new Material ( 0, 0, 1, 0, 0, 1, 0, 0 ,Color(1,1,1,1),true);
+    Material* glossy = new Material ( 0, 0, 0, 0.5, 0, 0.5, 0, 0 ,Color(1,1,1,1),true);
     Material* diffuse = new Material ( 0, 0.8, 0.2, 0, 0, 0, 0, 0, Color(1,1,1,1) );
     Material* glass = new Material ( 0, 0, 0, 0, 1, 0, GLASS_INDEX,0 );
     Material* floor = new Material ( 0, 1, 0, 0 ,0, 0, 0, 0);
@@ -34,11 +34,12 @@ Scene::Scene( const Camera& _camera )
     floor->SetTexture( salad );
 
     sphere1->SetMaterial( diffuse );
+    //sphere1->SetMaterial( diffuse );
     cube->SetMaterial( diffuse );
-    teapot->SetMaterial( diffuse );
+    teapot->SetMaterial( glossy );
     plane->SetMaterial( floor );
     sky->SetMaterial( diffuse );
-    cylinder->SetMaterial( diffuse );
+    cylinder->SetMaterial( glass );
     soccerball->SetMaterial( diffuse );
 
 #if 1
@@ -59,10 +60,10 @@ Scene::Scene( const Camera& _camera )
     m_textures.push_back ( salad );
 
     Light* areaKey = new AreaLight ( Vector (-2,3,-1,1), 3,3, Vector( 0,0,1,0), 5, 25, Color(1,0.3,0,1) );
-    //Light* pointKey = new PointLight ( Vector (-1,4,-1,1), 200, Color(1,0.3,0,1) );
+    Light* pointKey = new PointLight ( Vector (-3,4,-1,1), 200, Color(1,0.3,0,1) );
     Light* pointFill = new PointLight ( Vector (5,3,-1,1), 10, Color(0,0,1,1) );
 
-    m_lights.push_back ( pointFill);
+	m_lights.push_back ( pointFill);
 	//m_lights.push_back ( pointKey );
 	m_lights.push_back ( areaKey );
 }
@@ -95,7 +96,7 @@ void Scene::Update( uint32_t _time)
 {
 	//m_camera.Translate( Vector( 0,5,-7,1) );
 	m_camera.Translate( Vector( -1,3,-7,1) );
-	m_camera.Rotate( -0.15, Vector(1,0,0,0 ));
+	m_camera.Rotate( -0.05, Vector(1,0,0,0 ));
 	m_stack.push_back ( m_camera.LocalTransformation().Inverse() );
 	m_stack.push_back ( Quaternion( 0.5*_time, Vector( 0,1,0,0 ) ).AsMatrix() );
 #if 1

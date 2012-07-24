@@ -227,7 +227,7 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	}
 	else
 		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, m_pMaterial );
-	//o_intersection = Intersection ( intersectionPos, normal, rayParameter,0 );
+		//o_intersection = Intersection ( intersectionPos, normal, averageTexCoord, rayParameter, m_pMaterial );
 	return true;
 }
 }//end of namespace
