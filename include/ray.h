@@ -11,13 +11,13 @@ class Ray
 {
 friend Ray operator * ( const Matrix& _transform, const Ray& _ray );
 public:
-	Ray ( const Vector& _origin, const Vector& _direction, const Material* _pMaterial );
-	Ray ( const Ray& ray );
+	Ray( const Vector& _origin, const Vector& _direction, const Material* _pMaterial );
+	Ray( const Ray& ray );
 	
-	const Vector& Origin () const { return m_origin; }
-	const Vector& Direction () const { return m_direction; }
-	const Material* GetMaterial () const { return m_pMaterial; }
-	Vector GetPosition ( float rayParameter ) const;
+	const Vector& Origin() const { return m_origin; }
+	const Vector& Direction() const { return m_direction; }
+	const Material* GetMaterial() const { return m_pMaterial; }
+	Vector GetPosition( float rayParameter ) const;
 private:
 	Vector m_origin;
 	Vector m_direction;

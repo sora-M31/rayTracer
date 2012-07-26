@@ -6,17 +6,17 @@ namespace rayTracer
 class Color
 {
 public:
-    Color ();
-    ~Color ();
-    Color ( float _r, float _g, float _b, float _a = 1.0f );
-    Color ( const Color& _other );
-    Color operator +  ( const Color& _other ) const ;
-    Color operator *  ( float _other ) const ;
-    Color operator /  ( float _other ) const ;
-    Color& operator =  ( const Color& _other );
-    Color& operator +=  ( const Color& _other );
-    Color& operator *=  ( float _other );
-    Color& operator /=  ( float _other );
+    Color();
+    ~Color();
+    Color( float _r, float _g, float _b, float _a = 1.0f );
+    Color( const Color& _other );
+    Color operator + ( const Color& _other ) const ;
+    Color operator * ( float _other ) const ;
+    Color operator / ( float _other ) const ;
+    Color& operator = ( const Color& _other );
+    Color& operator += ( const Color& _other );
+    Color& operator *= ( float _other );
+    Color& operator /= ( float _other );
     float& r() { return m_data[0]; }
     float& g() { return m_data[1]; }
     float& a() { return m_data[3]; }

@@ -16,7 +16,7 @@ void Mesh::SetMaterial( const Material* _pMaterial )
 }
 //------------------------------------------------------------------------------
 Mesh::Mesh ( const Vector& _pos, const std::string& _fileName, Material* _pMaterial )
-: m_tree(1)
+: m_tree(7)
 {
     ObjLoader obj;
 	obj.ParseFile (_fileName);
@@ -40,7 +40,7 @@ Mesh::Mesh ( const Vector& _pos, const std::string& _fileName, Material* _pMater
 										   m_pMaterial,
 										   i/3.0) );
 	}
-	m_tree.SetBBox();
+	m_tree.CreateBBox();
 }
 //------------------------------------------------------------------------------
 void Mesh::ToCameraSpace( const Matrix& _transform)
@@ -53,7 +53,8 @@ void Mesh::ToCameraSpace( const Matrix& _transform)
 bool Mesh::Intersect ( const Ray& _ray, Intersection& o_intersection ) const
 {
 	//intersect kd tree
-	bool result = m_tree.Intersect( m_tree.m_root, _ray, o_intersection );
+	bool result = m_tree.m_root->Intersect(_ray, o_intersection );
+	//bool result = m_tree.Intersect(m_tree.m_root, _ray, o_intersection );
 	return result;
 }
 }//end of namespace

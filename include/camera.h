@@ -9,16 +9,15 @@ namespace rayTracer
 class Camera : public Shape
 {
 public:
-	Camera ( float _aperture = 0.5, float _focalLength = 7, float _fov = 45 );
+	Camera( float _aperture, float _focalLength, float _fov );
     ~Camera();
 
     void SampleLens( float _unitNumber );
     Vector RayDirection( float _dx, float _dy, const Vector& _lensSample ) const;
-	void Transform( const Matrix& _transform){}
 	const std::vector<Vector>& LensSample() const { return m_lenSample; }
 	float ViewPlaneDis() const { return m_viewDistance; }
-
-    virtual bool Intersect ( const Ray& _ray, Intersection& o_intersection ) const{ return false; }
+	void Transform( const Matrix& _transform) {}
+    virtual bool Intersect( const Ray& _ray, Intersection& o_intersection ) const{ return false; }
 
 private:
     float m_aperture;

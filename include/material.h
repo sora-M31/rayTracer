@@ -16,6 +16,18 @@ public:
 	//static const Material kAir;
 
 	Material();
+	// --------------------------------------------------------------------------
+	/// \brief 
+	/// \param _ka ambient occlusion
+	/// \param _kd diffuse
+	/// \param _ks specular
+	/// \param _km mirror reflection
+	/// \param _kf fresnel
+	/// \param _kg glossy reflection
+	/// \param _index material index for refraction and fresnel calculation
+	/// \param _attenuation
+	/// \param _color
+	/// \param _aniso flag for switch on and of anisotropic highlight
 	Material( float _ka, float _kd, float _ks, float _km, float _kf, float _kg,
 			  float _index, float _attenuation, const Color& _color = Color(1,1,1,1), bool _aniso = false );
 	Material ( const Material& _material );

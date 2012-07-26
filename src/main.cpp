@@ -9,17 +9,18 @@ int main()
 	rayTracer::Camera cam( 0.3, 7, 60 );
     rayTracer::Scene scene( cam );
     rayTracer::RayTracer raytracer( &scene );
-	//raytracer.SetDepthOfField(1);
-	raytracer.SetAntialias(8);
+	//raytracer.SetDepthOfField(3);
+	raytracer.SetAntialias(3);
     for(uint32_t i=0; i< 10; i +=1)
     {
         scene.Update(i);
         // Cast rays into scene and write to image
 		//if(i==4)
-		//raytracer.CastRay( i, 200, 150, -4 );
-		//raytracer.CastRay( i, 40, 30 );
-		raytracer.CastRay( i, 800, 600,-3 );
-        //raytracer.CastRay( i, 400, 300, -1);
+		//raytracer.CastRay( i, 200, 150, -2.5 );
+		//raytracer.CastRay( i, 120, 90, -3 );
+		//raytracer.CastRay( i, 1024, 768,-3 );
+        //raytracer.CastRay( i, 400, 300, -2.5);
+        raytracer.CastRay( i, 800, 600, -2.5);
 		//}
         std::cout<<"frame "<<i<<"\n";
     }

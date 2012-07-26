@@ -18,7 +18,7 @@ public:
 	void SetDepthOfField( uint32_t _sampleNum ) { m_depthOfField = _sampleNum; }
 
 private:
-    Intersection IntersectScene ( const Ray& _ray );
+    Intersection IntersectScene( const Ray& _ray );
     Color Trace( const Ray& _ray, int _depth, std::ofstream& o_output );
 	Color AmbientOcc( const Intersection& _intersection );
 	Color GlossyReflection( const Intersection& _intersection, const Vector& _viewingDir, int _depth, std::ofstream& o_output );

@@ -12,34 +12,37 @@ namespace rayTracer
 Scene::Scene( const Camera& _camera )
 :m_camera ( _camera )
 {
-    Shape* sphere1 = new Sphere( Vector( -2, 0.5, 0, 1), 1.0 );
+    Shape* sphere1 = new Sphere( Vector( -2, 0.5, 0, 1), 1 );
     Shape* cube = new Mesh( Vector( 2, 0, -2, 1), "resources/cube.obj" );
     Shape* plane = new Mesh( Vector(0,0,0,1), "resources/plane.obj");
-    Shape* teapot = new Mesh( Vector ( 0,0, 2, 1),"resources/teapotTexture.obj");
+    Shape* teapot = new Mesh( Vector ( 1,0, 2, 1),"resources/teapotTexture.obj");
     Shape* sky = new Mesh( Vector ( 0,0, 0, 1),"resources/cubeSky.obj");
     Shape* cylinder = new Mesh( Vector ( -3,0, 3, 1),"resources/cylinder.obj");
     Shape* soccerball = new Mesh( Vector ( -3,0, 0, 1),"resources/soccerball.obj");
 
 	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
     Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
-    Material* glossy = new Material ( 0, 0, 0, 0.5, 0, 0.5, 0, 0 ,Color(1,1,1,1),true);
-    Material* diffuse = new Material ( 0, 0.8, 0.2, 0, 0, 0, 0, 0, Color(1,1,1,1) );
+    Material* glossy = new Material ( 0, 0, 0.2, 0, 0, 0.8, 0, 0 ,Color(0,0,0,1),true);
+    Material* diffuse = new Material ( 0, 0.7, 0.3, 0, 0, 0, 0, 0, Color(1,1,1,1));
+    Material* pole = new Material ( 0.2, 0.7, 0.1, 0, 0, 0, 0, 0);
     Material* glass = new Material ( 0, 0, 0, 0, 1, 0, GLASS_INDEX,0 );
-    Material* floor = new Material ( 0, 1, 0, 0 ,0, 0, 0, 0);
+    Material* floor = new Material ( 0.2, 0.6, 0.2, 0 ,0, 0, 0, 0);
 
     //Image* checker = new Image(160, 160, Color(1,1,1,1) );
     //checker->MakeChecker();
 
-    Image* salad = new Image( "resources/Wood.jpg" );
-    floor->SetTexture( salad );
+    Image* texture = new Image( "resources/floor.jpg" );
+    floor->SetTexture( texture );
+    Image* texture2 = new Image( "resources/pattern.jpg" );
+    pole->SetTexture( texture2 );
 
-    sphere1->SetMaterial( diffuse );
+    sphere1->SetMaterial( glass );
     //sphere1->SetMaterial( diffuse );
     cube->SetMaterial( diffuse );
     teapot->SetMaterial( glossy );
     plane->SetMaterial( floor );
     sky->SetMaterial( diffuse );
-    cylinder->SetMaterial( glass );
+    cylinder->SetMaterial( pole );
     soccerball->SetMaterial( diffuse );
 
 #if 1
@@ -55,12 +58,14 @@ Scene::Scene( const Camera& _camera )
     m_materials.push_back( floor );
     m_materials.push_back( glass );
     m_materials.push_back( glossy );
+    m_materials.push_back( pole );
     m_materials.push_back( diffuse );
     //m_textures.push_back ( checker );
-    m_textures.push_back ( salad );
+    m_textures.push_back ( texture );
+    m_textures.push_back ( texture2 );
 
-    Light* areaKey = new AreaLight ( Vector (-2,3,-1,1), 3,3, Vector( 0,0,1,0), 5, 25, Color(1,0.3,0,1) );
-    Light* pointKey = new PointLight ( Vector (-3,4,-1,1), 200, Color(1,0.3,0,1) );
+    Light* areaKey = new AreaLight ( Vector (-5,3,-1,1), 3,3, Vector( 0,0,1,0), 5, 25, Color(1,0.3,0,1) );
+    //Light* pointKey = new PointLight ( Vector (-5,3,-1,1), 200, Color(1,0.3,0,1) );
     Light* pointFill = new PointLight ( Vector (5,3,-1,1), 10, Color(0,0,1,1) );
 
 	m_lights.push_back ( pointFill);

@@ -74,7 +74,6 @@ Color Image::GetColorBilinear( const Vector2D& _texCoord ) const
 	if ( index3 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
 	if ( index4 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
 	Color c = m_pixels[index1] * weight1 + m_pixels[index2] * weight2 + m_pixels[index3] * weight3 + m_pixels[index4] * weight4;
-	//Color c = m_pixels[ ufloor*m_width  + vfloor]; 
 	return c;
 }
 //------------------------------------------------------------------------------
@@ -93,7 +92,6 @@ void Image::ReadFile(const std::string& _fileName)
 	for( uint32_t i=0; i< size; i+=4 )
 	{
 		uint32_t index = i/4.0;
-		//std::cout<<index<<"\n";
 		if( index < m_width * m_height )
 		m_pixels.push_back ( Color ( data[i]/255.0, data[i+1]/255.0, data[i+2]/255.0, data[i+3]/255.0 ) );
 	}

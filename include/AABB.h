@@ -14,9 +14,18 @@ public:
     AABB( const Vector& _min, const Vector& _max );
     AABB( const AABB& _other );
     AABB& operator = ( const AABB& _other );
+    // --------------------------------------------------------------------------
+    /// \brief Transform the box according to transformation of the object in the box
+    /// \param _matrix transformation matrix of object in the box
+    /// \return 
     AABB Update( const Matrix& _matrix ) const;
     ~AABB();
 
+    // --------------------------------------------------------------------------
+    /// \brief Ray box intersection
+    /// \param _ray
+    /// \param o_rayDis distance from ray origin to intersection
+    /// \return intersected or not
     bool Intersect( const Ray& _ray, float& o_rayDis ) const;
 
     void SetMin(uint32_t _index, float _value) { m_min[_index] = _value; }

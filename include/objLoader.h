@@ -16,13 +16,13 @@ typedef std::list<std::string> StringList;
 class ObjLoader
 {
 public:
-    ObjLoader () {}
-    ~ObjLoader () {}
+    ObjLoader() {}
+    ~ObjLoader() {}
 
-    bool ParseFile ( const std::string& _fileName );
-    void PrintLoadedInfo ();
+    bool ParseFile( const std::string& _fileName );
+    void PrintLoadedInfo();
 	void PrintSerializedInfo();
-    void ClearData ();
+    void ClearData();
 
     const std::vector<Vector>& GetVertexArray() const
     {
@@ -38,8 +38,8 @@ public:
     }
 
 private:
-    void TokenToArray ( const StringList& tokens, std::vector<float>& array );
-    void Tokenize ( const std::string& _str,
+    void TokenToArray( const StringList& tokens, std::vector<float>& array );
+    void Tokenize( const std::string& _str,
                     const std::string& _delimiters,
                     StringList& o_tokens );
     void Serialize();

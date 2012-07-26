@@ -4,11 +4,11 @@
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-Camera::Camera ( float _aperture, float _focalLength, float _fov )
+Camera::Camera( float _aperture, float _focalLength, float _fov )
 : m_aperture( _aperture ),
   m_focalLength( _focalLength ),
-  m_lookat( Vector (0,0,1,0) ),
-  m_up( Vector (0,1,0,0) )
+  m_lookat( Vector(0,0,1,0) ),
+  m_up( Vector(0,1,0,0) )
 {
 	//_fov/2.0 * PI / 180
 	m_viewDistance = 0.5 / tan( _fov * PI / 360 );
@@ -27,9 +27,9 @@ void Camera::SampleLens( float _unitNumber )
 
 		for( size_t i=0; i< samples.size(); ++i )
 		{
-			m_lenSample.push_back( Vector ( ( -0.5 + samples[i].u() )* m_aperture,
-											( -0.5 + samples[i].v() )* m_aperture,
-											0, 1 ) );
+			m_lenSample.push_back( Vector( ( -0.5 + samples[i].u() )* m_aperture,
+										   ( -0.5 + samples[i].v() )* m_aperture,
+											 0, 1 ) );
 		}
 }
 //------------------------------------------------------------------------------

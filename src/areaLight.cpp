@@ -49,7 +49,7 @@ void AreaLight::GetShadowRay ( const Intersection& _intersection, RayList& o_sha
 	}
 }
 //------------------------------------------------------------------------------
-Vector AreaLight::Normal()
+Vector AreaLight::Normal() const
 {
 	return m_normal * m_transformation;
 }

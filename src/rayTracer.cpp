@@ -14,8 +14,8 @@ namespace rayTracer
 //------------------------------------------------------------------------------
 RayTracer::RayTracer( Scene* _pScene )
 :m_pScene( _pScene ),
- m_antialias ( 0 ),
- m_depthOfField ( 0 )
+ m_antialias( 0 ),
+ m_depthOfField( 0 )
 {
 }
 //------------------------------------------------------------------------------
@@ -24,8 +24,8 @@ RayTracer::~RayTracer()
 //------------------------------------------------------------------------------
 void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, float _exposure )
 {
-	Image img ( _width, _height, Color(0,0,0,0) );
-	int depth =2;
+	Image img( _width, _height, Color(0,0,0,0) );
+	int depth =3;
 	std::ofstream debug_mel;
 //change name
 #ifdef TEST1
@@ -40,7 +40,7 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, flo
 
 	for (uint32_t y = 0; y < img.Height(); ++y)
 	{
-		std::cout<<"pixel "<<y<<"\n";
+		std::cout<<"line"<<y<<"\n";
 		for (uint32_t x = 0; x < img.Width(); ++x)
 		{
 			//std::cout<<"pixel "<<y<<" "<<x<<"\n";
@@ -104,7 +104,7 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, flo
 Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 {
 	Color c(0,0,0,0);
-	Intersection intersection = IntersectScene ( _ray );
+	Intersection intersection = IntersectScene( _ray );
 	if ( _depth < 0 )
 		return c;
 
@@ -121,7 +121,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 			   <<intersection.Position().z()
 			   <<";\n";
 	#endif
-		c = Color ( 0,0,0,1);
+		c = Color( 0,0,0,1);
 		const Material* pMaterial = intersection.GetMaterial();
 
 		assert( pMaterial!=0 );
@@ -164,29 +164,34 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 					//loop the shadow ray
 					Intersection shadowRayScene = IntersectScene( *iter );
 					float nDotLight = intersection.Normal().Dot(iter->Direction() );
-					if ( shadowRayScene.RayParameter() >= *iter2 && nDotLight>=-0.0001 )
+					if ( shadowRayScene.Distance() >= *iter2 && nDotLight>=-0.0001 )
 					{
 						if( pMaterial->kd() )
 						{
 							//diffuse
-							coefficient += pMaterial->kd();
+							//coefficient += pMaterial->kd();
 						}
 						//phong specular
+						float specular = 0;
 						if( pMaterial->ks() )
 						{
 							//antisotropical specular
 							if( pMaterial->IsAnisotropic() )
 							{
 								coefficient += AnisotropicSpecular( intersection, _ray.Direction(), iter->Direction() ) * pMaterial->ks();
+								//specular += AnisotropicSpecular( intersection, _ray.Direction(), iter->Direction() ) * pMaterial->ks();
 							}
 							else
 							{
 								coefficient += Specular( intersection, _ray.Direction(), iter->Direction() ) * pMaterial->ks();
+								//specular += Specular( intersection, _ray.Direction(), iter->Direction() ) * pMaterial->ks();
 							}
 						}
 						Clamp(nDotLight, 0,1);
 						//todo light and surface color
-						shade += ( intersection.GetColor() +light->GetColor() )/2.0* nDotLight * attenuation*coefficient ;
+						//shade += ( intersection.GetColor() * 0.5 +light->GetColor()*0.5 )* nDotLight * attenuation*coefficient ;
+						shade += (intersection.GetColor() * 0.8 + light->GetColor() * 0.2 )* nDotLight * attenuation * pMaterial->kd()
+								 + light->GetColor() * specular * nDotLight * attenuation ;
 					}
 					++iter;
 					++iter2;
@@ -213,7 +218,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 	return c;
 }
 //------------------------------------------------------------------------------
-Intersection RayTracer::IntersectScene ( const Ray& _ray )
+Intersection RayTracer::IntersectScene( const Ray& _ray )
 {
 	Intersection intersection;
 
@@ -221,8 +226,8 @@ Intersection RayTracer::IntersectScene ( const Ray& _ray )
 	{
 		const Shape* shape = m_pScene->GetShapes()[i];
 		Intersection tmpIntersection;
-		if ( shape->Intersect ( _ray, tmpIntersection)
-             && tmpIntersection.RayParameter() < intersection.RayParameter()  )
+		if ( shape->Intersect( _ray, tmpIntersection)
+             && tmpIntersection.Distance() < intersection.Distance()  )
         {
 			intersection = tmpIntersection;
         }
@@ -246,7 +251,7 @@ Color RayTracer::AmbientOcc( const Intersection& _intersection )
 		Vector dir = u * dirSamples[i].x() + v *dirSamples[i].z() + w*dirSamples[i].y();
 		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, dir, g_air );
 		//if no intersection with objects in scene
-		if( !IntersectScene ( raySample ).Intersected() )
+		if( !IntersectScene( raySample ).Intersected() )
 		{
 			c+= dir.Dot( _intersection.Normal() );
 		}
@@ -258,7 +263,7 @@ Color RayTracer::AmbientOcc( const Intersection& _intersection )
 float RayTracer::Specular( const Intersection& _intersection, const Vector& _viewingDir, const Vector& _lightDir )
 {
 	Vector reflectDir = MirrorReflection( _intersection, _lightDir );
-	float e = 10.0f;
+	float e = 100.0f;
 	float reflectDotView = reflectDir.Dot( _viewingDir );
 	Clamp( reflectDotView,0,1 );
 	return pow( reflectDotView, e );
@@ -291,8 +296,6 @@ float RayTracer::AnisotropicSpecular( const Intersection& _intersection, const V
 	float beta = - 2.0 * ( tmp1 * tmp1 + tmp2 * tmp2 ) / (1.0 + nDotHalf );
 
 	float specular = p * exp(beta);
-	//c += MirrorReflection( _intersection, _viewingDir, _depth, o_output ) * ( albedoD/PI + specular) * nDotLight;
-	//c +=  _intersection.GetColor() * (albedoD/PI + specular ) * nDotLight;
 	return specular;
 }
 //------------------------------------------------------------------------------
@@ -331,6 +334,7 @@ Color RayTracer::Fresnel( const Intersection& _intersection, const Ray& _ray, in
 		kt = 0.0;
 		cosOut = 0.0;
 	}
+#if 0
 	float roulette = rand()/(float)RAND_MAX;
 	if( roulette <= kr )
 	{
@@ -362,7 +366,25 @@ Color RayTracer::Fresnel( const Intersection& _intersection, const Ray& _ray, in
 		c +=Trace ( refractRay, --_depth, o_output );
 #endif
 	}
-	return c;
+#endif
+		Vector outRayDir;
+		if( cosIn > 0)
+		{
+			outRayDir = _ray.Direction() * ratio + ( cosIn * ratio - cosOut ) * _intersection.Normal();
+		}
+		else
+		{
+			outRayDir = _ray.Direction() * ratio + ( cosOut - cosIn * ratio ) * _intersection.Normal();
+		}
+		Ray refractRay( _intersection.Position() - _intersection.Normal() * EPSILON,
+						 outRayDir,
+						 _intersection.GetMaterial() );
+		Ray reflectRay( _intersection.Position() + _intersection.Normal(), MirrorReflection( _intersection, _ray.Direction() ), _intersection.GetMaterial() );
+		Color shade(0,0,0,1);
+		int depth = _depth -1;
+		shade=Trace( refractRay, depth, o_output )*kt + Trace( reflectRay, depth, o_output )*kr ;
+		//c+=shade;
+	return shade;
 }
 //------------------------------------------------------------------------------
 Vector RayTracer::MirrorReflection( const Intersection& _intersection, const Vector& _inDir )
@@ -376,7 +398,7 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 	Vector reflectDir = MirrorReflection( _intersection, _viewingDir );
 	Normalise( reflectDir );
 	//reflect a sample of rays
-	Vector w ( reflectDir );
+	Vector w( reflectDir );
 	Vector u,v;
 	w.GetBasis( u, v );
 
@@ -393,14 +415,14 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 		dir = w + ( ( iter->u()  - 0.5 ) * u + ( iter->v() - 0.5 ) * v ) * glossiness;
 		dir.Normalise();
 		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, dir, g_air );
-		shade += Trace (raySample, --_depth, o_output )/ dir.Dot( reflectDir );
+		shade += Trace(raySample, --_depth, o_output )/ dir.Dot( reflectDir );
 	}
 	c+= shade;
 #endif
 	
 #if 1
 	std::vector<Vector> dirSamples;
-	float e=5;
+	float e=100;
 	uint32_t sampleSize = 5;
 	SampleHemisphere( dirSamples, sampleSize, e );
 	Color c(0,0,0,1);
@@ -418,7 +440,7 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 		float tmp2 = reflectDir.Dot( dir );
 		Clamp(tmp1,0,1);
 		Clamp(tmp2,0,1);
-		shade += Trace (raySample, --_depth, o_output )/ pow( tmp2, e );
+		shade += Trace(raySample, --_depth, o_output )/ pow( tmp2, e );
 	}
 	c += shade;// / dirSamples.size();
 #endif

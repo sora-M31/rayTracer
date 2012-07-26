@@ -66,17 +66,17 @@ bool Sphere::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	if ( ( pDotRayDir - sqrtf( temp ) )  < 0.0f )
 	{
 		rayParameter = pDotRayDir + sqrtf( temp );
-		Vector position = _ray.GetPosition( rayParameter );
-		Vector normal = ( position - Position() ).Normalise();
-		o_intersection =  Intersection( position, normal, Vector2D(0,0), rayParameter, g_air );
-		//inside intersection;
+		Vector intersectionPos= _ray.GetPosition( rayParameter );
+		Vector normal = ( intersectionPos - Position() ).Normalise();
+		o_intersection =  Intersection( intersectionPos, normal, Vector2D(0,0), rayParameter, g_air );
+		//intersection inside sphere;
 		return true;
 	}
 		
 	rayParameter = pDotRayDir - sqrtf( temp );
-	Vector position = _ray.GetPosition( rayParameter );
-	Vector normal = ( position - Position() ).Normalise();
-	o_intersection =  Intersection( position, normal, Vector2D(0,0), rayParameter, m_pMaterial );
+	Vector intersectionPos = _ray.GetPosition( rayParameter );
+	Vector normal = ( intersectionPos - Position() ).Normalise();
+	o_intersection =  Intersection( intersectionPos, normal, Vector2D(0,0), rayParameter, m_pMaterial );
 	return true;
 }
 //------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ Plane::Plane( const Vector& _normal,
   m_distance( _distance )
 {
 	m_pMaterial = _material;
-	m_normal.ProjectAxis( m_u, m_v);
+	m_normal.GetBasis( m_u, m_v );
 }
 //------------------------------------------------------------------------------
 Plane::Plane()
@@ -114,11 +114,10 @@ bool Plane::Intersect( const Ray& _ray, Intersection& o_intersection) const
 //------------------------------------------------------------------------------
 void Plane::ToUVSpace( const Vector& _pos, float& o_u, float& o_v ) const
 {
-		o_u = _pos.Dot( m_u )/30 ;
-		o_v = _pos.Dot( m_v )/30 ;
+		o_u = _pos.Dot( m_u )/30.0 ;
+		o_v = _pos.Dot( m_v )/30.0 ;
 }
 //------------------------------------------------------------------------------
-#if 1
 Triangle Triangle::operator * ( const Matrix& _matrix ) const
 {
 	return Triangle( m_vertex[0] * _matrix, m_vertex[1] * _matrix, m_vertex[2] * _matrix,
@@ -126,9 +125,8 @@ Triangle Triangle::operator * ( const Matrix& _matrix ) const
 					 m_texture[0], m_texture[1], m_texture[2],
 					 m_pMaterial, s_id );
 }
-#endif
 //------------------------------------------------------------------------------
-Triangle::Triangle ( const Triangle& _other )
+Triangle::Triangle( const Triangle& _other )
 {
 	m_vertex.push_back(_other.m_vertex[0]);
 	m_vertex.push_back(_other.m_vertex[1]);
@@ -171,10 +169,12 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	Vector b = m_vertex[1] - m_vertex[0];
 	Vector c = m_vertex[2] - m_vertex[0];
 	Vector normal = b.Cross (c);
+	//triangle is a line
 	if( RealCompare( normal.Dot(normal), 0.0f, 0.0000000001 ) )
 		return false;
 	Normalise(normal);
 
+	//ray-plane intersection
 	float rayParameter = normal.Dot ( m_vertex[0] - _ray.Origin () ) / normal.Dot ( _ray.Direction () );
 	//no intersection on the plane
 	if ( rayParameter < 0.0f )
@@ -222,12 +222,11 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	
 	if( m_pMaterial->kf() > 0 && _ray.Direction().Dot( averageNormal ) > 0 )
 	{
-		//std::cout<<"internal\n";
+		//when calculating refraction for the ray inside object
 		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, g_air );
 	}
 	else
 		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, m_pMaterial );
-		//o_intersection = Intersection ( intersectionPos, normal, averageTexCoord, rayParameter, m_pMaterial );
 	return true;
 }
 }//end of namespace

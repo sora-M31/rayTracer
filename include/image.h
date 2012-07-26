@@ -9,6 +9,8 @@
 
 namespace rayTracer
 {
+// --------------------------------------------------------------------------
+/// \brief Image class, for loading texture and write final images
 class Image
 {
 public:
@@ -16,13 +18,21 @@ public:
 	Image( const std::string& _fileName );
 	~Image();
 
+	// --------------------------------------------------------------------------
+	/// \brief Load image for texture using magick++
+	/// \param _fileName
     void ReadFile( const std::string& _fileName );
+	// --------------------------------------------------------------------------
+	/// \brief Make checker pattern
 	void MakeChecker();
     bool WriteTga( const std::string& _fileName );
 
     const Color& Get( uint32_t _x, uint32_t _y) const;
+	// --------------------------------------------------------------------------
+	/// \brief Get color with with texture coordinate provided using bilinear filtering
+	/// \param _texCoord
+	/// \return Color
 	Color GetColorBilinear( const Vector2D& _texCoord ) const;
-    //set
     void Set( uint32_t _x, uint32_t _y, const Color& _value);
 
     uint32_t Width() const { return m_width; }

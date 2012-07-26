@@ -8,10 +8,10 @@ class AreaLight: public Light
 {
 public:
 	AreaLight(const Vector& _position, float _width, float _height, Vector _normal, uint32_t _sampleNum, float _intensity, const Color& _color );
-	~AreaLight ();
+	~AreaLight();
 
-	void GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, DisList& o_disList, float& o_attenuation ) const;
-	Vector Normal();
+	void GetShadowRay( const Intersection& _intersection, RayList& o_shadowRays, DisList& o_disList, float& o_attenuation ) const;
+	Vector Normal() const;
 	void ToCameraSpace( const Matrix& _transform);
 
 private:

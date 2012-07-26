@@ -10,19 +10,19 @@ namespace rayTracer
 class Intersection
 {
 public:
-	Intersection ();
-	Intersection ( const Vector& _position,
+	Intersection();
+	Intersection( const Vector& _position,
 				   const Vector& _normal,
 				   const Vector2D& _texCoord,
 				   float _rayParameter,
 				   const Material* _pMaterial );
-	Intersection ( const Intersection& _other );
+	Intersection( const Intersection& _other );
 	Intersection& operator = (const Intersection& _other);
 
-	const Vector& Position () const { return m_position; }
-	const Vector& Normal () const { return m_normal; }
-	const Vector2D& TexCoord () const { return m_texCoord; }
-	float RayParameter () const { return m_rayParameter; }
+	const Vector& Position() const { return m_position; }
+	const Vector& Normal() const { return m_normal; }
+	const Vector2D& TexCoord() const { return m_texCoord; }
+	float Distance() const { return m_rayParameter; }
 	const Material* GetMaterial() const { return m_pMaterial; }
 	void SetMaterial( const Material* _pMaterial ) { m_pMaterial = _pMaterial; }
 	Color GetColor() const { return m_pMaterial->GetColor( m_texCoord ); }

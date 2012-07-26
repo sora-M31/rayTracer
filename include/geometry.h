@@ -17,7 +17,6 @@ public:
 	Sphere();
 	~Sphere();
 
-	//const Vector& Center() const { return Position; }
 	float Radius() const { return m_radius; }
 	float RadiusSquared() const { return m_radiusSquared; }
 
@@ -74,19 +73,19 @@ public:
 	};
 	Triangle& operator = ( const Triangle& _other );
 	~Triangle(){};
-	//Vector Position() const{ return (m_vertex[0] + m_vertex[1] + m_vertex[2])/3.0; }
 	bool Intersect( const Ray& _ray, Intersection& o_intersection ) const;
 	Triangle operator * ( const Matrix& _matrix ) const;
 	void Print() const{ std::cout<<m_vertex[0]<<" "<<m_vertex[1]<<" "<<m_vertex[2]<<"\n"; }
 	Vector Min() const { return Vector( min( m_vertex[0].x(), m_vertex[1].x(), m_vertex[2].x() ),
-									    min( m_vertex[0].y(), m_vertex[1].y(), m_vertex[2].y() ),
-									    min( m_vertex[0].z(), m_vertex[1].z(), m_vertex[2].z() ), 1.0 ); }
+										min( m_vertex[0].y(), m_vertex[1].y(), m_vertex[2].y() ),
+										min( m_vertex[0].z(), m_vertex[1].z(), m_vertex[2].z() ), 1.0 ); }
 	Vector Max() const { return Vector( max( m_vertex[0].x(), m_vertex[1].x(), m_vertex[2].x() ),
 										max( m_vertex[0].y(), m_vertex[1].y(), m_vertex[2].y() ),
 										max( m_vertex[0].z(), m_vertex[1].z(), m_vertex[2].z() ), 1.0 ); }
 	const std::vector<Vector>& GetVertex() { return m_vertex; }
-	uint32_t s_id;
+
 private:
+	uint32_t s_id;
 	std::vector<Vector> m_vertex;
 	std::vector<Vector> m_normal;
 	std::vector<Vector2D> m_texture;
