@@ -12,21 +12,21 @@ namespace rayTracer
 Scene::Scene( const Camera& _camera )
 :m_camera ( _camera )
 {
-    Shape* sphere1 = new Sphere( Vector( -2, 0.5, 0, 1), 1 );
+    Shape* sphere1 = new Sphere( Vector( -1.8, 1, 0, 1), 1 );
     Shape* cube = new Mesh( Vector( 2, 0, -2, 1), "resources/cube.obj" );
     Shape* plane = new Mesh( Vector(0,0,0,1), "resources/plane.obj");
-    Shape* teapot = new Mesh( Vector ( 1,0, 2, 1),"resources/teapotTexture.obj");
+    Shape* teapot = new Mesh( Vector ( 0.5,0, 2, 1),"resources/teapotTexture.obj");
     Shape* sky = new Mesh( Vector ( 0,0, 0, 1),"resources/cubeSky.obj");
-    Shape* cylinder = new Mesh( Vector ( -3,0, 3, 1),"resources/cylinder.obj");
+    Shape* cylinder = new Mesh( Vector ( -3.5,0, 3, 1),"resources/cylinder.obj");
     Shape* soccerball = new Mesh( Vector ( -3,0, 0, 1),"resources/soccerball.obj");
 
 	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
     Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
-    Material* glossy = new Material ( 0, 0, 0.2, 0, 0, 0.8, 0, 0 ,Color(0,0,0,1),true);
-    Material* diffuse = new Material ( 0, 0.7, 0.3, 0, 0, 0, 0, 0, Color(1,1,1,1));
+    Material* glossy = new Material ( 0, 0, 1, 0, 0, 0.2, 0, 0 ,Color(0.5,0.5,0.5,1));
+    Material* diffuse = new Material ( 0, 1, 0, 0, 0, 0, 0, 0, Color(1,1,1,1));
     Material* pole = new Material ( 0.2, 0.7, 0.1, 0, 0, 0, 0, 0);
-    Material* glass = new Material ( 0, 0, 0, 0, 1, 0, GLASS_INDEX,0 );
-    Material* floor = new Material ( 0.2, 0.6, 0.2, 0 ,0, 0, 0, 0);
+    Material* glass = new Material ( 0, 0, 1, 0, 1, 0, GLASS_INDEX,0 );
+    Material* floor = new Material ( 0, 1, 1, 0 ,0, 0, 0, 0, Color(1,1,1,1));
 
     //Image* checker = new Image(160, 160, Color(1,1,1,1) );
     //checker->MakeChecker();
@@ -64,9 +64,9 @@ Scene::Scene( const Camera& _camera )
     m_textures.push_back ( texture );
     m_textures.push_back ( texture2 );
 
-    Light* areaKey = new AreaLight ( Vector (-5,3,-1,1), 3,3, Vector( 0,0,1,0), 5, 25, Color(1,0.3,0,1) );
-    //Light* pointKey = new PointLight ( Vector (-5,3,-1,1), 200, Color(1,0.3,0,1) );
-    Light* pointFill = new PointLight ( Vector (5,3,-1,1), 10, Color(0,0,1,1) );
+    Light* areaKey = new AreaLight ( Vector (-5,3,-1,1), 3,3, Vector( 0,0,1,0), 5, 70, Color(240.0/255.0, 192.0/255.0, 161.0/255.0, 1) );
+    Light* pointKey = new PointLight ( Vector (-5,3,-1,1), 200, Color(240.0/255.0, 192.0/255.0, 161.0/255.0, 1) );
+    Light* pointFill = new PointLight ( Vector (5,3,-1,1), 50, Color(73.0/255.0,50.0/255.0, 138.0/255.0,1) );
 
 	m_lights.push_back ( pointFill);
 	//m_lights.push_back ( pointKey );
@@ -101,9 +101,9 @@ void Scene::Update( uint32_t _time)
 {
 	//m_camera.Translate( Vector( 0,5,-7,1) );
 	m_camera.Translate( Vector( -1,3,-7,1) );
-	m_camera.Rotate( -0.05, Vector(1,0,0,0 ));
+	m_camera.Rotate( 2.0 * PI/144.0, Vector(1,0,0,0 ));
 	m_stack.push_back ( m_camera.LocalTransformation().Inverse() );
-	m_stack.push_back ( Quaternion( 0.5*_time, Vector( 0,1,0,0 ) ).AsMatrix() );
+	m_stack.push_back ( Quaternion( 0.1*_time, Vector( 0,1,0,0 ) ).AsMatrix() );
 #if 1
     uint32_t size = m_shapes.size();
     for( uint32_t i = 0; i < size; ++i )

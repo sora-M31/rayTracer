@@ -45,6 +45,14 @@ Color Color::operator * ( float _other ) const
                    //1.0f );
 }
 //------------------------------------------------------------------------------
+Color Color::operator * ( const Color& _other ) const
+{
+    return  Color( m_data[0] * _other.m_data[0],
+                   m_data[1] * _other.m_data[1],
+                   m_data[2] * _other.m_data[2],
+                   1.0 );
+}
+//------------------------------------------------------------------------------
 Color Color::operator / ( float _other ) const
 {
     return Color( m_data[0] / _other,

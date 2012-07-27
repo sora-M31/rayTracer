@@ -12,6 +12,11 @@ public:
     Color( const Color& _other );
     Color operator + ( const Color& _other ) const ;
     Color operator * ( float _other ) const ;
+    // --------------------------------------------------------------------------
+    /// \brief Calculate the surface color under different color of light
+    /// \param _other usually the color of light
+    /// \return 
+    Color operator * ( const Color& _other ) const ;
     Color operator / ( float _other ) const ;
     Color& operator = ( const Color& _other );
     Color& operator += ( const Color& _other );

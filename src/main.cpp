@@ -11,7 +11,7 @@ int main()
     rayTracer::RayTracer raytracer( &scene );
 	//raytracer.SetDepthOfField(3);
 	raytracer.SetAntialias(3);
-    for(uint32_t i=0; i< 10; i +=1)
+    for(uint32_t i=0; i< 144; i +=1)
     {
         scene.Update(i);
         // Cast rays into scene and write to image
