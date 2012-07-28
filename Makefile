@@ -1,9 +1,18 @@
-all:
-	scons
+# Scons-Local Makefile
+#
+# This allows you to use `make` to build the scons project.
+#
+# Peter Dodds (http://pddds.com) 2012
 
-%:
-	scons $@
+SCONSPATH=$(shell python -c 'import os.path; print os.path.normpath("site_scons/local/scons.py")' )
+SCONS=python $(SCONSPATH)
+
+all:
+	@$(SCONS)
 
 clean:
-	scons -c && rm -rf img/*
+	@$(SCONS) -c
+
+%:
+	@$(SCONS) $@
 
