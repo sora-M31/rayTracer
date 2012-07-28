@@ -18,6 +18,7 @@ if GetOption('debug') :
             '/RTC1', # enable stack frame and initialisation runtime error checking
             '/W3', # warning level 3
             '/Zi', # generate complete debug information
+            '/MTd', # multithreaded static link (debug)
             '/EHsc' # Catch C++ exceptions only
             ] )
 else :
@@ -27,9 +28,11 @@ else :
     elif 'msvc' in env['TOOLS'] :
         env.AppendUnique( CCFLAGS = [
             '/Ox', # maximum optimisation
+            '/wd4996', # disable depricated function warning
             '/W2', # warning level 2
             '/WX', # treat warnings as errors
             '/fp:fast', # fast float point optimisation
+            '/MT', # multithreaded static link
             '/EHsc' # Catch C++ exceptions only
             ] )
 
