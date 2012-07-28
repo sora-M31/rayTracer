@@ -7,19 +7,32 @@ env.Append(LIBS = ['CORE_RL_Magick++_'])
 env.AppendUnique( CPPDEFINES = [ env['PLATFORM'].upper() ] )
 env.Append(LIBPATH = "\Program Files\ImageMagick-6.7.8-Q16\lib")
 
-# debug
-#env.AppendUnique( CPPDEFINES = [ '_DEBUG' ] )
-#if 'g++' in env['TOOLS'] :
-#    env.AppendUnique( CCFLAGS = [ '-g', '-Wall', '-Wextra' ] )
-#elif 'msvc' in env['TOOLS'] :
-#    env.AppendUnique( CCFLAGS = [ '/Od', '/Gm', '/RTC1',
-#        '/W3', '/Wp64', '/Zi', '/EHsc' ] )
+if GetOption('debug') :
+    env.AppendUnique( CPPDEFINES = [ '_DEBUG' ] )
+    if 'g++' in env['TOOLS'] :
+        env.AppendUnique( CCFLAGS = [ '-g', '-Wall', '-Wextra' ] )
+    elif 'msvc' in env['TOOLS'] :
+        env.AppendUnique( CCFLAGS = [
+            '/Od', # disable optimisation
+            '/Gm', # enable minimal rebuild
+            '/RTC1', # enable stack frame and initialisation runtime error checking
+            '/W3', # warning level 3
+            '/Zi', # generate complete debug information
+            '/EHsc' # Catch C++ exceptions only
+            ] )
+else :
+    env.AppendUnique( CPPDEFINES = [ 'NDEBUG' ] )
+    if 'g++' in env['TOOLS'] :
+        env.AppendUnique( CCFLAGS = [ '-O3', '-funroll-loops', '-ffast-math' ] )
+    elif 'msvc' in env['TOOLS'] :
+        env.AppendUnique( CCFLAGS = [
+            '/Ox', # maximum optimisation
+            '/W2', # warning level 2
+            '/WX', # treat warnings as errors
+            '/fp:fast', # fast float point optimisation
+            '/EHsc' # Catch C++ exceptions only
+            ] )
 
-env.AppendUnique( CPPDEFINES = [ 'NDEBUG' ] )
-if 'g++' in env['TOOLS'] :
-    env.AppendUnique( CCFLAGS = [ '-O3', '-funroll-loops', '-ffast-math' ] )
-elif 'msvc' in env['TOOLS'] :
-    env.AppendUnique( CCFLAGS = [ '/Ox', '/EHsc', '/fp:fast' ] )
 
 src_files = Split( 'util.cpp vector.cpp vector2D.cpp matrix.cpp quaternion.cpp color.cpp image.cpp ray.cpp intersection.cpp pointLight.cpp areaLight.cpp camera.cpp material.cpp objLoader.cpp mesh.cpp geometry.cpp AABB.cpp scene.cpp rayTracer.cpp main.cpp')
 
