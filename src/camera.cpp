@@ -11,10 +11,9 @@ Camera::Camera( float _aperture, float _focalLength, float _fov )
   m_up( Vector(0,1,0,0) )
 {
 	//_fov/2.0 * PI / 180
-	m_viewDistance = 0.5 / tan( _fov * PI / 360 );
+	m_viewDistance = 0.5 / tan( _fov * PI / 360.0 );
 	m_translation = Vector( 0,0,0,1 );
 	m_rotation = Quaternion( 1,0,0,0 );
-	SampleLens( 5 );
 }
 //------------------------------------------------------------------------------
 Camera::~Camera()
@@ -23,7 +22,7 @@ Camera::~Camera()
 void Camera::SampleLens( float _unitNumber )
 {
 		std::vector<Vector2D> samples(0);
-		SampleSquare( samples, 5);
+		SampleSquare( samples, _unitNumber);
 
 		for( size_t i=0; i< samples.size(); ++i )
 		{

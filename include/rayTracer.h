@@ -15,7 +15,7 @@ public:
 	void CreateRays();
 	void CastRay( uint32_t _frame, float _exposure );
 	void SetScene( const Scene* _pScene ) { m_pScene = _pScene; }
-	void CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, float _exposure );
+	//void CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, float _exposure );
 	void SetAntialias( uint32_t _sampleNum ) { m_antialias = _sampleNum; }
 	void SetDepthOfField( uint32_t _sampleNum ) { m_depthOfField = _sampleNum; }
 

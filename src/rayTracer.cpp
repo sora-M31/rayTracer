@@ -92,23 +92,19 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 	{
 		sampleSize = m_depthOfField * m_depthOfField;
 	}
-	for( uint32_t i=0; i< raySize; ++i )//i+=sampleSize )
+	for( uint32_t i=0; i< raySize; i+=sampleSize )
 	{
-#if 0
+#if 1
 		Color c(0,0,0,0);
-		//printf("% 3d%%", (int)(100*(float)i/(float)raySize) );
+		printf("% 3d%%", (int)(100*(float)i/(float)raySize) );
 		for( uint32_t j=0; j<sampleSize; ++j )
 		{
 			c+= Trace( m_rayList[i + j], depth, debug_mel );
 		}
-		//c/=(float)sampleSize;
-		std::cout<<i/sampleSize<<"\n";
+		c/=(float)sampleSize;
 		img.Set( i/sampleSize , c );
-		//printf("\b\b\b\b");
+		printf("\b\b\b\b");
 #endif
-		Color c(0,0,0,0);
-		c+= Trace( m_rayList[i], depth, debug_mel );
-		img.Set( i, c );
 	}
 #ifdef TEST1
 	debug_mel.close();
@@ -117,7 +113,7 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 	sprintf(filename, "img/img%04d.tga", _frame+1 );
 	img.WriteTga(filename  );
 }
-#if 1
+#if 0
 //------------------------------------------------------------------------------
 void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, float _exposure )
 {

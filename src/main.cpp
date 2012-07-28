@@ -7,13 +7,14 @@
 int main()
 {
 #if 1
-	rayTracer::Camera cam( 0.3, 7, 60 );
+	rayTracer::Camera cam( 0.3, 5, 60 );
+	cam.SampleLens(3);
     rayTracer::Scene scene( cam );
-    rayTracer::RayTracer raytracer( &scene, 40, 30  );
+    rayTracer::RayTracer raytracer( &scene, 100, 75  );
     //rayTracer::RayTracer raytracer( &scene, 800, 600  );
-	//raytracer.SetDepthOfField(3);
+	raytracer.SetDepthOfField(3);
 	//raytracer.SetAntialias(3);
-	//raytracer.CreateRays();
+	raytracer.CreateRays();
 	//time_t start, end;
 //    for(uint32_t i=0; i< 144; i +=1)
     for(uint32_t i=0; i< 1; i +=1)
@@ -22,8 +23,8 @@ int main()
         scene.Update(i);
         // Cast rays into scene and write to image
 		//if(i==4)
-        //raytracer.CastRay( i, -1);
-        raytracer.CastRay( i,100,75, -1);
+        raytracer.CastRay( i, -1);
+        //raytracer.CastRay( i,100,75, -1);
 		//}
 		//time(&end);
         std::cout<<"frame "<<i<<"\n";
