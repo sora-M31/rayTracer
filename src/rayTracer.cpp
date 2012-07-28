@@ -246,7 +246,7 @@ Color RayTracer::AmbientOcc( const Intersection& _intersection )
 	w.GetBasis( u, v );
 
 	std::vector<Vector> dirSamples;
-	float e=10;
+	uint32_t e=10;
 	SampleHemisphere( dirSamples, 6, e );
 	float c(0);
 	for( uint32_t i=0; i< dirSamples.size(); ++i )
@@ -405,7 +405,7 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 	w.GetBasis( u, v );
 	
 	std::vector<Vector> dirSamples;
-	float e=100;
+	uint32_t e=100;
 	uint32_t sampleSize = 5;
 	SampleHemisphere( dirSamples, sampleSize, e );
 	Color c(0,0,0,1);
@@ -423,7 +423,7 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 		float tmp2 = reflectDir.Dot( dir );
 		Clamp(tmp1,0,1);
 		Clamp(tmp2,0,1);
-		shade += Trace(raySample, --_depth, o_output )/ pow( tmp2, e );
+		shade += Trace(raySample, --_depth, o_output )/ pow( tmp2, (int)e );
 	}
 	c += shade;
 	return c;

@@ -12,7 +12,7 @@ public:
 	Camera( float _aperture, float _focalLength, float _fov );
     ~Camera();
 
-    void SampleLens( float _unitNumber );
+    void SampleLens( uint32_t _unitNumber );
     Vector RayDirection( float _dx, float _dy, const Vector& _lensSample ) const;
 	const std::vector<Vector>& LensSample() const { return m_lenSample; }
 	float ViewPlaneDis() const { return m_viewDistance; }

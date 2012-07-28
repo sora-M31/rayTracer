@@ -25,12 +25,13 @@ void Image::MakeChecker()
 	//01 11 01 11
 	//00 10 00 10
 	//01 11 01 11
-	uint32_t row,column,color;
+	uint32_t row,column;
+	float color;
 	for( row=0; row < m_height;++row)
 	{
 		for( column=0; column < m_width; ++column)
 		{
-			color=( ( (row & 0x08) == 0 ) ^ ( (column & 0x08) == 0 ) );
+			color=(float)( ( (row & 0x08) == 0 ) ^ ( (column & 0x08) == 0 ) );
             m_pixels[ row * m_width + column ] = Color ( color, color, color, 1 );
 		 }
 	}
@@ -55,10 +56,10 @@ Color Image::GetColorBilinear( const Vector2D& _texCoord ) const
 	Clamp( v, 0, 1 );
 	u *= m_width;
 	v *= m_height;
-	int ufloor = floor( u );
-	int uceiling = ufloor +1;
-	int vfloor = floor( v );
-	int vceiling = vfloor +1;
+	float ufloor = floor( u );
+	float uceiling = ufloor +1;
+	float vfloor = floor( v );
+	float vceiling = vfloor +1;
 
 	size_t index1 = (size_t) ( vfloor * m_width + ufloor);
 	size_t index2 = (size_t) ( vfloor * m_width + uceiling);
@@ -91,7 +92,7 @@ void Image::ReadFile(const std::string& _fileName)
     m_pixels = std::vector<Color>(0);
 	for( uint32_t i=0; i< size; i+=4 )
 	{
-		uint32_t index = i/4.0;
+		uint32_t index = (uint32_t)(i/4.0f);
 		if( index < m_width * m_height )
 		m_pixels.push_back ( Color ( data[i]/255.0, data[i+1]/255.0, data[i+2]/255.0, data[i+3]/255.0 ) );
 	}
