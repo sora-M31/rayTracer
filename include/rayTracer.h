@@ -10,8 +10,10 @@ namespace rayTracer
 class RayTracer
 {
 public:
-    RayTracer( Scene* _pScene =0 );
+    RayTracer( Scene* _pScene, uint32_t _width, uint32_t _height );
     ~RayTracer();
+	void CreateRays();
+	void CastRay( uint32_t _frame, float _exposure );
 	void SetScene( const Scene* _pScene ) { m_pScene = _pScene; }
 	void CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, float _exposure );
 	void SetAntialias( uint32_t _sampleNum ) { m_antialias = _sampleNum; }
@@ -29,6 +31,10 @@ private:
 	const Scene* m_pScene;
 	uint32_t m_antialias;
     uint32_t m_depthOfField;
+	std::vector<Ray> m_rayList;
+	uint32_t m_width;
+	uint32_t m_height;
+
 };//end of class
 }//end of namespace
 #endif //end of define

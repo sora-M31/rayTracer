@@ -34,6 +34,7 @@ public:
 	/// \return Color
 	Color GetColorBilinear( const Vector2D& _texCoord ) const;
     void Set( uint32_t _x, uint32_t _y, const Color& _value);
+	void Set( uint32_t _index, const Color& _color ) { assert( _index < m_pixels.size() ); m_pixels[_index] = _color;}
 
     uint32_t Width() const { return m_width; }
     uint32_t Height() const { return m_height; }

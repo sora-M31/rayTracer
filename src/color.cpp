@@ -1,6 +1,7 @@
 #include "color.h"
 #include <string.h>
 #include <iostream>
+#include <math.h>
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
@@ -109,5 +110,12 @@ void Color::Clamp()
         else if ( m_data[i] < 0 )
             m_data[i] = 0;
     }
+}
+//------------------------------------------------------------------------------
+void Color::SetExposure( float _t )
+{
+    m_data[0] = 1.0 - exp( m_data[0] * _t );
+    m_data[1] = 1.0 - exp( m_data[1] * _t );
+    m_data[2] = 1.0 - exp( m_data[2] * _t );
 }
 }//end of namespace

@@ -32,6 +32,7 @@ public:
     float a() const { return m_data[3]; }
     void PrintColor() const;
     void Clamp();
+    void SetExposure( float _t);
 
 private:
     float m_data[ 4 ];

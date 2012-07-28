@@ -85,7 +85,7 @@ void Image::ReadFile(const std::string& _fileName)
     imageFile.flip();
     m_width = imageFile.columns();
     m_height = imageFile.rows();
-    uint8_t data[ m_width * m_height * 4 ];
+    uint8_t* data = new uint8_t[ m_width * m_height * 4 ];
     imageFile.write( 0, 0, m_width, m_height, "RGBA", Magick::CharPixel, data );
 	uint32_t size = m_width * m_height * 4;
     m_pixels = std::vector<Color>(0);
@@ -95,6 +95,7 @@ void Image::ReadFile(const std::string& _fileName)
 		if( index < m_width * m_height )
 		m_pixels.push_back ( Color ( data[i]/255.0, data[i+1]/255.0, data[i+2]/255.0, data[i+3]/255.0 ) );
 	}
+	delete [] data;
 }
 //------------------------------------------------------------------------------
 bool Image::WriteTga ( const std::string& _fileName )

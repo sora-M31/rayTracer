@@ -6,21 +6,118 @@
 #include "image.h"
 #include "AABB.h"
 #include "areaLight.h"
-//#define TEST1
+#define TEST1
 #define EXPOSURE
 
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
-RayTracer::RayTracer( Scene* _pScene )
+RayTracer::RayTracer( Scene* _pScene, uint32_t _width, uint32_t _height )
 :m_pScene( _pScene ),
+ m_width( _width ),
+ m_height( _height ),
  m_antialias( 0 ),
  m_depthOfField( 0 )
 {
 }
 //------------------------------------------------------------------------------
+void RayTracer::CreateRays()
+{
+	float pixelSize = 1.0 / (float) m_width ;
+	float planeDis = m_pScene->GetCamera().ViewPlaneDis();
+
+	for (uint32_t y = 0; y < m_height; ++y)
+	{
+		for (uint32_t x = 0; x < m_width; ++x)
+		{
+			Color color(0,0,0,0);
+
+			float dx = ( x * pixelSize ) - 0.5f;
+			float dy = ( y * pixelSize ) - 0.5f;
+
+			if( m_antialias )
+			{
+				//get samples
+				std::vector< Vector2D > pixSamples(0);
+				//sample pixels
+				SampleSquare( pixSamples, m_antialias );
+				//get color from samples and average them
+				std::vector<Vector2D>::iterator iter = pixSamples.begin();
+				Color shade(0,0,0,0);
+				while( iter!= pixSamples.end() )
+				{
+					m_rayList.push_back( Ray( Vector(0,0,0,1), Vector(dx+iter->u()*pixelSize, dy+iter->v()*pixelSize,planeDis, 1), g_air ) );
+					++iter;
+				}
+			}
+			else if( m_depthOfField )
+			{
+				std::vector<Vector>::const_iterator iter = m_pScene->GetCamera().LensSample().begin();
+				while( iter != m_pScene->GetCamera().LensSample().end() )
+				{
+					Vector dir = m_pScene->GetCamera().RayDirection( dx, dy, *iter );
+					m_rayList.push_back( Ray( (*iter), dir, g_air) );
+					++iter;
+				}
+			}
+			else
+			{
+				//Material::kAir
+				m_rayList.push_back( Ray( Vector(0,0,0,1), Vector( dx, dy, planeDis, 0.0f ), g_air ) );
+			}
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
 RayTracer::~RayTracer()
 {}
+//------------------------------------------------------------------------------
+void RayTracer::CastRay( uint32_t _frame, float _exposure )
+{
+	Image img( m_width, m_height, Color(0,0,0,0) );
+	int depth =3;
+	std::ofstream debug_mel;
+#ifdef TEST1
+	debug_mel.open("output.mel");
+#endif
+	
+	uint32_t raySize = m_rayList.size();
+	uint32_t sampleSize(1);
+	if( m_antialias )
+	{
+		sampleSize = m_antialias * m_antialias;
+	}
+	else if( m_depthOfField )
+	{
+		sampleSize = m_depthOfField * m_depthOfField;
+	}
+	for( uint32_t i=0; i< raySize; ++i )//i+=sampleSize )
+	{
+#if 0
+		Color c(0,0,0,0);
+		//printf("% 3d%%", (int)(100*(float)i/(float)raySize) );
+		for( uint32_t j=0; j<sampleSize; ++j )
+		{
+			c+= Trace( m_rayList[i + j], depth, debug_mel );
+		}
+		//c/=(float)sampleSize;
+		std::cout<<i/sampleSize<<"\n";
+		img.Set( i/sampleSize , c );
+		//printf("\b\b\b\b");
+#endif
+		Color c(0,0,0,0);
+		c+= Trace( m_rayList[i], depth, debug_mel );
+		img.Set( i, c );
+	}
+#ifdef TEST1
+	debug_mel.close();
+#endif
+	char filename[256];
+	sprintf(filename, "img/img%04d.tga", _frame+1 );
+	img.WriteTga(filename  );
+}
+#if 1
 //------------------------------------------------------------------------------
 void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, float _exposure )
 {
@@ -100,6 +197,7 @@ void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, flo
 	sprintf(filename, "img/img%04d.tga", _frame+1 );
 	img.WriteTga(filename  );
 }
+#endif
 //------------------------------------------------------------------------------
 Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 {
@@ -199,7 +297,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 			}//end of light iteration
 		}
 	}//end of intersected
-#if 0
+#ifdef TEST1
 	else
 	{
 		//not intersected
