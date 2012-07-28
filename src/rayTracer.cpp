@@ -6,7 +6,7 @@
 #include "image.h"
 #include "AABB.h"
 #include "areaLight.h"
-#define TEST1
+//#define TEST1
 #define EXPOSURE
 
 namespace rayTracer
@@ -102,6 +102,7 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 			c+= Trace( m_rayList[i + j], depth, debug_mel );
 		}
 		c/=(float)sampleSize;
+		c.SetExposure( -2.5);
 		img.Set( i/sampleSize , c );
 		printf("\b\b\b\b");
 #endif
@@ -113,87 +114,6 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 	sprintf(filename, "img/img%04d.tga", _frame+1 );
 	img.WriteTga(filename  );
 }
-#if 0
-//------------------------------------------------------------------------------
-void RayTracer::CastRay( uint32_t _frame, uint32_t _width, uint32_t _height, float _exposure )
-{
-	Image img( _width, _height, Color(0,0,0,0) );
-	int depth =3;
-	std::ofstream debug_mel;
-//change name
-#ifdef TEST1
-	debug_mel.open("output.mel");
-#endif
-
-	// comment
-	//float imgWidth = 1;
-	//float imgHeight = _height/_width * 1;
-	float pixelSize = 1.0 / (float) img.Width();
-	float planeDis = m_pScene->GetCamera().ViewPlaneDis();
-
-	for (uint32_t y = 0; y < img.Height(); ++y)
-	{
-		std::cout<<"line"<<y<<"\n";
-		for (uint32_t x = 0; x < img.Width(); ++x)
-		{
-			//std::cout<<"pixel "<<y<<" "<<x<<"\n";
-			Color color(0,0,0,0);
-
-			float dx = ( x * pixelSize ) - 0.5f;
-			float dy = ( y * pixelSize ) - 0.5f;
-
-			if( m_antialias )
-			{
-				//get samples
-				std::vector< Vector2D > pixSamples(0);
-				//sample pixels
-				SampleSquare( pixSamples, m_antialias );
-				//get color from samples and average them
-				std::vector<Vector2D>::iterator iter = pixSamples.begin();
-				Color shade(0,0,0,0);
-				while( iter!= pixSamples.end() )
-				{
-					Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector(dx+iter->u()*pixelSize, dy+iter->v()*pixelSize,planeDis, 1), g_air );
-					shade += Trace( cameraSpaceRay, depth, debug_mel);
-					++iter;
-				}
-				shade/=pixSamples.size();
-				color += shade;
-			}
-			else if( m_depthOfField )
-			{
-				for( std::vector<Vector>::const_iterator iter = m_pScene->GetCamera().LensSample().begin();
-					 iter != m_pScene->GetCamera().LensSample().end();
-					 ++iter )
-				{
-					Vector dir = m_pScene->GetCamera().RayDirection( dx, dy, *iter );
-					Ray cameraSpaceRay = Ray( (*iter), dir, g_air);
-					color += Trace( cameraSpaceRay, depth, debug_mel);
-				}
-				color/= m_pScene->GetCamera().LensSample().size();
-			}
-			else
-			{
-				//Material::kAir
-				Ray cameraSpaceRay = Ray( Vector(0,0,0,1), Vector( dx, dy, planeDis, 0.0f ), g_air );
-				color = Trace( cameraSpaceRay, depth, debug_mel);
-			}
-			#ifdef EXPOSURE
-			color.r() = 1.0 - exp( color.r() * _exposure );
-			color.g() = 1.0 - exp( color.g() * _exposure );
-			color.b() = 1.0 - exp( color.b() * _exposure );
-			#endif
-			img.Set( x, y, color );
-		}
-	}
-#ifdef TEST1
-	debug_mel.close();
-#endif
-	char filename[256];
-	sprintf(filename, "img/img%04d.tga", _frame+1 );
-	img.WriteTga(filename  );
-}
-#endif
 //------------------------------------------------------------------------------
 Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 {
@@ -259,11 +179,6 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 					float nDotLight = intersection.Normal().Dot(iter->Direction() );
 					if ( shadowRayScene.Distance() >= *iter2 && nDotLight>=-0.0001 )
 					{
-						if( pMaterial->kd() )
-						{
-							//diffuse
-							//coefficient += pMaterial->kd();
-						}
 						//phong specular
 						float specular = 0;
 						if( pMaterial->ks() )
@@ -271,18 +186,15 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 							//antisotropical specular
 							if( pMaterial->IsAnisotropic() )
 							{
-								//coefficient += AnisotropicSpecular( intersection, _ray.Direction(), iter->Direction() ) * pMaterial->ks();
 								specular += AnisotropicSpecular( intersection, _ray.Direction(), iter->Direction() ) * pMaterial->ks();
 							}
 							else
 							{
-								//coefficient += Specular( intersection, _ray.Direction(), iter->Direction() ) * pMaterial->ks();
 								specular += Specular( intersection, _ray.Direction(), iter->Direction() ) * pMaterial->ks();
 							}
 						}
 						Clamp(nDotLight, 0,1);
 						//todo light and surface color
-						//shade += ( intersection.GetColor() * 0.5 +light->GetColor()*0.5 )* nDotLight * attenuation*coefficient ;
 						shade += (intersection.GetColor() * light->GetColor() )* nDotLight * attenuation * pMaterial->kd()
 								 + light->GetColor() * specular * nDotLight * attenuation ;
 					}
@@ -476,7 +388,6 @@ Color RayTracer::Fresnel( const Intersection& _intersection, const Ray& _ray, in
 		Color shade(0,0,0,1);
 		int depth = _depth -1;
 		shade=Trace( refractRay, depth, o_output )*kt + Trace( reflectRay, depth, o_output )*kr ;
-		//c+=shade;
 	return shade;
 }
 //------------------------------------------------------------------------------
@@ -494,26 +405,7 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 	Vector w( reflectDir );
 	Vector u,v;
 	w.GetBasis( u, v );
-
-#if 0
-	std::vector<Vector2D> samples;
-	SampleSquare(samples, 20 );
-	float glossiness(2);
-	Color c(0,0,0,1);
-	Color shade(0,0,0,0);
-	for( std::vector<Vector2D>::iterator iter = samples.begin(); iter!= samples.end(); ++iter )
-	{
-		//std::cout<<iter->v()<<" ";
-		Vector dir;
-		dir = w + ( ( iter->u()  - 0.5 ) * u + ( iter->v() - 0.5 ) * v ) * glossiness;
-		dir.Normalise();
-		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, dir, g_air );
-		shade += Trace(raySample, --_depth, o_output )/ dir.Dot( reflectDir );
-	}
-	c+= shade;
-#endif
 	
-#if 1
 	std::vector<Vector> dirSamples;
 	float e=100;
 	uint32_t sampleSize = 5;
@@ -535,8 +427,7 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 		Clamp(tmp2,0,1);
 		shade += Trace(raySample, --_depth, o_output )/ pow( tmp2, e );
 	}
-	c += shade;///dirSamples.size();
-#endif
+	c += shade;
 	return c;
 }
 }//end of namespace
