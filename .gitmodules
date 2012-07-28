@@ -1,0 +1,3 @@
+[submodule "site_scons/local"]
+	path = site_scons/local
+	url = https://github.com/dustyleary/scons-local.git
