@@ -18,8 +18,8 @@ void Sampling ( const Vector& _centre, float _width, float _height, float _gridN
 		{
 			//random()%100/100.0f - 0.5 is between -0.5 to 0.5
 			o_samples.push_back( leftBottom
-								 + _u * unitU * ( row + random()%50/50.0f - 0.5 )
-								 + _v * unitV * ( column + random()%50/50.0f - 0.5 ) ) ;
+								 + _u * unitU * ( row + rand()%50/50.0f - 0.5 )
+								 + _v * unitV * ( column + rand()%50/50.0f - 0.5 ) ) ;
 		}
 }
 //------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ void SampleHemisphere ( std::vector<Vector>& o_samples, uint32_t _num, uint32_t 
 	for( uint32_t i=0; i< sampleSize; ++i )
 	{
 		float phi = 2.0f * PI * squareSamples[i].u();
-		float theta = acos( pow( (1-squareSamples[i].v() ), 1.0/(_exp + 1) ) );
+		float theta = acos( powf( (1-squareSamples[i].v() ), 1.0/(_exp + 1) ) );
 		float sinTheta = sin (theta);
 		float cosTheta = cos (theta);
 		float sinPhi = sin (phi);
