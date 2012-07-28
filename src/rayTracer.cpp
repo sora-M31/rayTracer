@@ -94,7 +94,6 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 	}
 	for( uint32_t i=0; i< raySize; i+=sampleSize )
 	{
-#if 1
 		Color c(0,0,0,0);
 		printf("% 3d%%", (int)(100*(float)i/(float)raySize) );
 		for( uint32_t j=0; j<sampleSize; ++j )
@@ -102,10 +101,9 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 			c+= Trace( m_rayList[i + j], depth, debug_mel );
 		}
 		c/=(float)sampleSize;
-		c.SetExposure( -2.5);
+		c.SetExposure( _exposure);
 		img.Set( i/sampleSize , c );
 		printf("\b\b\b\b");
-#endif
 	}
 #ifdef TEST1
 	debug_mel.close();
