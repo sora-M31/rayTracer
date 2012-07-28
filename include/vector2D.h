@@ -7,6 +7,10 @@
 #include <math.h>
 //#include "util.h"
 
+#ifdef _MSC_VER
+    #include "stdint_msc.h"
+#endif
+
 namespace rayTracer
 {
 class Vector2D
