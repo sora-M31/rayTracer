@@ -2,10 +2,17 @@ Import( 'global_env' )
 
 env = global_env.Clone()
 
-env.AppendUnique( CPPPATH = ['#include', '\Program Files\ImageMagick-6.7.8-Q16\include'] )
+env.AppendUnique( CPPPATH = ['#include'] )
 env.Append(LIBS = ['CORE_RL_Magick++_'])
 env.AppendUnique( CPPDEFINES = [ env['PLATFORM'].upper() ] )
-env.Append(LIBPATH = "\Program Files\ImageMagick-6.7.8-Q16\lib")
+
+## TODO work out the image magick directory...
+if env['PLATFORM'] == 'win32' :
+    env.Append(LIBPATH = "C:\Program Files\ImageMagick-6.7.8-Q16\lib")
+    env.AppendUnique( CPPPATH = ['C:\Program Files\ImageMagick-6.7.8-Q16\include'] )
+else :
+    env.Append(LIBPATH = ['/opt/local/include/ImageMagick'])
+    env.AppendUnique( CPPPATH = ['/opt/local/include/ImageMagick'] )
 
 if GetOption('debug') :
     env.AppendUnique( CPPDEFINES = [ '_DEBUG' ] )
