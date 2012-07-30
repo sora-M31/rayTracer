@@ -22,6 +22,7 @@ Scene::Scene( const Camera& _camera )
 
 	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
     Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
+    //Material* glossy = new Material ( 0, 0, 0, 1, 0, 0, 0, 0 ,Color(0.5,0.5,0.5,1));
     Material* glossy = new Material ( 0, 0, 1, 0, 0, 0.2, 0, 0 ,Color(0.5,0.5,0.5,1));
     Material* diffuse = new Material ( 0, 1, 0, 0, 0, 0, 0, 0, Color(1,1,1,1));
     Material* pole = new Material ( 0.2, 0.7, 0.1, 0, 0, 0, 0, 0);
@@ -40,6 +41,7 @@ Scene::Scene( const Camera& _camera )
     //sphere1->SetMaterial( diffuse );
     cube->SetMaterial( diffuse );
     teapot->SetMaterial( glossy );
+    //teapot->SetMaterial( diffuse );
     plane->SetMaterial( floor );
     sky->SetMaterial( diffuse );
     cylinder->SetMaterial( pole );

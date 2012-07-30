@@ -64,14 +64,16 @@ AABB AABB::Update( const Matrix& _matrix ) const
     return AABB( min, max );
 }
 //------------------------------------------------------------------------------
-bool AABB::Intersect( const Ray& _ray, float& o_rayDis ) const
+bool AABB::Intersect( const Ray& _ray, float& o_min, float& o_max ) const
 {
+#if 0
     float rayDis = FLT_MAX;
     //test the min faces
+    float epsilon = -0.1;
     for( uint8_t i=0; i< 3; ++i )
     {
         float dis = ( m_min[i] - _ray.Origin()[i] )/ _ray.Direction()[i];
-        if ( dis < 0 )
+        if ( dis < epsilon )
             continue;
         //get the other two element in the vector
         float v1 = _ray.Origin()[ (i+1)%3 ] + _ray.Direction()[ (i+1)%3 ] * dis;
@@ -87,7 +89,7 @@ bool AABB::Intersect( const Ray& _ray, float& o_rayDis ) const
     for( uint8_t i=0; i< 3; ++i )
     {
         float dis = ( m_max[i] - _ray.Origin()[i] )/ _ray.Direction()[i];
-        if ( dis < 0 )
+        if ( dis < epsilon )
             continue;
         //get the other two element in the vector
         float v1 = _ray.Origin()[ (i+1)%3 ] + _ray.Direction()[ (i+1)%3 ] * dis;
@@ -99,7 +101,30 @@ bool AABB::Intersect( const Ray& _ray, float& o_rayDis ) const
         if( dis < rayDis )
             rayDis = dis;
     }
-    o_rayDis = rayDis;
+    //o_rayDis = rayDis;
+    o_min = rayDis;
     return rayDis < FLT_MAX;
+#endif
+#if 1
+    //float tmin(FLT_MAX);
+    //float tmax(-FLT_MAX);
+    float tmin(-FLT_MAX);
+    float tmax(FLT_MAX);
+    for( uint32_t i=0; i< 3; ++i )
+    {
+        //min = ray.o + dis *dir;
+        float disMin = ( m_min[i] - _ray.Origin()[i] )/ _ray.Direction()[i];
+        float disMax = ( m_max[i] - _ray.Origin()[i] )/ _ray.Direction()[i];
+        tmin = std::max( tmin, std::min(disMin, disMax) );
+        tmax = std::min( tmax, std::max(disMin, disMax) );
+    }
+    if( tmax >= tmin )
+    {
+        o_min = tmin;
+        o_max = tmax;
+        return true;
+    }
+    return false;
+#endif
 }
 }//end of space

@@ -26,7 +26,7 @@ public:
     /// \param _ray
     /// \param o_rayDis distance from ray origin to intersection
     /// \return intersected or not
-    bool Intersect( const Ray& _ray, float& o_rayDis ) const;
+    bool Intersect( const Ray& _ray, float& o_min, float& o_max ) const;
 
     void SetMin(uint32_t _index, float _value) { m_min[_index] = _value; }
     void SetMax(uint32_t _index, float _value) { m_max[_index] = _value; }

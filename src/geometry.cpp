@@ -225,6 +225,12 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 		//when calculating refraction for the ray inside object
 		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, g_air );
 	}
+#if 0
+	else if ( m_pMaterial->kf() < 0.01 && _ray.Direction().Dot( averageNormal ) >0 )
+	{
+		return false;
+	}
+#endif
 	else
 		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, m_pMaterial );
 	return true;
