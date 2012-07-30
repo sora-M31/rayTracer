@@ -1,3 +1,5 @@
+import sys
+
 Import( 'global_env' )
 
 env = global_env.Clone()
@@ -6,13 +8,15 @@ env.AppendUnique( CPPPATH = ['#include'] )
 env.Append(LIBS = ['CORE_RL_Magick++_'])
 env.AppendUnique( CPPDEFINES = [ env['PLATFORM'].upper() ] )
 
-## TODO work out the image magick directory...
-if env['PLATFORM'] == 'win32' :
-    env.Append(LIBPATH = "C:\Program Files\ImageMagick-6.7.8-Q16\lib")
-    env.AppendUnique( CPPPATH = ['C:\Program Files\ImageMagick-6.7.8-Q16\include'] )
-else :
+if env['PLATFORM'] != 'win32' :
     env.Append(LIBPATH = ['/opt/local/include/ImageMagick'])
     env.AppendUnique( CPPPATH = ['/opt/local/include/ImageMagick'] )
+elif GetOption('magick++') :
+    env.Append(LIBPATH = GetOption('magick++') + "\lib")
+    env.AppendUnique( CPPPATH = [GetOption('magick++')+'\include', GetOption('magick++')+'\lib'] )
+else :
+    print >> sys.stderr, '!! Please specify the location of Magick++ using `--magick++=PATH`.'
+    Exit(1)
 
 if GetOption('debug') :
     env.AppendUnique( CPPDEFINES = [ '_DEBUG' ] )
@@ -38,6 +42,7 @@ else :
             '/wd4996', # disable depricated function warning
             '/W2', # warning level 2
             '/WX', # treat warnings as errors
+            '/WL',
             '/fp:fast', # fast float point optimisation
             '/MT', # multithreaded static link
             '/EHsc' # Catch C++ exceptions only

@@ -56,8 +56,18 @@
     goto quit
 )
 
+@if not defined MagickPath @(
+    for /f "delims=" %%I in ('dir /b "%ProgramFiles%\ImageMagick-*"') do @(
+        for %%J in ("%ProgramFiles%\%%~I") do @set MagickPath=%%~sfJ
+    )
+)
+
 @call:log "python %SconsPath%\scons.py %*"
-@"%PythonPath%\python.exe" "%SconsPath%\scons.py" %*
+@if defined MagickPath @(
+  "%PythonPath%\python.exe" "%SconsPath%\scons.py" --magick++="%MagickPath%" %*
+) else @(
+  "%PythonPath%\python.exe" "%SconsPath%\scons.py" %*
+)
 
 :quit
 @popd

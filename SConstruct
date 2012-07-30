@@ -7,6 +7,10 @@ AddOption("--release",
           action="store_false", dest="debug", default=False,
           help="Compile without debug information and warnings [default]")
 
+AddOption("--magick++",
+          action='store', dest='magick++', type='string', nargs=1,
+          help="Define the directory containing Magick++")
+
 env = Environment( ENV = os.environ )
 
 global_env = env
