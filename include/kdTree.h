@@ -114,7 +114,7 @@ bool Node<T>::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 		//parallel
 		if( fabs(_ray.Direction()[m_axis]) < epsilon )
 		{
-			if ( fabs(originSplitDis < epsilon ) )
+			if ( fabs(originSplitDis) < epsilon )
 			{
 				bool result = near->Intersect ( _ray, o_intersection );
 				if( !result )
@@ -147,6 +147,8 @@ bool Node<T>::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 			return near->Intersect( _ray, o_intersection );
 		}
 	}
+
+	return false;
 }
 //------------------------------------------------------------------------------
 template <class T>
@@ -258,7 +260,7 @@ void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
 {
     if( (_depth < 30) && (_node->m_list.size() > m_leastObjNum) )
     {
-        float axis = _depth%3;
+        uint32_t axis = _depth%3;
 		_node->m_axis = axis;
         //get the centre of the box as median
         _node->m_split = ( _node->m_box.Min()[axis] + _node->m_box.Max()[axis] ) /2.0;
