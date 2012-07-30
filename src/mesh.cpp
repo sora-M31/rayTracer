@@ -16,7 +16,7 @@ void Mesh::SetMaterial( const Material* _pMaterial )
 }
 //------------------------------------------------------------------------------
 Mesh::Mesh ( const Vector& _pos, const std::string& _fileName, Material* _pMaterial )
-: m_tree(10)
+: m_tree(6)
 {
     ObjLoader obj;
 	obj.ParseFile (_fileName);

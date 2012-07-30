@@ -22,6 +22,7 @@ Scene::Scene( const Camera& _camera )
 
 	//ka, kd, ks, km, kf, kg, index, attenuation, color, aniso
     Material* mirror = new Material ( 0, 0, 0, 1, 0, 0, 0, 0);
+    //Material* glossy = new Material ( 0, 0, 0, 1, 0, 0, 0, 0 ,Color(0.5,0.5,0.5,1));
     Material* glossy = new Material ( 0, 0, 1, 0, 0, 0.2, 0, 0 ,Color(0.5,0.5,0.5,1));
     Material* diffuse = new Material ( 0, 1, 0, 0, 0, 0, 0, 0, Color(1,1,1,1));
     Material* pole = new Material ( 0.2, 0.7, 0.1, 0, 0, 0, 0, 0);
@@ -40,6 +41,7 @@ Scene::Scene( const Camera& _camera )
     //sphere1->SetMaterial( diffuse );
     cube->SetMaterial( diffuse );
     teapot->SetMaterial( glossy );
+    //teapot->SetMaterial( diffuse );
     plane->SetMaterial( floor );
     sky->SetMaterial( diffuse );
     cylinder->SetMaterial( pole );
@@ -101,9 +103,9 @@ void Scene::Update( uint32_t _time)
 {
 	//m_camera.Translate( Vector( 0,5,-7,1) );
 	m_camera.Translate( Vector( -1,3,-7,1) );
-	m_camera.Rotate( 2.0 * PI/144.0, Vector(1,0,0,0 ));
+	m_camera.Rotate( -0.05, Vector(1,0,0,0 ));
 	m_stack.push_back ( m_camera.LocalTransformation().Inverse() );
-	m_stack.push_back ( Quaternion( 0.1*_time, Vector( 0,1,0,0 ) ).AsMatrix() );
+	m_stack.push_back ( Quaternion( 2.0*PI/144.0*_time, Vector( 0,1,0,0 ) ).AsMatrix() );
 #if 1
     uint32_t size = m_shapes.size();
     for( uint32_t i = 0; i < size; ++i )

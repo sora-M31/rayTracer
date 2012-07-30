@@ -7,7 +7,7 @@
 #include "AABB.h"
 #include "areaLight.h"
 //#define TEST1
-#define EXPOSURE
+//#define EXPOSURE
 
 namespace rayTracer
 {
@@ -120,6 +120,13 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 	if ( _depth < 0 )
 		return c;
 
+#if 0
+	AABB test( 0,-2,3, 1, -1, 5 );
+	float min, max;
+	if( test.Intersect( _ray, min, max ) )
+		c = Color ( min/15.0, 0,0,1);
+#endif
+#if 1
 	if ( intersection.Intersected() )
 	{
 	#ifdef TEST1
@@ -133,6 +140,8 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 			   <<intersection.Position().z()
 			   <<";\n";
 	#endif
+#endif
+#if 1
 		c = Color( 0,0,0,1);
 		const Material* pMaterial = intersection.GetMaterial();
 
@@ -149,7 +158,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 		}
 		else if( pMaterial->km() - 0 > EPSILON )
 		{
-			Ray reflectRay( intersection.Position() + intersection.Normal(), MirrorReflection( intersection, _ray.Direction() ), intersection.GetMaterial() );
+			Ray reflectRay( intersection.Position() + intersection.Normal() * EPSILON, MirrorReflection( intersection, _ray.Direction() ), intersection.GetMaterial() );
 			c += Trace( reflectRay, --_depth, o_output ) ;
 		}
 		if( pMaterial->kg() )
@@ -175,7 +184,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 					//loop the shadow ray
 					Intersection shadowRayScene = IntersectScene( *iter );
 					float nDotLight = intersection.Normal().Dot(iter->Direction() );
-					if ( shadowRayScene.Distance() >= *iter2 && nDotLight>=-0.0001 )
+					if ( shadowRayScene.Distance() > *iter2)
 					{
 						//phong specular
 						float specular = 0;
@@ -203,6 +212,7 @@ Color RayTracer::Trace( const Ray& _ray, int _depth, std::ofstream& o_output )
 			}//end of light iteration
 		}
 	}//end of intersected
+#endif
 #ifdef TEST1
 	else
 	{

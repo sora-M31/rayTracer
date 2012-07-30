@@ -14,17 +14,6 @@ class Vector2D;
 #define EPSILON 0.00001
 #define PI  3.14159265
 static Material* const g_air = new Material( 0, 0, 0, 0, 1, 0,AIR_INDEX,0 );
-// --------------------------------------------------------------------------
-/// \brief Sampling a rectangle
-/// \param centre
-/// \param width
-/// \param height
-/// \param gridNumberU
-/// \param gridNumberV
-/// \param u unit vector (axis)
-/// \param v unit vector (axis)
-/// \param samples
-void Sampling ( const Vector& _centre, float _width, float _height, float _gridNumberU, float _gridNumberV, const Vector& _u, const Vector& _v, std::list<Vector>& o_samples);
 void SampleSquare( std::vector<Vector2D>& o_samples, uint32_t _num );
 void SampleHemisphere ( std::vector<Vector>& o_samples, uint32_t _num, uint32_t _exp );
 // --------------------------------------------------------------------------
