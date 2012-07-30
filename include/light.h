@@ -23,7 +23,7 @@ public:
 	Light() {}
 	~Light() {}
 
-	const float& Intensity () const { return m_intensity; }
+	const float& GetIntensity() const { return m_intensity; }
 	const Color& GetColor() const { return m_color; }
 	void SetColor( const Color& _color ) { m_color = _color; }
 	virtual void GetShadowRay ( const Intersection& _intersection, RayList& o_shadowRays, DisList& o_disList, float& o_attenuation ) const = 0;

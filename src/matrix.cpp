@@ -1,6 +1,11 @@
 #include "matrix.h"
-#include <stdint.h>
 #include <assert.h>
+
+#ifdef _MSC_VER
+    #include "stdint_msc.h"
+#else
+    #include <stdint.h>
+#endif
 
 namespace rayTracer
 {

@@ -38,7 +38,7 @@ Mesh::Mesh ( const Vector& _pos, const std::string& _fileName, Material* _pMater
 										   obj.GetTextureArray()[i+1],
 										   obj.GetTextureArray()[i+2],
 										   m_pMaterial,
-										   i/3.0) );
+										   (uint32_t)(i/3.0)) );
 	}
 	m_tree.CreateBBox();
 }

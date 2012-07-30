@@ -1,14 +1,32 @@
-.sconsign.dblite
-src/*.o
+# output
 bin/*
-test
-include/template.h
-src/template.cpp
 *.tga
+
+# maya files
 output.mel
-resources/*.mtl
 resources/workspace.mel
-tmp/
 resources/*.ma
+resources/*.mtl
 .mayaSwatches/
 
+# backups
+*.bk
+*.orig
+
+# temp files
+.sconsign.dblite
+src/*.o
+include/template.h
+src/template.cpp
+test
+tmp/
+
+# Windows MSVC files
+src/*.obj
+*.idb
+*.pdb
+*.vcproj.*
+*.suo
+*.ncb
+Debug
+Release

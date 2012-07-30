@@ -19,7 +19,7 @@ Camera::Camera( float _aperture, float _focalLength, float _fov )
 Camera::~Camera()
 {}
 //------------------------------------------------------------------------------
-void Camera::SampleLens( float _unitNumber )
+void Camera::SampleLens( uint32_t _unitNumber )
 {
 		std::vector<Vector2D> samples(0);
 		SampleSquare( samples, _unitNumber);

@@ -2,6 +2,11 @@
 #include <string.h>
 #include <iostream>
 #include <math.h>
+
+#ifdef _MSC_VER
+    #include "stdint_msc.h"
+#endif
+
 namespace rayTracer
 {
 //------------------------------------------------------------------------------

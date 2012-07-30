@@ -55,7 +55,7 @@ void SampleHemisphere ( std::vector<Vector>& o_samples, uint32_t _num, uint32_t 
 	for( uint32_t i=0; i< sampleSize; ++i )
 	{
 		float phi = 2.0f * PI * squareSamples[i].u();
-		float theta = acos( pow( (1-squareSamples[i].v() ), 1.0/(_exp + 1) ) );
+		float theta = acos( powf( (1-squareSamples[i].v() ), 1.0/(_exp + 1) ) );
 		float sinTheta = sin (theta);
 		float cosTheta = cos (theta);
 		float sinPhi = sin (phi);

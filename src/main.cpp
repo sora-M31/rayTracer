@@ -6,6 +6,12 @@
 #include <time.h>
 int main( int argc, const char* argv[] )
 {
+	if (argc < 5)
+	{
+		fprintf(stderr, "bad arguments expected:\n  rayTracer <width> <height> <startFrame> <endFrame>\n");
+		return EXIT_FAILURE;
+	}
+
 	int width = atoi(argv[1]);
 	int height = atoi(argv[2]);
 	int start = atoi(argv[3]);

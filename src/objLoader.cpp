@@ -137,13 +137,13 @@ void ObjLoader::Serialize()
         for( uint32_t i=0; i<size; i+=3)
         {
             //vertex
-            uint32_t vertexIndex = ( m_faceBuffer[i] -1)*3;
+            uint32_t vertexIndex = (uint32_t)(( m_faceBuffer[i] -1)*3);
             m_vertexArray.push_back( Vector(m_vertexBuffer[vertexIndex], m_vertexBuffer[vertexIndex+1], m_vertexBuffer[vertexIndex+2], 1.0f));
             //normal
-            uint32_t normalIndex = ( m_faceBuffer[i+2]-1)*3;
+            uint32_t normalIndex = (uint32_t)(( m_faceBuffer[i+2]-1)*3);
             m_normalArray.push_back( Vector(m_normalBuffer[normalIndex], m_normalBuffer[normalIndex+1], m_normalBuffer[normalIndex+2], 0.0f));
             //texture
-            uint32_t textureIndex = ( m_faceBuffer[i+1]-1)*2;
+            uint32_t textureIndex = (uint32_t)(( m_faceBuffer[i+1]-1)*2);
             //std::cout<<textureIndex<<" textureIndex\n";
             m_textureArray.push_back( Vector2D(m_textureBuffer[textureIndex], m_textureBuffer[textureIndex+1]) );
         }
@@ -155,14 +155,14 @@ void ObjLoader::Serialize()
         for( uint32_t i=0; i<size; i+=2)
         {
             //vertex
-            uint32_t vertexIndex = ( m_faceBuffer[i] -1)*3;
+            uint32_t vertexIndex = (uint32_t)(( m_faceBuffer[i] -1)*3);
             //std::cout<<m_faceBuffer[i] -1<<" ";
 //            std::cout<<vertexIndex<<" ";
 //            std::cout<<vertexIndex+1<<" ";
 //            std::cout<<vertexIndex+2<<"\n";
             m_vertexArray.push_back( Vector(m_vertexBuffer[vertexIndex], m_vertexBuffer[vertexIndex+1], m_vertexBuffer[vertexIndex+2], 1.0f));
             //normal
-            uint32_t normalIndex = (m_faceBuffer[i+1]-1)*3;
+            uint32_t normalIndex = (uint32_t)(( m_faceBuffer[i+1]-1)*3);
             m_normalArray.push_back( Vector(m_normalBuffer[normalIndex], m_normalBuffer[normalIndex+1], m_normalBuffer[normalIndex+2], 0.0f));
         }
     }

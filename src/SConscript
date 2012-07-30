@@ -1,11 +1,53 @@
+import sys
+
 Import( 'global_env' )
 
 env = global_env.Clone()
 
-env.Append(LIBPATH = ['/opt/local/include/ImageMagick'])
-env.Append(LIBS = ['Magick++'])
-env.AppendUnique( CPPPATH = ['#include', '/opt/local/include/ImageMagick'] )
-env.Append ( CCFLAGS = '-O3' )
+env.AppendUnique( CPPPATH = ['#include'] )
+env.Append(LIBS = ['CORE_RL_Magick++_'])
+env.AppendUnique( CPPDEFINES = [ env['PLATFORM'].upper() ] )
+
+if env['PLATFORM'] != 'win32' :
+    env.Append(LIBPATH = ['/opt/local/include/ImageMagick'])
+    env.AppendUnique( CPPPATH = ['/opt/local/include/ImageMagick'] )
+elif GetOption('magick++') :
+    env.Append(LIBPATH = GetOption('magick++') + "\lib")
+    env.AppendUnique( CPPPATH = [GetOption('magick++')+'\include', GetOption('magick++')+'\lib'] )
+else :
+    print >> sys.stderr, '!! Please specify the location of Magick++ using `--magick++=PATH`.'
+    Exit(1)
+
+if GetOption('debug') :
+    env.AppendUnique( CPPDEFINES = [ '_DEBUG' ] )
+    if 'g++' in env['TOOLS'] :
+        env.AppendUnique( CCFLAGS = [ '-g', '-Wall', '-Wextra' ] )
+    elif 'msvc' in env['TOOLS'] :
+        env.AppendUnique( CCFLAGS = [
+            '/Od', # disable optimisation
+            '/Gm', # enable minimal rebuild
+            '/RTC1', # enable stack frame and initialisation runtime error checking
+            '/W3', # warning level 3
+            '/Zi', # generate complete debug information
+            '/MTd', # multithreaded static link (debug)
+            '/EHsc' # Catch C++ exceptions only
+            ] )
+else :
+    env.AppendUnique( CPPDEFINES = [ 'NDEBUG' ] )
+    if 'g++' in env['TOOLS'] :
+        env.AppendUnique( CCFLAGS = [ '-O3', '-funroll-loops', '-ffast-math' ] )
+    elif 'msvc' in env['TOOLS'] :
+        env.AppendUnique( CCFLAGS = [
+            '/Ox', # maximum optimisation
+            '/wd4996', # disable depricated function warning
+            '/W2', # warning level 2
+            '/WX', # treat warnings as errors
+            '/WL',
+            '/fp:fast', # fast float point optimisation
+            '/MT', # multithreaded static link
+            '/EHsc' # Catch C++ exceptions only
+            ] )
+
 
 src_files = Split( 'util.cpp vector.cpp vector2D.cpp matrix.cpp quaternion.cpp color.cpp image.cpp ray.cpp intersection.cpp pointLight.cpp areaLight.cpp camera.cpp material.cpp objLoader.cpp mesh.cpp geometry.cpp AABB.cpp scene.cpp rayTracer.cpp main.cpp')
 
