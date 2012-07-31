@@ -74,47 +74,49 @@ bool Node<T>::Intersect( const Ray& _ray, Intersection& o_intersection ) const
     //if node is not a leaf node
     else
     {
-		float tmin, tmax;
+		float tMin, tMax;
 		//not intersected with bounding box
-		if( !m_box.Intersect( _ray, tmin, tmax ) )
+		if( !m_box.Intersect( _ray, tMin, tMax ) )
 		{
 			return false;
 		}
-		float epsilon = 0.0001;
+		float rayDir = _ray.Direction()[m_axis];
+		float tSplit = (m_split - _ray.Origin()[m_axis])/_ray.Direction()[m_axis] ;
 
 		Node<T>* near(0);
 		Node<T>* far(0);
-		float originSplitDis = _ray.Origin()[m_axis] - m_split;
-		//ray origin lie on spliting plane
-		if ( fabs(originSplitDis) < epsilon )
-		{
-			if ( _ray.Direction()[m_axis] > 0 )
-			{
-				near = m_rightNode;
-				far = m_leftNode;
-			}
-			else if ( _ray.Direction()[m_axis] < 0 )
-			{
-				near = m_leftNode;
-				far = m_rightNode;
-			}
-		}
-		//ray origin on right of splitting plane
-		else if  ( originSplitDis > 0 )
-		{
-			near = m_rightNode;
-			far = m_leftNode;
-		}
-		//ray origin on left of splitting plane
-		else if  ( originSplitDis < 0 )
+#if 1
+		//origin on "left " of m_splitPos
+		if( _ray.Origin()[m_axis] < m_split )
 		{
 			near = m_leftNode;
 			far = m_rightNode;
 		}
-		//parallel
-		if( fabs(_ray.Direction()[m_axis]) < epsilon )
+		//origin on "right" of m_splitPos
+		else if ( _ray.Origin()[m_axis] > m_split )
 		{
-			if ( fabs(originSplitDis < epsilon ) )
+			near = m_rightNode;
+			far = m_leftNode;
+		}
+		//origin on the spliting plane
+		else
+		{
+			if( rayDir <= 0)
+			{
+				near = m_leftNode;
+				far = m_rightNode;
+			}
+			else
+			{
+				near = m_rightNode;
+				far = m_leftNode;
+			}
+		}
+
+		//split is infinit
+		if( rayDir == 0 )
+		{
+			if ( m_split == _ray.Direction()[m_axis] )
 			{
 				bool result = near->Intersect ( _ray, o_intersection );
 				if( !result )
@@ -126,26 +128,79 @@ bool Node<T>::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 				return near->Intersect ( _ray, o_intersection );
 			}
 		}
-		float tsplit = ( m_split - _ray.Origin()[m_axis] )/ _ray.Direction()[m_axis];
-		if ( tsplit > tmin && tsplit < tmax )
+		else if ( tSplit > tMax )
+		{
+			return near->Intersect( _ray, o_intersection );
+		}
+		else if ( tSplit >= tMin && tSplit <= tMax )
 		{
 			bool result = near->Intersect ( _ray, o_intersection );
 			if( !result )
 				result = far->Intersect ( _ray, o_intersection );
 			return result;
 		}
-		else if ( tsplit > tmax )
-		{
-			return near->Intersect( _ray, o_intersection );
-		}
-		else if ( tsplit>0 && tsplit < tmin )
+		else if ( tSplit>0 &&tSplit < tMin )
 		{
 			return far->Intersect( _ray, o_intersection );
 		}
-		else if ( tsplit<=0 && tsplit < tmin )
+		else if( tSplit <= 0)
 		{
 			return near->Intersect( _ray, o_intersection );
 		}
+#endif
+#if 0
+		float epsilon = 0.0001;
+		float originSplitDis = _ray.Origin()[m_axis] - m_split;
+		//ray origin lie on spliting plane
+		//ray origin on right of splitting plane
+		if  ( originSplitDis > 0 )
+		{
+			near = m_rightNode;
+			far = m_leftNode;
+		}
+		//ray origin on left of splitting plane
+		else if  ( originSplitDis <= 0 )
+		{
+			near = m_leftNode;
+			far = m_rightNode;
+		}
+		//parallel
+		if( fabs(_ray.Direction()[m_axis]) < epsilon )
+		{
+#if 0
+			if ( fabs(originSplitDis < epsilon ) )
+			{
+				bool result = near->Intersect ( _ray, o_intersection );
+				if( !result )
+					result = far->Intersect ( _ray, o_intersection );
+				return result;
+			}
+			else
+			{
+				return near->Intersect ( _ray, o_intersection );
+			}
+#endif
+		}
+		if ( tSplit > tMin && tSplit < tMax )
+		{
+			bool result = near->Intersect ( _ray, o_intersection );
+			if( !result )
+				result = far->Intersect ( _ray, o_intersection );
+			return result;
+		}
+		else if ( tSplit > tMax )
+		{
+			return near->Intersect( _ray, o_intersection );
+		}
+		else if ( tSplit>0 && tSplit < tMin )
+		{
+			return far->Intersect( _ray, o_intersection );
+		}
+		else if ( tSplit<=0 && tSplit < tMin )
+		{
+			return near->Intersect( _ray, o_intersection );
+		}
+#endif
 	}
 }
 //------------------------------------------------------------------------------
@@ -256,7 +311,7 @@ void KdTree<T>::Transform(const Matrix& _transform)
 template <class T>
 void KdTree<T>::BuildTree( Node<T>* _node, uint32_t _depth)
 {
-    if( (_depth < 30) && (_node->m_list.size() > m_leastObjNum) )
+    if( (_depth < 20) && (_node->m_list.size() > m_leastObjNum) )
     {
         float axis = _depth%3;
 		_node->m_axis = axis;

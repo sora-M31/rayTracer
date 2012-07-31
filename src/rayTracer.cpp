@@ -30,8 +30,6 @@ void RayTracer::CreateRays()
 	{
 		for (uint32_t x = 0; x < m_width; ++x)
 		{
-			Color color(0,0,0,0);
-
 			float dx = ( x * pixelSize ) - 0.5f;
 			float dy = ( y * pixelSize ) - 0.5f;
 
@@ -43,7 +41,6 @@ void RayTracer::CreateRays()
 				SampleSquare( pixSamples, m_antialias );
 				//get color from samples and average them
 				std::vector<Vector2D>::iterator iter = pixSamples.begin();
-				Color shade(0,0,0,0);
 				while( iter!= pixSamples.end() )
 				{
 					m_rayList.push_back( Ray( Vector(0,0,0,1), Vector(dx+iter->u()*pixelSize, dy+iter->v()*pixelSize,planeDis, 1), g_air ) );
@@ -416,7 +413,7 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 	
 	std::vector<Vector> dirSamples;
 	float e=100;
-	uint32_t sampleSize = 5;
+	uint32_t sampleSize = 7;
 	SampleHemisphere( dirSamples, sampleSize, e );
 	Color c(0,0,0,1);
 	Color shade( 0,0,0,1);

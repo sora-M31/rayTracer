@@ -70,9 +70,9 @@ Color Image::GetColorBilinear( const Vector2D& _texCoord ) const
 	float weight3 = ( uceiling - u ) * ( v +1 - vceiling );
 	float weight4 = ( u + 1 - uceiling ) * ( v +1 - vceiling );
 	if ( index1 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
-	if ( index2 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
-	if ( index3 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
-	if ( index4 >= m_pixels.size() ) index1 = m_pixels.size() - 1;
+	if ( index2 >= m_pixels.size() ) index2 = m_pixels.size() - 1;
+	if ( index3 >= m_pixels.size() ) index3 = m_pixels.size() - 1;
+	if ( index4 >= m_pixels.size() ) index4 = m_pixels.size() - 1;
 	Color c = m_pixels[index1] * weight1 + m_pixels[index2] * weight2 + m_pixels[index3] * weight3 + m_pixels[index4] * weight4;
 	return c;
 }
