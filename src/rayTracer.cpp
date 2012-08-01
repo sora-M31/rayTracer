@@ -424,13 +424,14 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 			dir = -u * iter->x() - v * iter->z() + w* iter->y();
 		else
 			dir = u * iter->x() + v * iter->z() + w* iter->y();
-		Ray raySample( _intersection.Position() + _intersection.Normal() * EPSILON, dir, g_air );
+		Normalise(dir);
+		Ray raySample( _intersection.Position() + dir * 0.001, dir, g_air );
 		//radiance
 		float tmp1 = _intersection.Normal().Dot( dir );
 		float tmp2 = reflectDir.Dot( dir );
 		Clamp(tmp1,0,1);
 		Clamp(tmp2,0,1);
-		shade += Trace(raySample, --_depth, o_output )/ pow( tmp2, e );
+		shade += ( Trace(raySample, --_depth, o_output )/ pow( tmp2, e ) );
 	}
 	c += shade;
 	return c;
