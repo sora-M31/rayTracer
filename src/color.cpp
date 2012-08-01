@@ -42,7 +42,7 @@ Color Color::operator * ( float _other ) const
     return Color( m_data[0] * _other,
                   m_data[1] * _other,
                   m_data[2] * _other,
-                  m_data[3] * _other );
+                  m_data[3]  );
 }
 //------------------------------------------------------------------------------
 Color Color::operator * ( const Color& _other ) const
@@ -59,7 +59,7 @@ Color Color::operator / ( float _other ) const
     return Color( m_data[0] / _other,
                   m_data[1] / _other,
                   m_data[2] / _other,
-                  m_data[3] / _other );
+                  m_data[3]  );
 }
 //------------------------------------------------------------------------------
 Color& Color::operator = ( const Color& _other )
@@ -85,7 +85,6 @@ Color& Color::operator *= ( float _other )
     m_data[0] *= _other;
     m_data[1] *= _other;
     m_data[2] *= _other;
-    m_data[3] *= _other;
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -94,7 +93,6 @@ Color& Color::operator /= ( float _other )
     m_data[0] /= _other;
     m_data[1] /= _other;
     m_data[2] /= _other;
-    m_data[3] /= _other;
     return *this;
 }
 //------------------------------------------------------------------------------
