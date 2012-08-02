@@ -112,9 +112,14 @@ bool AABB::Intersect( const Ray& _ray, float& o_min, float& o_max ) const
     float tmax(FLT_MAX);
     for( uint32_t i=0; i< 3; ++i )
     {
+        float disMin( -FLT_MAX );
+        float disMax( FLT_MAX );
         //min = ray.o + dis *dir;
-        float disMin = ( m_min[i] - _ray.Origin()[i] )/ _ray.Direction()[i];
-        float disMax = ( m_max[i] - _ray.Origin()[i] )/ _ray.Direction()[i];
+        if( ! RealCompare( _ray.Direction()[i], 0, 0.000001 ) )
+        {
+            disMin = ( m_min[i] - _ray.Origin()[i] )/ _ray.Direction()[i];
+            disMax = ( m_max[i] - _ray.Origin()[i] )/ _ray.Direction()[i];
+        }
         tmin = std::max( tmin, std::min(disMin, disMax) );
         tmax = std::min( tmax, std::max(disMin, disMax) );
     }

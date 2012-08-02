@@ -45,7 +45,7 @@ bool Node<T>::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 			if (  m_list[i]->Intersect ( _ray, tmp )
 				&& tmp.Distance() < intersection.Distance()  )
 			{
-					intersection = tmp;
+				intersection = tmp;
 			}
 		}
 		//if there is any return the closest intersection that is in the box
@@ -56,20 +56,17 @@ bool Node<T>::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 
 		Vector dis1 = intersection.Position() - m_box.Min();
 		Vector dis2 = m_box.Max() - intersection.Position();
-		float epsilon = 0;
-		if(    dis1.x() > epsilon
-			&& dis1.y() > epsilon
-			&& dis1.z() > epsilon
-			&& dis2.x() > epsilon
-			&& dis2.y() > epsilon
-			&& dis2.z() > epsilon
-			)
+		if( intersection.Position().x() >= m_box.Min().x() && intersection.Position().x() <= m_box.Max().x() 
+		 && intersection.Position().y() >= m_box.Min().y() && intersection.Position().y() <= m_box.Max().y() 
+		 && intersection.Position().z() >= m_box.Min().z() && intersection.Position().z() <= m_box.Max().z() )
 		{
 			o_intersection = intersection;
 			return true;
 		}
 		else
+		{
 			return false;
+		}
     }
     //if node is not a leaf node
     else
@@ -86,8 +83,22 @@ bool Node<T>::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 		Node<T>* near(0);
 		Node<T>* far(0);
 #if 1
+		//origin on the spliting plane
+		if( RealCompare( _ray.Origin()[m_axis], m_split, 0.000001) )
+		{
+			if( rayDir <= 0)
+			{
+				near = m_leftNode;
+				far = m_rightNode;
+			}
+			else if( rayDir > 0)
+			{
+				near = m_rightNode;
+				far = m_leftNode;
+			}
+		}
 		//origin on "left " of m_splitPos
-		if( _ray.Origin()[m_axis] < m_split )
+		else if( _ray.Origin()[m_axis] < m_split )
 		{
 			near = m_leftNode;
 			far = m_rightNode;
@@ -98,34 +109,28 @@ bool Node<T>::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 			near = m_rightNode;
 			far = m_leftNode;
 		}
-		//origin on the spliting plane
-		else
-		{
-			if( rayDir <= 0)
-			{
-				near = m_leftNode;
-				far = m_rightNode;
-			}
-			else
-			{
-				near = m_rightNode;
-				far = m_leftNode;
-			}
-		}
 
 		//split is infinit
-		if( rayDir == 0 )
+		if( RealCompare( rayDir, 0, 0.00001) )
 		{
-			if ( m_split == _ray.Direction()[m_axis] )
+			if( RealCompare( _ray.Origin()[m_axis], m_split, 0.000001))
 			{
-				bool result = near->Intersect ( _ray, o_intersection );
-				if( !result )
-					result = far->Intersect ( _ray, o_intersection );
-				return result;
+				Intersection left, right;
+				bool result1 = m_leftNode->Intersect ( _ray, left );
+				bool result2 = m_rightNode->Intersect ( _ray, right );
+				if( result1 || result2 )
+				{
+					if( left.Distance() < o_intersection.Distance() )
+						o_intersection = left;
+					if( right.Distance() < o_intersection.Distance() )
+						o_intersection = right;
+					return true;
+				}
+				else false;
 			}
 			else
 			{
-				return near->Intersect ( _ray, o_intersection );
+				return near->Intersect( _ray, o_intersection );
 			}
 		}
 		else if ( tSplit > tMax )

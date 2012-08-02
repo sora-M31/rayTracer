@@ -219,18 +219,16 @@ bool Triangle::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 	Vector averageNormal = p1 * m_normal[0] + p2 * m_normal[1] + p3 * m_normal[2];
 	Vector2D averageTexCoord = p1 * m_texture[0] + p2 * m_texture[1] + p3 * m_texture[2];
 	Normalise(averageNormal);
+	if( averageNormal.Dot( _ray.Direction() ) > 0 )
+	{
+		return false;
+	}
 	
 	if( m_pMaterial->kf() > 0 && _ray.Direction().Dot( averageNormal ) > 0 )
 	{
 		//when calculating refraction for the ray inside object
 		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, g_air );
 	}
-#if 0
-	else if ( m_pMaterial->kf() < 0.01 && _ray.Direction().Dot( averageNormal ) >0 )
-	{
-		return false;
-	}
-#endif
 	else
 		o_intersection = Intersection ( intersectionPos, averageNormal, averageTexCoord, rayParameter, m_pMaterial );
 	return true;

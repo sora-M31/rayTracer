@@ -66,7 +66,7 @@ Scene::Scene( const Camera& _camera )
     m_textures.push_back ( texture );
     m_textures.push_back ( texture2 );
 
-    Light* areaKey = new AreaLight ( Vector (-5,3,-1,1), 2,2, Vector( 0,0,1,0), 5, 70, Color(240.0/255.0, 192.0/255.0, 161.0/255.0, 1) );
+    Light* areaKey = new AreaLight ( Vector (-5,3,-1,1), 1,1, Vector( 0,0,1,0), 5, 70, Color(240.0/255.0, 192.0/255.0, 161.0/255.0, 1) );
     Light* pointKey = new PointLight ( Vector (-5,3,-1,1), 200, Color(240.0/255.0, 192.0/255.0, 161.0/255.0, 1) );
     Light* pointFill = new PointLight ( Vector (5,3,-1,1), 50, Color(73.0/255.0,50.0/255.0, 138.0/255.0,1) );
 
