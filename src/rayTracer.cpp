@@ -97,11 +97,10 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 		{
 			c+= Trace( m_rayList[i + j], depth, debug_mel );
 		}
-		//c/=(float)sampleSize;
-		c.r()/=(float)sampleSize;
-		c.g()/=(float)sampleSize;
-		c.b()/=(float)sampleSize;
+		assert( sampleSize!=0 );
+		c/=(float)sampleSize;
 		c.SetExposure( _exposure);
+		if (c.a() < 0.9) printf("alpha low\n");
 		img.Set( (float)i/(float)sampleSize , c );
 		printf("\b\b\b\b");
 	}
@@ -442,7 +441,9 @@ Color RayTracer::GlossyReflection( const Intersection& _intersection, const Vect
 		float tmp2 = reflectDir.Dot( dir );
 		Clamp(tmp1,0,1);
 		Clamp(tmp2,0,1);
-		shade += ( Trace(raySample, --_depth, o_output )/ pow( tmp2, e ) );
+		float weight = pow(tmp2, e);
+		if( weight!=0 )
+		shade += ( Trace(raySample, --_depth, o_output )/ weight);
 	}
 	c += shade;
 	return c;

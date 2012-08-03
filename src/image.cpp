@@ -124,7 +124,6 @@ bool Image::WriteTga ( const std::string& _fileName )
     uint32_t pixelSize = m_pixels.size();
     for( uint32_t i = 0; i< pixelSize; ++i)
     {
-        //m_pixels[i].PrintColor();
         m_pixels[i].Clamp();
         tgaImage.put ( (unsigned char) ( m_pixels[i].b() * 255.0) );
         tgaImage.put ( (unsigned char) ( m_pixels[i].g() * 255.0) );

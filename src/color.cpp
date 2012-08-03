@@ -2,6 +2,7 @@
 #include <string.h>
 #include <iostream>
 #include <math.h>
+#include <assert.h>
 namespace rayTracer
 {
 //------------------------------------------------------------------------------
@@ -107,6 +108,7 @@ void Color::Clamp()
 {
     for( uint32_t i = 0; i< 4; ++i )
     {
+        assert( m_data[i] == m_data[i] );
         if( m_data[i] > 1 )
             m_data[i] = 1;
         else if ( m_data[i] < 0 )
