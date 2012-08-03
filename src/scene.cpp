@@ -12,7 +12,7 @@ namespace rayTracer
 Scene::Scene( const Camera& _camera )
 :m_camera ( _camera )
 {
-    Shape* sphere1 = new Sphere( Vector( -1.8, 1, 0, 1), 1 );
+    Shape* sphere1 = new Sphere( Vector( -1.8, 1, -0.3, 1), 1 );
     Shape* cube = new Mesh( Vector( 2, 0, -2, 1), "resources/cube.obj" );
     Shape* plane = new Mesh( Vector(0,0,0,1), "resources/plane.obj");
     Shape* teapot = new Mesh( Vector ( 0.5,0, 2, 1),"resources/teapotTexture.obj");
