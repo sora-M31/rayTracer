@@ -87,7 +87,7 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 	}
 	else if( m_depthOfField )
 	{
-		sampleSize = m_depthOfField * m_depthOfField;
+		sampleSize = m_pScene->GetCamera().LensSample().size();
 	}
 	for( uint32_t i=0; i< raySize; i+=sampleSize )
 	{
@@ -310,7 +310,9 @@ float RayTracer::AnisotropicSpecular( const Intersection& _intersection, const V
 	float tmp1 = halfVector.Dot(u) /  alphaX ;
 	float tmp2 = halfVector.Dot(v) / alphaY ;
 
-	float p = 1.0 / ( 4.0 * PI * alphaX * alphaY * sqrt( nDotLight * nDotView) ) ;
+	float p(0);
+	if ( nDotLight!=0 && nDotView!=0 )
+		p = 1.0 / ( 4.0 * PI * alphaX * alphaY * sqrt( nDotLight * nDotView) );
 	float beta = - 2.0 * ( tmp1 * tmp1 + tmp2 * tmp2 ) / (1.0 + nDotHalf );
 
 	float specular = p * exp(beta);

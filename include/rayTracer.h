@@ -15,8 +15,8 @@ public:
 	void CreateRays();
 	void CastRay( uint32_t _frame, float _exposure );
 	void SetScene( const Scene* _pScene ) { m_pScene = _pScene; }
+	void SetDepthOfField() { m_depthOfField = true; }
 	void SetAntialias( uint32_t _sampleNum ) { m_antialias = _sampleNum; }
-	void SetDepthOfField( uint32_t _sampleNum ) { m_depthOfField = _sampleNum; }
 
 private:
     Intersection IntersectScene( const Ray& _ray );
@@ -29,7 +29,7 @@ private:
 	Vector MirrorReflection( const Intersection& _intersection, const Vector& _inDir );
 	const Scene* m_pScene;
 	uint32_t m_antialias;
-    uint32_t m_depthOfField;
+    bool m_depthOfField;
 	std::vector<Ray> m_rayList;
 	uint32_t m_width;
 	uint32_t m_height;

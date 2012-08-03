@@ -10,12 +10,12 @@ int main( int argc, const char* argv[] )
 	int height = atoi(argv[2]);
 	int start = atoi(argv[3]);
 	int end = atoi(argv[4]);
-	rayTracer::Camera cam( 0.3, 5, 60 );
-	//cam.SampleLens(3);
+	rayTracer::Camera cam( 1, 15, 60 );
+	//cam.SampleLens(5);
     rayTracer::Scene scene( cam );
     //rayTracer::RayTracer raytracer( &scene, 400,300  );
     rayTracer::RayTracer raytracer( &scene, width, height );
-	//raytracer.SetDepthOfField(3);
+	//raytracer.SetDepthOfField();
 	raytracer.SetAntialias(3);
 	raytracer.CreateRays();
     for(uint32_t i=start; i< end; i +=1)
