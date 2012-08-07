@@ -92,7 +92,7 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 	for( uint32_t i=0; i< raySize; i+=sampleSize )
 	{
 		Color c(0,0,0,0);
-		//printf("% 3d%%", (int)(100*(float)i/(float)raySize) );
+		printf("% 3d%%", (int)(100*(float)i/(float)raySize) );
 		for( uint32_t j=0; j<sampleSize; ++j )
 		{
 			c+= Trace( m_rayList[i + j], depth, debug_mel );
@@ -102,13 +102,13 @@ void RayTracer::CastRay( uint32_t _frame, float _exposure )
 		c.SetExposure( _exposure);
 		//if (c.a() < 0.9) printf("alpha low\n");
 		img.Set( (float)i/(float)sampleSize , c );
-		//printf("\b\b\b\b");
+		printf("\b\b\b\b");
 	}
 #ifdef TEST1
 	debug_mel.close();
 #endif
 	char filename[256];
-	sprintf(filename, "img/img%04d.tga", _frame+1 );
+	sprintf(filename, "img/img%04d.tga", _frame );
 	img.WriteTga(filename  );
 }
 //------------------------------------------------------------------------------
