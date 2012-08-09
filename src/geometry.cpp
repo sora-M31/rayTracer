@@ -29,12 +29,11 @@ Sphere::~Sphere()
 //------------------------------------------------------------------------------
 bool Sphere::Intersect( const Ray& _ray, Intersection& o_intersection ) const
 {
-	// ray pointing away from sphere
-	if ( _ray.Direction().Dot( Vector( Position() - _ray.Origin() ) ) < 0 )
-	    return false;
-
 	Vector p = Position() - _ray.Origin();
 	float pDotRayDir = p.Dot( _ray.Direction() );
+	// ray pointing away from sphere
+	if(( pDotRayDir )<0 )
+		return false;
 
 	/* pDotRayDir distance between origin and P's projection on Ray
 	  p.Dot( p ) magnitude sqaured of p
